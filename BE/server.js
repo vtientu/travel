@@ -1,13 +1,21 @@
-const express = require('express'),
-    app = express(),
-    bodyParser = require('body-parser');
-port = process.env.PORT || 3000;
-app.listen(port);
+const express = require('express');
+const dotenv = require('dotenv');
+dotenv.config();
+const cor = require('cors');
+const connectDB = require('./db/db.js');
+const post = process.env.PORT;
+const authRoutes = require('./routes/authRoutes.js');
 
-console.log('API server started on: ' + port);
+const app = express();
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(cor());
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
-var routes = require('./routes/appRoutes'); //importing route
-routes(app); //register the route
+app.use('/api/auth', authRoutes);
+
+connectDB();
+
+app.listen(post, () => {
+    console.log(`Server is running on port ${post}`);
+});
