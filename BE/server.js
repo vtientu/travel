@@ -3,7 +3,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 const cors = require("cors");
 const db = require("./models"); // Import Sequelize models
-const authRoutes = require("./routes/authRoutes.js");
+const authRoutes = require("./routes/auth.route.js");
 const tourRoutes = require("./routes/tour.route.js");
 
 const app = express();
