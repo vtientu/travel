@@ -1,17 +1,10 @@
-const mysql = require('mysql');
-const config = require('./config.js');
+const { Sequelize } = require("sequelize");
+const config = require("./config");
 
-const connectDB = async () => {
-    const pool = mysql.createPool(config);
+const sequelize = new Sequelize(config.database, config.user, config.password, {
+    host: config.host,
+    dialect: "mysql",
+    logging: false,
+});
 
-    pool.getConnection((err, connection) => {
-        if (err) {
-            console.log({ error: err.message});
-        }
-
-        console.log("Connected to MySQL database");
-        connection.release();
-    });
-};
-
-module.exports = connectDB;
+module.exports = sequelize;
