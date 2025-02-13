@@ -12,8 +12,12 @@ export default function RegisterPage() {
         }}
       >
         <div className="absolute inset-0 "></div>
-        <img src="/logo.png" alt="Logo" className="w-24 mb-4" />
-        <div className="relative z-10 text-white text-center w-full px-10">
+        <img src="/Image/Logo.png" alt="Logo" className="w-24 mb-4"
+             style={{
+            transform: "scale(1.5)",
+            transition: "transform 0.3s ease-in-out",
+        }}/>
+        <div className="relative z-10 text-white text-center w-full px-10" style={{marginTop:"10px"}}>
           <h1 className="text-3xl font-bold uppercase leading-tight">
             RONG CHƠI BỐN PHƯƠNG, <br /> GIÁ VẪN &quot;YÊU THƯƠNG&quot;
           </h1>
