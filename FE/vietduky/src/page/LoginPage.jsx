@@ -1,4 +1,4 @@
-import LoginForm from "../../components/LoginForm/LoginForm";
+import LoginForm from "../components/LoginForm/LoginForm";
 export default function LoginPage() {
   return (
     <div className="flex h-screen w-full">
@@ -6,18 +6,24 @@ export default function LoginPage() {
       <div
         className="hidden lg:flex w-1/2 bg-cover bg-center relative flex-col items-center justify-start pt-10"
         style={{
-          backgroundImage:
-            "url('https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/04/anh-bien.jpg')",
+          backgroundImage: "url('../../public/Image/loginImage.png')",
         }}
       >
         <div className="absolute inset-0 "></div>
         <div className="relative z-10 flex flex-col items-center justify-center text-white text-center p-10">
-          <img src="/Image/Logo.png" alt="Logo" className="w-24 mb-4"
-               style={{
-                   transform: "scale(1.5)",
-                   transition: "transform 0.3s ease-in-out",
-               }}/>
-          <h1 className="text-3xl font-bold uppercase leading-tight" style={{marginTop:"10px"}}>
+          <img
+            src="/Image/Logo.png"
+            alt="Logo"
+            className="w-24 mb-4"
+            style={{
+              transform: "scale(1.5)",
+              transition: "transform 0.3s ease-in-out",
+            }}
+          />
+          <h1
+            className="text-3xl font-bold uppercase leading-tight"
+            style={{ marginTop: "10px" }}
+          >
             RONG CHƠI BỐN PHƯƠNG, <br /> GIÁ VẪN &quot;YÊU THƯƠNG&quot;
           </h1>
         </div>

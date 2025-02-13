@@ -1,4 +1,4 @@
-import RegisterForm from "../../components/RegisterForm/RegisterForm";
+import RegisterForm from "../components/RegisterForm/RegisterForm";
 
 export default function RegisterPage() {
   return (
@@ -7,18 +7,24 @@ export default function RegisterPage() {
       <div
         className="hidden lg:flex w-1/2 bg-cover bg-center relative flex-col items-center justify-start pt-10"
         style={{
-          backgroundImage:
-            "url('https://i.pinimg.com/736x/5e/c4/a3/5ec4a3b3713a93c2fbc44d60a54764fb.jpg')",
+          backgroundImage: "url('../../public/Image/loginImage.png')",
         }}
       >
         <div className="absolute inset-0 "></div>
-        <img src="/Image/Logo.png" alt="Logo" className="w-24 mb-4"
-             style={{
-            transform: "scale(1.5)",
-            transition: "transform 0.3s ease-in-out",
-        }}/>
-        <div className="relative z-10 text-white text-center w-full px-10" style={{marginTop:"10px"}}>
-          <h1 className="text-3xl font-bold uppercase leading-tight">
+        <div className="relative z-10 flex flex-col items-center justify-center text-white text-center p-10">
+          <img
+            src="/Image/Logo.png"
+            alt="Logo"
+            className="w-24 mb-4"
+            style={{
+              transform: "scale(1.5)",
+              transition: "transform 0.3s ease-in-out",
+            }}
+          />
+          <h1
+            className="text-3xl font-bold uppercase leading-tight"
+            style={{ marginTop: "10px" }}
+          >
             RONG CHƠI BỐN PHƯƠNG, <br /> GIÁ VẪN &quot;YÊU THƯƠNG&quot;
           </h1>
         </div>
