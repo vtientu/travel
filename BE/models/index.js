@@ -19,6 +19,13 @@ sequelize
 const Tour = require("./tour.model")(sequelize, Sequelize);
 const User = require("./user.model")(sequelize);
 const Customer = require("./customer.model")(sequelize);
+const Booking = require("./booking.model")(sequelize);
+const DiscountService = require("./discountService.model.js")(sequelize);
+const Feedback = require("./feedback.model")(sequelize);
+const GuideTour = require("./guideTour.model.js")(sequelize);
+const Location = require("./location.model.js")(sequelize);
+const Notification = require("./notification.model.js")(sequelize);
+const NotificationType = require("./notificationType.model.js")(sequelize);
 
 // Đối tượng `db` để chứa Sequelize và Models
 const db = {};
@@ -27,5 +34,12 @@ db.Sequelize = Sequelize;
 db.Tour = Tour;
 db.User = User;
 db.Customer = Customer;
+db.Booking = Booking;
+db.DiscountService = DiscountService;
+db.Feedback = Feedback;
+db.GuideTour = GuideTour;
+db.Location = Location;
+db.Notification = Notification;
+db.NotificationType = NotificationType;
 
 module.exports = db;
