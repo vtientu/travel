@@ -15,12 +15,18 @@ sequelize
     .catch((error) => console.error("Unable to connect to the database:", error));
 
 // Import các model
+const Location = require("./location.model")(sequelize, Sequelize);
 const Tour = require("./tour.model")(sequelize, Sequelize);
+const Service = require("./service.model")(sequelize, Sequelize);
+const TourService = require("./tour_service.model")(sequelize, Sequelize);
 
 // Đối tượng `db` để chứa Sequelize và Models
 const db = {};
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 db.Tour = Tour;
+db.Location = Location;
+db.Service = Service;
+db.TourService = TourService;
 
 module.exports = db;
