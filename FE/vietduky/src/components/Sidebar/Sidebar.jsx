@@ -5,7 +5,7 @@ export default function Sidebar({ setSelectedMenu, closeSidebar }) {
 
   const menuItems = [
     { id: 1, name: "Quản lý Tour" },
-    { id: 2, name: "Lorem Ipsum" },
+    { id: 2, name: "Quản lý Địa điểm" },
     { id: 3, name: "Lorem Ipsum" },
     { id: 4, name: "Lorem Ipsum" },
     { id: 5, name: "Lorem Ipsum" },

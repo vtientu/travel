@@ -6,7 +6,8 @@ import PersonalAIPage from "./page/PersonalAIPage.jsx";
 import RegisterPage from "./page/RegisterPage.jsx";
 import DealsPage from "./page/DealsPage.jsx";
 import ListTour from "./page/ListTourPage.jsx";
-import ManagementTour from "./page/ManagementTour.jsx";
+import ManagementTour from "./page/Management/ManagementTour.jsx";
+import ManagementLocation from "./page/Management/ManagementLocation.jsx";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path={"/deals"} element={<DealsPage />} />
         <Route path={"/listTour"} element={<ListTour />} />
         <Route path={"/tourManagement"} element={< ManagementTour />} />
+        <Route path={"/locationManagement"} element={< ManagementLocation />} />
       </Routes>
     </BrowserRouter>
   );

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FaSearch, FaPlus } from "react-icons/fa";
-import Layout from "../layouts/LayoutManagement";
-import ModalAddTour from "../components/ModalAddTour/ModalAddTour";
+import Layout from "../../layouts/LayoutManagement";
+import ModalAddTour from "../../components/ModalAddTour/ModalAddTour";
 
 const tours = [
   {
