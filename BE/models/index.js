@@ -26,6 +26,8 @@ const GuideTour = require("./guideTour.model.js")(sequelize);
 const Location = require("./location.model.js")(sequelize);
 const Notification = require("./notification.model.js")(sequelize);
 const NotificationType = require("./notificationType.model.js")(sequelize);
+const Service = require("./service.model")(sequelize, Sequelize);
+const TourService = require("./tour_service.model")(sequelize, Sequelize);
 
 // Đối tượng `db` để chứa Sequelize và Models
 const db = {};
@@ -41,5 +43,7 @@ db.GuideTour = GuideTour;
 db.Location = Location;
 db.Notification = Notification;
 db.NotificationType = NotificationType;
+db.Service = Service;
+db.TourService = TourService;
 
 module.exports = db;

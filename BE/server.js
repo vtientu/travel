@@ -3,8 +3,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 const cors = require("cors");
 const db = require("./models"); // Import Sequelize models
-const authRoutes = require("./routes/auth.route.js");
-const tourRoutes = require("./routes/tour.route.js");
+const routes = require("./routes/index.js"); // Import routes tổng hợp
 
 const app = express();
 const port = process.env.PORT || 5000;
@@ -15,14 +14,19 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // Routes
-app.use("/api/auth", authRoutes);
-app.use("/api/tour", tourRoutes);
+app.use("/api", routes); // Gộp tất cả routes vào /api
+
+// Khởi động server
 app.listen(port, () => {
     console.log(`✅ Server is running on port ${port}`);
 });
 
-
-
-db.sequelize.sync({ alter: true }).then(() => {
-    console.log("Database synced successfully");
-});
+// Đồng bộ database
+(async () => {
+    try {
+        await db.sequelize.sync({ alter: true });
+        console.log("✅ Database synced successfully");
+    } catch (error) {
+        console.error("❌ Database sync error:", error);
+    }
+})();

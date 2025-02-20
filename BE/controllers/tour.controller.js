@@ -12,14 +12,14 @@ exports.getAllTours = async (req, res) => {
 };
 
 // Tạo một Tour mới
-exports.createTour = async (req, res) => {
-    try {
-        const newTour = await Tour.create(req.body);
-        res.status(201).json(newTour);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
+// exports.createTour = async (req, res) => {
+//     try {
+//         const newTour = await Tour.create(req.body);
+//         res.status(201).json(newTour);
+//     } catch (error) {
+//         res.status(500).json({ error: error.message });
+//     }
+// };
 exports.insertSampleData = async (req, res) => {
     try {
         const sampleData = [
@@ -51,4 +51,29 @@ exports.insertSampleData = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+exports.createTour = async (req, res) => {
+    try {
+        const { location_id, name_tour, price_tour, day_number, rating_tour, max_people, activity_description, available_months } = req.body;
+
+        const data = {
+            location_id,
+            name_tour,
+            price_tour,
+            day_number,
+            rating_tour,
+            max_people,
+            activity_description,
+            available_months
+        };
+
+        console.log("🔍 Data to insert:", data);
+
+        const newTour = await db.Tour.create(data); // Sử dụng create thay vì bulkCreate
+        res.json({ message: "Insert sample data successfully!", tour: newTour });
+    } catch (error) {
+        console.error("❌ Error inserting tour:", error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
 
