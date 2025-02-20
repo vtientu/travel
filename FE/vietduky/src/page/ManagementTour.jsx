@@ -34,19 +34,52 @@ export default function ManagementTour() {
       <div>
         {/* Search and Filters */}
         <div className="bg-white p-4 rounded-lg shadow flex gap-4 items-center">
-          <div className="relative flex-1">
+          <div className="relative flex-1 ">
             <FaSearch className="absolute left-3 top-3 text-gray-500" />
             <input
               type="text"
               placeholder="Tìm kiếm bằng từ khóa"
-              className="pl-10 pr-4 py-2 border rounded w-full"
+              className="pl-10 pr-4 py-2 border rounded w-1/3"
             />
           </div>
+          {/* Bộ lọc ngày */}
+          <div className="relative">
+            <input
+              type="date"
+              className="px-3 py-2 border rounded w-[150px] text-gray-700"
+            />
+          </div>
+
+          {/* Bộ lọc địa điểm */}
+          <div>
+            <select className="px-3 py-2 border rounded w-[150px] text-gray-700">
+              <option value="" disabled selected>
+                Địa điểm
+              </option>
+              <option value="hanoi">Hà Nội</option>
+              <option value="hcm">TP. Hồ Chí Minh</option>
+              <option value="danang">Đà Nẵng</option>
+            </select>
+          </div>
+
+          {/* Bộ lọc giá tour */}
+          <div>
+            <select className="px-3 py-2 border rounded w-[150px] text-gray-700">
+              <option value="" disabled selected>
+                Giá Tour
+              </option>
+              <option value="low">Dưới 5 triệu</option>
+              <option value="medium">5 - 10 triệu</option>
+              <option value="high">Trên 10 triệu</option>
+            </select>
+          </div>
+          
+          {/* Nút thêm tour */}
           <button
-            className="bg-blue-500 text-white px-4 py-2 rounded flex items-center gap-2"
+            className="bg-red-700 text-white px-4 py-2 rounded"
             onClick={toggleModal}
           >
-            <FaPlus /> Thêm Tour mới
+            Thêm Tour mới
           </button>
         </div>
 
