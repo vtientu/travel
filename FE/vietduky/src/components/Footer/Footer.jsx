@@ -1,6 +1,6 @@
 export default function Footer() {
   return (
-    <footer className="bg-red-700 text-white py-8 mt-16">
+    <footer className="bg-red-700 text-white py-8 ">
       <div className="max-w-6xl mx-auto px-4 grid grid-cols-3 gap-4">
         <div>
           <h3 className="text-lg font-semibold">Về Việt Du Ký</h3>
