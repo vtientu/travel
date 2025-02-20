@@ -11,7 +11,6 @@ import ManagementTravelTourPage from "./page/ManagementTravelTourPage.jsx";
 import AddNewTourPage from "./page/AddNewTourPage.jsx";
 import ManagementLocationPage from "./page/ManagementLocationPage.jsx";
 
-
 function App() {
   return (
     <BrowserRouter>

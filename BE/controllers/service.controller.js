@@ -1,0 +1,31 @@
+const db = require("../models");
+const Service = db.Service;
+
+// Lấy danh sách tất cả Tour
+// exports.getAllServices = async (req, res) => {
+//     try {
+//         const locations = await Service.findAll();
+//         res.json(locations);
+//     } catch (error) {
+//         res.status(500).json({ error: error.message });
+//     }
+// };
+exports.createService = async (req, res) => {
+    try {
+
+        const { name, description, price } = req.body;
+        if (!name) {
+            return res.status(400).json({ error: "Missing name in request body" });
+        }
+
+        const data = { name_service: name, description_service: description, price_service: price };
+        await db.Service.bulkCreate([data]);
+
+        res.json({ message: "Insert data successfully!" });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+
+

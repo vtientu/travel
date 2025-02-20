@@ -1,6 +1,7 @@
 const { v4: uuidv4 } = require('uuid');
 const jwt = require('jsonwebtoken');
-const userSchema = require('../models/userModel.js');
+const db = require("../models"); 
+const User = db.User;
 const bcrypt = require('bcryptjs');
 const { 
     createTable,
@@ -14,28 +15,31 @@ const generateAccessToken = (id) => {
 
 const register = async (req, res) => {
     const { username, password } = req.body;
-    if (!username || !password ) {
-        res.status(400).json({ message: 'Please provide both username and password' });
-        return;
+
+    if (!username || !password) {
+        return res.status(400).json({ message: "Please provide both username and password" });
     }
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-    const user = {
-        id: uuidv4(),
-        username,
-        password: hashedPassword,
-    };
+
     try {
-        await createTable(userSchema);
-        const userAlraedyExists = await checkRecordExists('user', 'username', username);
-        if (userAlraedyExists) {
-            res.status(400).json({ message: 'User already exists' });
-        } else {
-            await insertRecord('user', user);
-            res.status(201).json({ message: 'User created' });
-        } 
+        // Kiểm tra xem user đã tồn tại chưa
+        const userAlreadyExists = await User.findOne({ where: { username } });
+
+        if (userAlreadyExists) {
+            return res.status(400).json({ message: "User already exists" });
+        }
+
+        // Mã hóa mật khẩu
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Tạo user mới trong database
+        const newUser = await User.create({
+            username,
+            password: hashedPassword,
+        });
+
+        return res.status(201).json({ message: "User created", user: newUser });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        return res.status(500).json({ error: error.message });
     }
 };
 
