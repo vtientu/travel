@@ -34,6 +34,27 @@ const NotificationType = require("./notificationType.model.js")(
 );
 const Service = require("./service.model")(sequelize, Sequelize);
 const TourService = require("./tour_service.model")(sequelize, Sequelize);
+const ProgramDiscount = require("./programDiscount.model.js")(
+  sequelize,
+  Sequelize
+);
+const Role = require("./role.model.js")(sequelize, Sequelize);
+const RoleService = require("./roleService.model.js")(sequelize, Sequelize);
+// const TravelGuide = require("./travelGuide.model.js")(sequelize, Sequelize);
+// const TravelTour = require("./travelTour.model.js")(sequelize, Sequelize);
+// const Restaurant = require("./restaurant.model.js")(sequelize, Sequelize);
+// const RestaurantBooking = require("./restaurantBooking.model.js")(
+//   sequelize,
+//   Sequelize
+// );
+const Hotel = require("./hotel.model.js")(sequelize, Sequelize);
+// const HotelBooking = require("./hotelBooking.model.js")(sequelize, Sequelize);
+// const PaymentCard = require("./paymentCard.model.js")(sequelize, Sequelize);
+const Vehicle = require("./vehicle.model.js")(sequelize, Sequelize);
+// const VehicleBooking = require("./vehicleBooking.model.js")(
+//   sequelize,
+//   Sequelize
+// );
 
 // Đối tượng `db` để chứa Sequelize và Models
 const db = {};
@@ -51,5 +72,17 @@ db.Notification = Notification;
 db.NotificationType = NotificationType;
 db.Service = Service;
 db.TourService = TourService;
+db.Role = Role;
+db.RoleService = RoleService;
+db.ProgramDiscount = ProgramDiscount;
+// db.TravelGuide = TravelGuide;
+// db.TravelTour = TravelTour;
+// db.Restaurant = Restaurant;
+// db.RestaurantBooking = RestaurantBooking;
+db.Hotel = Hotel;
+// db.HotelBooking = HotelBooking;
+// db.PaymentCard = PaymentCard;
+db.Vehicle = Vehicle;
+// db.VehicleBooking = VehicleBooking;
 
 module.exports = db;
