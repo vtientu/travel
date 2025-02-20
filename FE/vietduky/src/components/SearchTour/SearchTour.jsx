@@ -19,26 +19,16 @@ export default function SearchTour() {
   return (
     <div className="relative">
       {/* Background Image */}
-      <div
-        style={{
-          position: "relative",
-          width: "100%",
-          height: "300px",
-          overflow: "hidden",
-          borderBottomLeftRadius: "24px",
-          borderBottomRightRadius: "24px",
-        }}
-      >
+      <div style={{position: "relative", width: "100%", height: "300px", overflow: "hidden", borderBottomLeftRadius: "24px", borderBottomRightRadius: "24px",}}>
         <img
           src="/Image/Div.png"
           alt="Background"
           style={{
-            width: "100%", // Ảnh rộng bằng div
-            height: "100%", // Ảnh cao bằng div
-            objectFit: "cover", // Cắt ảnh để phù hợp div mà không méo
-            filter: "brightness(50%)", // Làm tối ảnh 75%
-          }}
-        />
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            filter: "brightness(50%)",
+          }}/>
 
         {/* Hashtag */}
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center text-white">
@@ -64,9 +54,8 @@ export default function SearchTour() {
                 }`}
                 onClick={() => {
                   setSelected("ai");
-                  navigate("/personal-ai"); // Điều hướng mà không reload trang
-                }}
-              >
+                  navigate("/personal-ai");
+                }}>
                 {tab}
               </button>
             ))}
@@ -83,7 +72,7 @@ export default function SearchTour() {
             }`}
             onClick={() => {
               setSelected("ai");
-              navigate("/"); // Điều hướng mà không reload trang
+              navigate("/");
             }}
           >
             Tìm kiếm Tour
@@ -97,7 +86,7 @@ export default function SearchTour() {
             }`}
             onClick={() => {
               setSelected("ai");
-              navigate("/personalAI"); // Điều hướng mà không reload trang
+              navigate("/personalAI");
             }}
           >
             Cá nhân hóa bằng AI

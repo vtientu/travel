@@ -7,19 +7,17 @@ import SearchButton from "../components/SearchButton/SearchButton";
 
 export default function ListTour() {
   return (
-    <div
-      className="bg-white"
-      style={{ backgroundImage: "url('/Image/Background.png')" }}
-    >
-      {/* Header */}
-      <Header />
+      <div className="bg-white" style={{backgroundImage: "url('/Image/Background.png')", backgroundSize: "cover", backgroundPosition: "center", width: "100%", minHeight: "100vh",}}>
 
-      {/* Thanh tìm kiếm */}
-      <SearchTour />
-      <SearchButton />
+        {/* Header */}
+        <Header/>
 
-      {/* Nội dung chính */}
-      <div className="container mx-auto px-4 py-6">
+        {/* Thanh tìm kiếm */}
+        <SearchTour />
+        <SearchButton />
+
+        {/* Nội dung chính */}
+        <div className="container mx-auto px-4 py-6">
         {/* Đánh giá + mô tả */}
         <RatingSection />
 
@@ -74,10 +72,10 @@ export default function ListTour() {
             </div>
           </div>
         </div>
-      </div>
+        </div>
 
-      {/* Footer */}
-      <Footer />
+        {/* Footer */}
+        <Footer/>
     </div>
   );
 }

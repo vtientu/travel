@@ -58,24 +58,20 @@ export default function LandingPage() {
   };
 
   return (
-    <div
-      className="bg-white"
-      style={{ backgroundImage: "url('/Image/Background.png')" }}
-    >
-      {/* Header */}
-      <Header />
+      <div className="bg-white" style={{backgroundImage: "url('/Image/Background.png')", backgroundSize: "cover", backgroundPosition: "center", width: "100%", minHeight: "100vh",}}>
 
-      <div className="relative">
-        {/* Background Image */}
-        {/* Search Box */}
+        {/* Header */}
+        <Header/>
+
+        <div className="relative">
         <SearchTour />
-      </div>
+        </div>
 
-      {/* Search Button */}
-      <SearchButton />
+         {/* Search Button */}
+         <SearchButton />
 
-      {/* Gói quà chào mừng cho người dùng! */}
-      <div className="p-6 relative w-4/5 mx-auto">
+        {/* Gói quà chào mừng cho người dùng! */}
+        <div className="p-6 relative w-4/5 mx-auto">
         <div className="flex justify-between items-center ">
           <h2 className="text-xl font-bold">
             🎁 Gói quà chào mừng cho người dùng!
@@ -117,8 +113,8 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* Chương trình khuyến mại */}
-      <div className="p-6 relative w-3/5 mx-auto">
+        {/* Chương trình khuyến mại */}
+        <div className="p-6 relative w-3/5 mx-auto">
         <div className="flex justify-between items-center ">
           <h2 className="text-xl font-bold">Chương trình khuyến mại</h2>
           <a href="#" className="text-red-600 hover:underline">
@@ -162,8 +158,8 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* Khuyến mãi chuyến bay và hoạt động  */}
-      <div className="p-6 relative w-3/5 mx-auto scrollbar-hide">
+        {/* Khuyến mãi chuyến bay và hoạt động  */}
+        <div className="p-6 relative w-3/5 mx-auto scrollbar-hide">
         <div className="flex justify-between items-center ">
           <h2 className="text-xl font-bold">
             Khuyến mại Chuyến bay và Hoạt động
@@ -209,8 +205,8 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* Tour trong nước nổi bật */}
-      <div className="p-6 relative w-3/5 mx-auto">
+        {/* Tour trong nước nổi bật */}
+        <div className="p-6 relative w-3/5 mx-auto">
         <h2 className="text-xl font-bold">Tour trong nước nổi bật</h2>
 
         <div className="flex justify-between items-center border-b pb-2">
@@ -274,8 +270,8 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* Khám phá địa điểm vui chơi ở Việt Nam */}
-      <div className="p-6 relative w-3/5 mx-auto scrollbar-hide">
+        {/* Khám phá địa điểm vui chơi ở Việt Nam */}
+        <div className="p-6 relative w-3/5 mx-auto scrollbar-hide">
         <div className="flex justify-between items-center ">
           <h2 className="text-xl font-bold">
             Khám phá địa điểm vui chơi ở Việt Nam
@@ -313,8 +309,8 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* Footer */}
-      <Footer />
+        {/* Footer */}
+        <Footer/>
     </div>
   );
 }
