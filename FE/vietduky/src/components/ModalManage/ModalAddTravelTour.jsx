@@ -1,20 +1,20 @@
 import TextEditor from "../../lib/TextEditor";
 import { FaArrowRight } from "react-icons/fa";
 
-export default function ModalAddTour({ onClose }) {
+export default function ModalAddTravelTour({ onClose }) {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-3/4 ">
+      <div className="bg-white p-6 rounded-lg shadow-lg  ">
         <form>
           <div className="flex gap-6">
             {/* Cột trái */}
-            <div className="w-2/5 ">
-              <h2 className="text-lg font-semibold">Thêm Tour du lịch</h2>
+            <div>
+              <h2 className="text-lg font-semibold">Thêm Travel Tour</h2>
               <h6 className="text-sm mb-4">
-                Quản trị viên thêm Tour du lịch mới
+                Quản trị viên thêm Travel Tour trong Tour
               </h6>
               {/* Tên Tour */}
-              <label className="block mb-2 font-medium">Tên Tour</label>
+              <label className="block mb-2 font-medium before:content-['*'] before:text-red-500 before:mr-1">Tour</label>
               <input
                 type="text"
                 className="w-full p-2 border rounded mb-4"
@@ -24,12 +24,12 @@ export default function ModalAddTour({ onClose }) {
               <div className="flex items-center gap-4">
                 {/* Điểm khởi hành */}
                 <div>
-                  <label className="block mb-2 font-medium">
-                    Điểm khởi hành
+                  <label className="block mb-2 font-medium before:content-['*'] before:text-red-500 before:mr-1 ">
+                    Ngày khởi hành
                   </label>
                   <select className="w-[230px] p-2 border rounded text-gray-500">
                     <option value="" disabled selected>
-                      Chọn điểm khởi hành
+                      Chọn ngày khởi hành
                     </option>
                     <option value="hanoi">Hà Nội</option>
                     <option value="hcm">TP. Hồ Chí Minh</option>
@@ -42,10 +42,10 @@ export default function ModalAddTour({ onClose }) {
 
                 {/* Điểm đến */}
                 <div>
-                  <label className="block mb-2 font-medium">Điểm đến</label>
+                  <label className="block mb-2 font-medium before:content-['*'] before:text-red-500 before:mr-1">Ngày về</label>
                   <select className="w-[230px] p-2 border rounded text-gray-500">
                     <option value="" disabled selected>
-                      Chọn điểm đến
+                      Chọn ngày về
                     </option>
                     <option value="hanoi">Hà Nội</option>
                     <option value="hcm">TP. Hồ Chí Minh</option>
@@ -55,51 +55,22 @@ export default function ModalAddTour({ onClose }) {
               </div>
 
             {/* Số ngày */}
-              <label className="block mb-2 font-medium">Số ngày</label>
-              <input
-                type="text"
-                className="w-full p-2 border rounded mb-4"
-                placeholder="Nhập số ngày"
-                required
-              />
-
-            {/* Giá tour */}
-              <label className="block mb-2 font-medium">Giá tour</label>
-              <input
-                type="number"
-                className="w-full p-2 border rounded mb-4"
-                placeholder="Nhập giá tour"
-                required
-              />
-
-            {/* Số lượng người */}
-              <label className="block mb-2 font-medium">Số lượng người</label>
+              <label className="block mb-2 font-medium before:content-['*'] before:text-red-500 before:mr-1">Số lượng người</label>
               <input
                 type="number"
                 className="w-full p-2 border rounded mb-4"
                 placeholder="Nhập số lượng người"
                 required
               />
-            
-            {/* Ảnh minh họa */}
-              <label className="block mb-2 font-medium">Ảnh minh họa</label>
-              <label className="w-full h-[75px] p-2 border rounded mb-4 bg-gray-300 cursor-pointer flex flex-col items-center justify-center border-dashed">
-                <span>Kéo & thả ảnh Tour tại đây (.png; .jpg; .pdf)</span>
-                <input type="file" className="hidden" required />
-              </label>
-            </div>
 
-            {/* Cột phải */}
-            <div className="w-3/5">
-              <label className="block mb-2 font-medium">Mô tả hành trình</label>
-              <span className="bg-red-700 text-white font-medium text-sm w-full p-2 rounded block mb-4">
-                | Vui lòng điền tiêu đề
-              </span>
-              <TextEditor />
-
-              <button className="bg-gray-100 text-black mt-7 px-3 py-1.5 rounded ">
-                Thêm mô tả
-              </button>
+            {/* Giá tour */}
+              <label className="block mb-2 font-medium before:content-['*'] before:text-red-500 before:mr-1">Giá Travel Tour</label>
+              <input
+                type="number"
+                className="w-full p-2 border rounded mb-4"
+                placeholder="Nhập giá Travel Tour"
+                required
+              />
             </div>
           </div>
 

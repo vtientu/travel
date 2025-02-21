@@ -10,6 +10,10 @@ import DetailTourPage from "./page/DetailTourPage.jsx";
 import ManagementTravelTourPage from "./page/ManagementTravelTourPage.jsx";
 import AddNewTourPage from "./page/AddNewTourPage.jsx";
 import ManagementLocationPage from "./page/ManagementLocationPage.jsx";
+import ManagementTour from "./page/Management/ManagementTour.jsx";
+import ManagementLocation from "./page/Management/ManagementLocation.jsx";
+import ModalAddLocation from "./components/ModalManage/ModalAddLocation.jsx";
+import ManageTravelTour from "./page/Management/ManageTravelTour.jsx";
 
 function App() {
   return (
@@ -25,8 +29,11 @@ function App() {
           <Route path={"/detailTour"} element={<DetailTourPage />} />
           <Route path={"/managementTravelTour"} element={<ManagementTravelTourPage/>}/>
           <Route path={"/addNewTour"} element={<AddNewTourPage/>}/>
-          <Route path={"/managementLocation"} element={<ManagementLocationPage/>}/>
+          <Route path={"/managementLocation"} element={<ManagementLocation/>}/>
           <Route path={"/addNewLocation"} element={<AddNewTourPage/>}/>
+          <Route path={"/managementTour"} element={<ManagementTour/>}/>
+          <Route path={"/manageTravelTour"} element={<ManageTravelTour/>}/>
+          <Route path={"/modalL"} element={<ModalAddLocation/>}/>
         </Routes>
     </BrowserRouter>
   );

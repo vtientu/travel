@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { FaSearch, FaPlus } from "react-icons/fa";
-import Layout from "../layouts/LayoutManagement";
-import ModalAddTour from "../components/ModalAddTour/ModalAddTour";
+import { HiOutlineDotsHorizontal } from "react-icons/hi";
+import Layout from "../../layouts/LayoutManagement";
+import ModalAddTour from "../../components/ModalManage/ModalAddTour";
+import { LuSearch } from "react-icons/lu";
 
 const tours = [
   {
@@ -33,26 +34,26 @@ export default function ManagementTour() {
     <Layout title="Quản lý Tour">
       <div>
         {/* Search and Filters */}
-        <div className="bg-white p-4 rounded-lg shadow flex gap-4 items-center">
+        <div className="bg-white p-4 rounded-md flex gap-4 items-center">
           <div className="relative flex-1 ">
-            <FaSearch className="absolute left-3 top-3 text-gray-500" />
+            <LuSearch className="absolute left-3 top-3 text-gray-500" />
             <input
               type="text"
               placeholder="Tìm kiếm bằng từ khóa"
-              className="pl-10 pr-4 py-2 border rounded w-1/3"
+              className="pl-10 pr-4 py-2 border rounded-md w-1/3"
             />
           </div>
           {/* Bộ lọc ngày */}
           <div className="relative">
             <input
               type="date"
-              className="px-3 py-2 border rounded w-[150px] text-gray-700"
+              className="px-3 py-2 border rounded-md w-[150px] text-gray-700"
             />
           </div>
 
           {/* Bộ lọc địa điểm */}
           <div>
-            <select className="px-3 py-2 border rounded w-[150px] text-gray-700">
+            <select className="px-3 py-2 border rounded-md w-[150px] text-gray-700">
               <option value="" disabled selected>
                 Địa điểm
               </option>
@@ -64,7 +65,7 @@ export default function ManagementTour() {
 
           {/* Bộ lọc giá tour */}
           <div>
-            <select className="px-3 py-2 border rounded w-[150px] text-gray-700">
+            <select className="px-3 py-2 border rounded-md w-[150px] text-gray-700">
               <option value="" disabled selected>
                 Giá Tour
               </option>
@@ -73,10 +74,10 @@ export default function ManagementTour() {
               <option value="high">Trên 10 triệu</option>
             </select>
           </div>
-          
+
           {/* Nút thêm tour */}
           <button
-            className="bg-red-700 text-white px-4 py-2 rounded"
+            className="bg-red-700 text-white px-4 py-2 rounded-md shadow-md"
             onClick={toggleModal}
           >
             Thêm Tour mới
@@ -84,16 +85,21 @@ export default function ManagementTour() {
         </div>
 
         {/* Tour List */}
-        <div className="mt-4 bg-white p-4 rounded-lg shadow">
+        <div className="mt-4 bg-white p-4">
           <table className="w-full border-collapse">
             <thead>
-              <tr className="bg-gray-200">
+              <tr className="text-SmokyGray">
                 <th className="p-2">Tên Tour</th>
                 <th className="p-2">Địa điểm</th>
                 <th className="p-2">Số ngày</th>
                 <th className="p-2">Số lượng người</th>
                 <th className="p-2">Giá Tour</th>
-                <th className="p-2">Thao tác</th>
+                <th
+                  className="text-end p-2"
+                  style={{ width: "1%", whiteSpace: "nowrap" }}
+                >
+                  Thao tác
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -104,7 +110,9 @@ export default function ManagementTour() {
                   <td className="p-2">{tour.days}</td>
                   <td className="p-2">{tour.people}</td>
                   <td className="p-2">{tour.price}</td>
-                  <td className="p-2 text-center">...</td>
+                  <td className="p-2 flex justify-end">
+                    <HiOutlineDotsHorizontal />
+                  </td>
                 </tr>
               ))}
             </tbody>
