@@ -1,4 +1,4 @@
-const { Sequelize, DataTypes } = require("sequelize");
+const {Sequelize, DataTypes} = require("sequelize");
 const config = require("../db/config.js");
 
 // Khởi tạo Sequelize với cấu hình từ `config.js`
@@ -17,7 +17,8 @@ sequelize
 
 // Import các model
 const Tour = require("./tour.model")(sequelize, Sequelize);
-const User = require("./user.model")(sequelize);
+const TravelTour = require("./tour.model")(sequelize, Sequelize);
+const User = require("./user.model")(sequelize, Sequelize);
 const Customer = require("./customer.model")(sequelize);
 const Booking = require("./booking.model")(sequelize);
 const DiscountService = require("./discountService.model.js")(sequelize);
@@ -34,6 +35,7 @@ const db = {};
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 db.Tour = Tour;
+db.TravelTour = TravelTour;
 db.User = User;
 db.Customer = Customer;
 db.Booking = Booking;
