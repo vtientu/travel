@@ -21,7 +21,7 @@ export default function ManagementLocationPage(){
 
                 {/* Main Content */}
                 <Col md={10} className="p-4 main-content">
-                    <h5 className="fw-bold page-title" style={{color:"gray", marginBottom:"40px"}} >Quản lý > Quản lý địa điểm</h5>
+                    <h5 className="fw-bold page-title" style={{color:"gray", marginBottom:"40px"}} >Quản lý  Quản lý địa điểm</h5>
 
                     <Row className="align-items-center mb-3 justify-content-between">
                         <Col md={4}>

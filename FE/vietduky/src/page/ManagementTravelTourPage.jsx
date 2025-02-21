@@ -21,7 +21,7 @@ export default function ManagementTravelTourPage(){
 
                 {/* Main Content */}
                 <Col md={10} className="p-4 main-content">
-                    <h5 className="fw-bold page-title" style={{color:"gray", marginBottom:"40px"}} >Quản lý > Quản lý Travel Tour</h5>
+                    <h5 className="fw-bold page-title" style={{color:"gray", marginBottom:"40px"}} >Quản lý  Quản lý Travel Tour</h5>
 
                     <Row className="align-items-center mb-3">
                         <Col md={4}>

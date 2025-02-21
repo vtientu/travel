@@ -2,7 +2,12 @@
 export default {
   content: ["./src/**/*.{html,js,jsx}"],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        GrayishBlue: "#71717AB2",
+        SmokyGray: "#71717A"
+      }
+    },
   },
   plugins: [],
 };

@@ -1,29 +1,37 @@
-import React, { useState } from "react";
-import { HiOutlineDotsHorizontal } from "react-icons/hi";
-import Layout from "../../layouts/LayoutManagement";
-import ModalAddTour from "../../components/ModalManage/ModalAddTour";
 import { LuSearch } from "react-icons/lu";
+import Layout from "../../layouts/LayoutManagement";
+import { HiOutlineDotsHorizontal } from "react-icons/hi";
+import { useState } from "react";
+import ModalAddTravelTour from "../../components/ModalManage/ModalAddTravelTour";
 
-const tours = [
+const travelTours = [
   {
     id: 1,
     name: "Du lịch Sapa",
-    location: "Hà Nội --> Sapa",
-    days: 5,
-    people: 30,
+    startDate: "2025-02-04",
+    endDate: "2025-02-06",
+    member: 30,
     price: "1.550.000 VNĐ",
   },
   {
     id: 2,
-    name: "Du lịch Hà Nội",
-    location: "Hải Phòng --> Hà Nội",
-    days: 5,
-    people: 35,
+    name: "Du lịch Sapa",
+    startDate: "2025-02-04",
+    endDate: "2025-02-06",
+    member: 30,
     price: "1.720.000 VNĐ",
+  },
+  {
+    id: 3,
+    name: "Du lịch Sapa",
+    startDate: "2025-02-04",
+    endDate: "2025-02-06",
+    member: 30,
+    price: "1.610.000 VNĐ",
   },
 ];
 
-export default function ManagementTour() {
+export default function ManageTravelTour() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const toggleModal = () => {
@@ -31,7 +39,7 @@ export default function ManagementTour() {
   };
 
   return (
-    <Layout title="Quản lý Tour">
+    <Layout>
       <div>
         {/* Search and Filters */}
         <div className="bg-white p-4 rounded-md flex gap-4 items-center">
@@ -53,21 +61,25 @@ export default function ManagementTour() {
 
           {/* Bộ lọc địa điểm */}
           <div>
-            <select className="px-3 py-2 border rounded-md w-[150px] text-gray-700">
-              <option value="" disabled selected>
-                Địa điểm
+            <select
+              defaultValue=""
+              className="px-3 py-2 border rounded-md text-gray-700"
+            >
+              <option value="" disabled>
+                Tour
               </option>
-              <option value="hanoi">Hà Nội</option>
-              <option value="hcm">TP. Hồ Chí Minh</option>
-              <option value="danang">Đà Nẵng</option>
+              <option value="sapa">Du lịch Sapa</option>
             </select>
           </div>
 
           {/* Bộ lọc giá tour */}
           <div>
-            <select className="px-3 py-2 border rounded-md w-[150px] text-gray-700">
-              <option value="" disabled selected>
-                Giá Tour
+            <select
+              defaultValue=""
+              className="px-3 py-2 border rounded-md text-gray-700"
+            >
+              <option value="" disabled>
+                Giá Travel Tour
               </option>
               <option value="low">Dưới 5 triệu</option>
               <option value="medium">5 - 10 triệu</option>
@@ -84,16 +96,16 @@ export default function ManagementTour() {
           </button>
         </div>
 
-        {/* Tour List */}
-        <div className="mt-4 bg-white p-4">
+        {/* Travel Tour table */}
+        <div className="mt-2 bg-white p-4">
           <table className="w-full border-collapse">
             <thead>
               <tr className="text-SmokyGray">
                 <th className="p-2">Tên Tour</th>
-                <th className="p-2">Địa điểm</th>
-                <th className="p-2">Số ngày</th>
+                <th className="p-2">Ngày khởi hành</th>
+                <th className="p-2">Ngày về</th>
                 <th className="p-2">Số lượng người</th>
-                <th className="p-2">Giá Tour</th>
+                <th className="p-2">Giá Travel </th>
                 <th
                   className="text-end p-2"
                   style={{ width: "1%", whiteSpace: "nowrap" }}
@@ -103,14 +115,14 @@ export default function ManagementTour() {
               </tr>
             </thead>
             <tbody>
-              {tours.map((tour) => (
-                <tr key={tour.id} className="border-t">
-                  <td className="p-2">{tour.name}</td>
-                  <td className="p-2">{tour.location}</td>
-                  <td className="p-2">{tour.days}</td>
-                  <td className="p-2">{tour.people}</td>
-                  <td className="p-2">{tour.price}</td>
-                  <td className="p-2 flex justify-end">
+              {travelTours.map((travelTour) => (
+                <tr key={travelTour.id} className="border-t">
+                  <td className=" p-2">{travelTour.name}</td>
+                  <td className=" p-2">{travelTour.startDate}</td>
+                  <td className=" p-2">{travelTour.endDate}</td>
+                  <td className=" p-2">{travelTour.member}</td>
+                  <td className=" p-2">{travelTour.price}</td>
+                  <td className="flex justify-end p-2">
                     <HiOutlineDotsHorizontal />
                   </td>
                 </tr>
@@ -120,7 +132,7 @@ export default function ManagementTour() {
         </div>
 
         {/* Modal thêm tour */}
-        {isModalOpen && <ModalAddTour onClose={toggleModal} />}
+        {isModalOpen && <ModalAddTravelTour onClose={toggleModal} />}
       </div>
     </Layout>
   );

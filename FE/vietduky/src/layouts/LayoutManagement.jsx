@@ -16,12 +16,12 @@ export default function LayoutManagement({ children, title}) {
       {isOpen && <Sidebar setSelectedMenu={setSelectedMenu} closeSidebar={toggleSidebar}/>}
       
       {/* Main Content */}
-      <main className="flex-1 bg-gray-100 p-6">
+      <main className="flex-1">
         {/* Header */}
         <HeaderManage toggleSidebar={toggleSidebar} selectedMenu={selectedMenu}/>
 
         {/* Content */}
-        <div className="mt-4">{children}</div>
+        <div>{children}</div>
       </main>
     </div>
   );
