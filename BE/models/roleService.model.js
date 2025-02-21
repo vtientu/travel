@@ -1,14 +1,21 @@
 module.exports = (sequelize, Sequelize) => {
-  const Notification = sequelize.define(
-    "Notification",
+  const RoleService = sequelize.define(
+    "RoleService",
     {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
+        autoIncrement: true,
       },
-      booking_id: {
+      role_id: {
         type: Sequelize.INTEGER,
-        allowNull: true,
+        allowNull: false,
+        references: {
+          model: "role",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "SET NULL",
       },
       user_id: {
         type: Sequelize.INTEGER,
@@ -20,26 +27,12 @@ module.exports = (sequelize, Sequelize) => {
         onUpdate: "CASCADE",
         onDelete: "SET NULL",
       },
-      type_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: "notification_type",
-          key: "id",
-        },
-        onUpdate: "CASCADE",
-        onDelete: "SET NULL",
-      },
-      send_date: {
-        type: Sequelize.DATE,
-        allowNull: false,
-      },
     },
     {
-      tableName: "notification",
-      timestamps: false, // Không có `createdAt` và `updatedAt`
+      tableName: "role_service",
+      timestamps: false,
     }
   );
 
-  return Notification;
+  return RoleService;
 };

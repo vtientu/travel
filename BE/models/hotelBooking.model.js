@@ -1,45 +1,37 @@
 module.exports = (sequelize, Sequelize) => {
-  const Notification = sequelize.define(
-    "Notification",
+  const HotelBooking = sequelize.define(
+    "HotelBooking",
     {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
+        autoIncrement: true,
       },
       booking_id: {
         type: Sequelize.INTEGER,
-        allowNull: true,
-      },
-      user_id: {
-        type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "user",
+          model: "booking",
           key: "id",
         },
         onUpdate: "CASCADE",
         onDelete: "SET NULL",
       },
-      type_id: {
+      hotel_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "notification_type",
+          model: "hotel",
           key: "id",
         },
         onUpdate: "CASCADE",
         onDelete: "SET NULL",
-      },
-      send_date: {
-        type: Sequelize.DATE,
-        allowNull: false,
       },
     },
     {
-      tableName: "notification",
-      timestamps: false, // Không có `createdAt` và `updatedAt`
+      tableName: "hotel_booking",
+      timestamps: false,
     }
   );
-
-  return Notification;
+  return HotelBooking;
 };

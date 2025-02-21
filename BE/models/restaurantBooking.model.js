@@ -1,45 +1,42 @@
 module.exports = (sequelize, Sequelize) => {
-  const Notification = sequelize.define(
-    "Notification",
+  const RestaurantBooking = sequelize.define(
+    "RestaurantBooking",
     {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
+        autoIncrement: true,
+      },
+      restaurant_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: "restaurant",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "SET NULL",
       },
       booking_id: {
         type: Sequelize.INTEGER,
-        allowNull: true,
-      },
-      user_id: {
-        type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: "user",
+          model: "booking",
           key: "id",
         },
         onUpdate: "CASCADE",
         onDelete: "SET NULL",
       },
-      type_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        references: {
-          model: "notification_type",
-          key: "id",
-        },
-        onUpdate: "CASCADE",
-        onDelete: "SET NULL",
-      },
-      send_date: {
+      time: {
         type: Sequelize.DATE,
         allowNull: false,
       },
     },
     {
-      tableName: "notification",
-      timestamps: false, // Không có `createdAt` và `updatedAt`
+      tableName: "restaurant_booking",
+      timestamps: false,
     }
   );
 
-  return Notification;
+  return RestaurantBooking;
 };
