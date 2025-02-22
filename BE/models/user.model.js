@@ -3,7 +3,7 @@ module.exports = (sequelize, Sequelize) => {
     "User",
     {
       id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER.UNSIGNED,
         autoIncrement: true,
         primaryKey: true,
       },
@@ -14,6 +14,10 @@ module.exports = (sequelize, Sequelize) => {
       password: {
         type: Sequelize.STRING,
         allowNull: false,
+      },
+      avatar: {
+        type: Sequelize.STRING,
+        allowNull: true,
       },
     },
     {

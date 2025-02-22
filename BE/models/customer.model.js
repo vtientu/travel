@@ -3,19 +3,13 @@ module.exports = (sequelize, Sequelize) => {
     "Customer",
     {
       id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER.UNSIGNED,
         autoIncrement: true,
         primaryKey: true,
       },
       user_id: {
         type: Sequelize.INTEGER,
         allowNull: true,
-        references: {
-          model: "user", // Bảng tham chiếu
-          key: "id",
-        },
-        onUpdate: "CASCADE",
-        onDelete: "SET NULL",
       },
       first_name: {
         type: Sequelize.STRING,

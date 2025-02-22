@@ -3,19 +3,19 @@ module.exports = (sequelize, Sequelize) => {
     "Hotel",
     {
       id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER.UNSIGNED,
         primaryKey: true,
         autoIncrement: true,
       },
-      name: {
+      name_hotel: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      address: {
+      address_hotel: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      phone: {
+      phone_number: {
         type: Sequelize.STRING,
         allowNull: false,
       },

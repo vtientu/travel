@@ -1,36 +1,24 @@
 module.exports = (sequelize, Sequelize) => {
-    return sequelize.define(
-        "VehicleBooking",
-        {
-            id: {
-                type: Sequelize.INTEGER,
-                primaryKey: true,
-                autoIncrement: true,
-            },
-            vehicle_id: {
-                type: Sequelize.INTEGER,
-                allowNull: false,
-                // references: {
-                //     model: "vehicle",
-                //     key: "id",
-                // },
-                // onUpdate: "CASCADE",
-                // onDelete: "SET NULL",
-            },
-            booking_id: {
-                type: Sequelize.INTEGER,
-                allowNull: false,
-                // references: {
-                //     model: "booking",
-                //     key: "id",
-                // },
-                // onUpdate: "CASCADE",
-                // onDelete: "SET NULL",
-            },
-        },
-        {
-            tableName: "vehicle_booking",
-            timestamps: false,
-        }
-    );
+  return sequelize.define(
+    "VehicleBooking",
+    {
+      id: {
+        type: Sequelize.INTEGER.UNSIGNED,
+        primaryKey: true,
+        autoIncrement: true,
+      },
+      booking_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      vehicle_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+    },
+    {
+      tableName: "vehicle_booking",
+      timestamps: false,
+    }
+  );
 };

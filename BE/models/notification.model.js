@@ -3,7 +3,7 @@ module.exports = (sequelize, Sequelize) => {
     "Notification",
     {
       id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER.UNSIGNED,
         primaryKey: true,
       },
       booking_id: {
@@ -13,22 +13,10 @@ module.exports = (sequelize, Sequelize) => {
       user_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: {
-          model: "user",
-          key: "id",
-        },
-        onUpdate: "CASCADE",
-        onDelete: "SET NULL",
       },
       type_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: {
-          model: "notification_type",
-          key: "id",
-        },
-        onUpdate: "CASCADE",
-        onDelete: "SET NULL",
       },
       send_date: {
         type: Sequelize.DATE,

@@ -3,29 +3,21 @@ module.exports = (sequelize, Sequelize) => {
     "Booking",
     {
       id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER.UNSIGNED,
         autoIncrement: true,
         primaryKey: true,
+      },
+      discount_id: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
       },
       user_id: {
         type: Sequelize.INTEGER,
         allowNull: true,
-        references: {
-          model: "user", // Bảng tham chiếu
-          key: "id",
-        },
-        onUpdate: "CASCADE",
-        onDelete: "SET NULL",
       },
-      tour_id: {
+      travel_tour_id: {
         type: Sequelize.INTEGER,
         allowNull: true,
-        references: {
-          model: "tour", // Bảng tham chiếu
-          key: "id",
-        },
-        onUpdate: "CASCADE",
-        onDelete: "SET NULL",
       },
       booking_date: {
         type: Sequelize.DATEONLY,

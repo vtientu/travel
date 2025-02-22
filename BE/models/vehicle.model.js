@@ -3,18 +3,17 @@ module.exports = (sequelize, Sequelize) => {
     "Vehicle",
     {
       id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER.UNSIGNED,
         primaryKey: true,
         autoIncrement: true,
       },
-      seats: {
+      name_vehicle: {
         type: Sequelize.INTEGER,
-        allowNull: false, // Trường bắt buộc cho số lượng ghế
+        allowNull: false,
       },
-      license_plate: {
+      plate_number: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true, // Đảm bảo rằng mỗi biển số xe là duy nhất
       },
     },
     {
