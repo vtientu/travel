@@ -3,7 +3,7 @@ module.exports = (sequelize, Sequelize) => {
     "NotificationType",
     {
       id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER.UNSIGNED,
         autoIncrement: true,
         primaryKey: true,
       },

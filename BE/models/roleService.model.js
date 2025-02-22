@@ -3,29 +3,17 @@ module.exports = (sequelize, Sequelize) => {
     "RoleService",
     {
       id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER.UNSIGNED,
         primaryKey: true,
         autoIncrement: true,
       },
       role_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: {
-          model: "role",
-          key: "id",
-        },
-        onUpdate: "CASCADE",
-        onDelete: "SET NULL",
       },
       user_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        references: {
-          model: "user",
-          key: "id",
-        },
-        onUpdate: "CASCADE",
-        onDelete: "SET NULL",
       },
     },
     {

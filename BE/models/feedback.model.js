@@ -3,29 +3,17 @@ module.exports = (sequelize, Sequelize) => {
     "Feedback",
     {
       feedback_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER.UNSIGNED,
         autoIncrement: true,
         primaryKey: true,
       },
       user_id: {
         type: Sequelize.INTEGER,
         allowNull: true,
-        references: {
-          model: "user", // Giả sử bảng user có tên là 'user'
-          key: "id",
-        },
-        onUpdate: "CASCADE",
-        onDelete: "SET NULL",
       },
       tour_id: {
         type: Sequelize.INTEGER,
         allowNull: true,
-        references: {
-          model: "tour", // Giả sử bảng tour có tên là 'tour'
-          key: "id",
-        },
-        onUpdate: "CASCADE",
-        onDelete: "SET NULL",
       },
       description_feedback: {
         type: Sequelize.TEXT,
