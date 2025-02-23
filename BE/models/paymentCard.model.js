@@ -14,7 +14,12 @@ module.exports = (sequelize, Sequelize) => {
       card_number: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique: true,
+        indexes: [
+          {
+            unique: true,
+            fields: ["card_number"],
+          },
+        ],
       },
       card_holder_name: {
         type: Sequelize.STRING,
