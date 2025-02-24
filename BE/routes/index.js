@@ -10,6 +10,7 @@ const Customer = require("./customer.route");
 const PaymentCardRouter = require("./paymentCard.route");
 const NotificationRouter = require("./notification.route");
 const PostExperienceRouter = require("./postExperience.route");
+const FeedbackRouter = require("./feedback.route");
 
 router.use("/tour", TourRouter);
 router.use("/location", LocationRouter);
@@ -21,5 +22,6 @@ router.use("/customer", Customer);
 router.use("/payment-card", PaymentCardRouter);
 router.use("/notification", NotificationRouter);
 router.use("/post-experience", PostExperienceRouter);
+router.use("/feedback", FeedbackRouter);
 
 module.exports = router;

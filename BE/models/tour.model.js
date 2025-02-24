@@ -47,6 +47,10 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING,
         allowNull: true,
       },
+      available_month: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
     },
     {
       tableName: "tour", // Tên bảng trong MySQL
