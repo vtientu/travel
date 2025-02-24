@@ -76,9 +76,11 @@ exports.createTour = async (req, res) => {
       end_location,
     };
     const newTour = await db.Tour.create(data); // Sử dụng create thay vì bulkCreate
-    res.json({ message: "Insert sample data successfully!", tour: newTour });
+    res.json({
+      message: "Create tour successfully!",
+      tour: newTour,
+    });
   } catch (error) {
-    console.error("❌ Error inserting tour:", error);
     res.status(500).json({
       message: "Error inserting tour",
       error: error,
