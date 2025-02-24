@@ -1,12 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function Sidebar({ setSelectedMenu, closeSidebar }) {
   const [selected, setSelected] = useState(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const menuItems = [
-    { id: 1, name: "Quản lý Tour" },
-    { id: 2, name: "Quản lý Địa điểm" },
-    { id: 3, name: "Lorem Ipsum" },
+    { id: 1, name: "Quản lý Tour", path: "/managementTour" },
+    { id: 2, name: "Quản lý Địa điểm", path: "/managementLocation" },
+    { id: 3, name: "Quản lý Chuyến đi", path: "/manageTravelTour" },
     { id: 4, name: "Lorem Ipsum" },
     { id: 5, name: "Lorem Ipsum" },
     { id: 6, name: "Lorem Ipsum" },
@@ -18,6 +21,14 @@ export default function Sidebar({ setSelectedMenu, closeSidebar }) {
     { id: 9, name: "Lorem Ipsum" },
     { id: 10, name: "Lorem Ipsum" },
   ];
+
+  useEffect(() => {
+    const activeItem = menuItems.find((item) => location.pathname.includes(item.path));
+    if (activeItem) {
+      setSelected(activeItem.id);
+      setSelectedMenu(activeItem.name);
+    }
+  }, [location.path]);
 
   return (
     <div>
@@ -39,8 +50,7 @@ export default function Sidebar({ setSelectedMenu, closeSidebar }) {
                   selected === item.id ? "bg-[#F4F4F5] text-black" : ""
                 }`}
                 onClick={() => {
-                    setSelected(item.id);
-                    setSelectedMenu(item.name);
+                    navigate(item.path);
                 }}
               >
                 {item.name}

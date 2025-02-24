@@ -1,34 +1,55 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { getTours } from "../../../services/tour.api";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import Layout from "../../layouts/LayoutManagement";
 import ModalAddTour from "../../components/ModalManage/ModalAddTour";
 import { LuSearch } from "react-icons/lu";
 
-const tours = [
-  {
-    id: 1,
-    name: "Du lịch Sapa",
-    location: "Hà Nội --> Sapa",
-    days: 5,
-    people: 30,
-    price: "1.550.000 VNĐ",
-  },
-  {
-    id: 2,
-    name: "Du lịch Hà Nội",
-    location: "Hải Phòng --> Hà Nội",
-    days: 5,
-    people: 35,
-    price: "1.720.000 VNĐ",
-  },
-];
+// const tours = [
+//   {
+//     id: 1,
+//     name: "Du lịch Sapa",
+//     location: "Hà Nội --> Sapa",
+//     days: 5,
+//     people: 30,
+//     price: "1.550.000 VNĐ",
+//   },
+//   {
+//     id: 2,
+//     name: "Du lịch Hà Nội",
+//     location: "Hải Phòng --> Hà Nội",
+//     days: 5,
+//     people: 35,
+//     price: "1.720.000 VNĐ",
+//   },
+// ];
 
 export default function ManagementTour() {
+  const [tours, setTours] = useState([]);
+  const [location, setLocation] = useState("");
+  const [priceFilter, setPriceFilter] = useState("");
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
+
+  // call API to get tours
+  useEffect(() => {
+    const fetchTours = async () => {
+      try {
+        const data = await getTours();
+        // console.log("Dữ liệu nhận được:", data);
+        setTours(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.log("Lỗi khi lấy dữ liệu từ API", error);
+        setTours([]);
+      }
+    };
+
+    fetchTours();
+  }, []);
 
   return (
     <Layout title="Quản lý Tour">
@@ -53,8 +74,12 @@ export default function ManagementTour() {
 
           {/* Bộ lọc địa điểm */}
           <div>
-            <select className="px-3 py-2 border rounded-md w-[150px] text-gray-700">
-              <option value="" disabled selected>
+            <select
+              className="px-3 py-2 border rounded-md w-[150px] text-gray-700"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+            >
+              <option value="" disabled>
                 Địa điểm
               </option>
               <option value="hanoi">Hà Nội</option>
@@ -65,8 +90,12 @@ export default function ManagementTour() {
 
           {/* Bộ lọc giá tour */}
           <div>
-            <select className="px-3 py-2 border rounded-md w-[150px] text-gray-700">
-              <option value="" disabled selected>
+            <select
+              className="px-3 py-2 border rounded-md w-[150px] text-gray-700"
+              value={priceFilter}
+              onChange={(e) => setPriceFilter(e.target.value)}
+            >
+              <option value="" disabled>
                 Giá Tour
               </option>
               <option value="low">Dưới 5 triệu</option>
@@ -105,11 +134,11 @@ export default function ManagementTour() {
             <tbody>
               {tours.map((tour) => (
                 <tr key={tour.id} className="border-t">
-                  <td className="p-2">{tour.name}</td>
+                  <td className="p-2">{tour.name_tour}</td>
                   <td className="p-2">{tour.location}</td>
-                  <td className="p-2">{tour.days}</td>
-                  <td className="p-2">{tour.people}</td>
-                  <td className="p-2">{tour.price}</td>
+                  <td className="p-2">{tour.day_number}</td>
+                  <td className="p-2">{tour.max_people}</td>
+                  <td className="p-2">{tour.price_tour.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</td>
                   <td className="p-2 flex justify-end">
                     <HiOutlineDotsHorizontal />
                   </td>

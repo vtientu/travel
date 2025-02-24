@@ -41,7 +41,7 @@ const ProgramDiscount = require("./programDiscount.model.js")(
 );
 const Role = require("./role.model.js")(sequelize, Sequelize);
 const RoleService = require("./roleService.model.js")(sequelize, Sequelize);
-const TravelGuide = require("./travelGuide.model.js")(sequelize, Sequelize);
+// const TravelGuide = require("./travelGuide.model.js")(sequelize, Sequelize);
 const Restaurant = require("./restaurant.model.js")(sequelize, Sequelize);
 const RestaurantBooking = require("./restaurantBooking.model.js")(
     sequelize,
@@ -76,7 +76,7 @@ db.TourService = TourService;
 db.Role = Role;
 db.RoleService = RoleService;
 db.ProgramDiscount = ProgramDiscount;
-db.TravelGuide = TravelGuide;
+// db.TravelGuide = TravelGuide;
 // db.TravelTour = TravelTour;
 db.Restaurant = Restaurant;
 db.RestaurantBooking = RestaurantBooking;
