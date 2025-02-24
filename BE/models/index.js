@@ -36,6 +36,10 @@ const VehicleBooking = require("./vehicleBooking.model.js")(
 );
 //Customer
 const Customer = require("./customer.model")(sequelize, Sequelize);
+const PostExperience = require("./postExperience.model.js")(
+  sequelize,
+  Sequelize
+);
 const PaymentCard = require("./paymentCard.model.js")(sequelize, Sequelize);
 //Notification
 const Notification = require("./notification.model.js")(sequelize, Sequelize);
@@ -107,7 +111,7 @@ Notification.belongsTo(User, { foreignKey: "user_id" });
 
 //NotificationType/Notification
 NotificationType.hasMany(Notification, { foreignKey: "type_id" });
-Notification.belongsTo(NotificationType, { foreignKey: "type_id" });
+Notification.belongsTo(NotificationType, { foreignKey: "type_id", as: "type" });
 
 //Booking/Notification
 Booking.hasMany(Notification, { foreignKey: "booking_id" });
@@ -167,6 +171,17 @@ RoleService.belongsTo(User, { foreignKey: "user_id" });
 Role.hasMany(RoleService, { foreignKey: "role_id" });
 RoleService.belongsTo(Role, { foreignKey: "role_id" });
 
+//Customer/PostExperience
+Customer.hasMany(PostExperience, { foreignKey: "customer_id" });
+PostExperience.belongsTo(Customer, {
+  foreignKey: "customer_id",
+  as: "customer",
+});
+
+//Booking/Notification
+Booking.hasMany(Notification, { foreignKey: "booking_id" });
+Notification.belongsTo(Booking, { foreignKey: "booking_id" });
+
 // Đối tượng `db` để chứa Sequelize và Models
 const db = {};
 db.sequelize = sequelize;
@@ -185,6 +200,7 @@ db.Vehicle = Vehicle;
 db.VehicleBooking = VehicleBooking;
 
 db.Customer = Customer;
+db.PostExperience = PostExperience;
 db.PaymentCard = PaymentCard;
 
 db.Notification = Notification;

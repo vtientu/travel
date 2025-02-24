@@ -22,6 +22,10 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.DATE,
         allowNull: false,
       },
+      message: {
+        type: Sequelize.TEXT,
+        allowNull: false,
+      },
     },
     {
       tableName: "notification",
