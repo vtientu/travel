@@ -4,16 +4,16 @@ export default function Header() {
       <img src="/Image/Logo.png" alt="Viet Du Ky" width={150} height={100} />
       <div className="flex items-center space-x-6">
         <nav className="flex space-x-16">
-          <a href="#" className="hover:underline">
+          <a href="/" className="hover:underline text-white">
             Trang Chủ
           </a>
-          <a href="#" className="hover:underline">
+          <a href="#" className="hover:underline text-white">
             Du lịch trọn gói
           </a>
-          <a href="#" className="hover:underline">
+          <a href="#" className="hover:underline text-white">
             Hợp tác với chúng tôi
           </a>
-          <a href="#" className="hover:underline">
+          <a href="#" className="hover:underline text-white">
             Hỗ Trợ
           </a>
         </nav>
