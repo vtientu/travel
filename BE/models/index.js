@@ -123,7 +123,7 @@ Feedback.belongsTo(User, { foreignKey: "user_id" });
 
 //Tour/Feedback
 Tour.hasMany(Feedback, { foreignKey: "tour_id" });
-Feedback.belongsTo(Tour, { foreignKey: "tour_id" });
+Feedback.belongsTo(Tour, { foreignKey: "tour_id", as: "tour" });
 
 //Tour/TravelTour
 Tour.hasMany(TravelTour, { foreignKey: "tour_id" });
