@@ -145,19 +145,29 @@ TourService.belongsTo(Service, { foreignKey: "service_id" });
 ProgramDiscount.hasMany(DiscountService, { foreignKey: "program_discount_id" });
 DiscountService.belongsTo(ProgramDiscount, {
   foreignKey: "program_discount_id",
+  as: "programDiscount",
 });
 
 //TravelTour/DiscountService
 TravelTour.hasMany(DiscountService, { foreignKey: "travel_tour_id" });
-DiscountService.belongsTo(TravelTour, { foreignKey: "travel_tour_id" });
+DiscountService.belongsTo(TravelTour, {
+  foreignKey: "travel_tour_id",
+  as: "travelTour",
+});
 
 //TravelGuide/GuideTour
 TravelGuide.hasMany(GuideTour, { foreignKey: "travel_guide_id" });
-GuideTour.belongsTo(TravelGuide, { foreignKey: "travel_guide_id" });
+GuideTour.belongsTo(TravelGuide, {
+  foreignKey: "travel_guide_id",
+  as: "travelGuide",
+});
 
 //TravelTour/GuideTour
 TravelTour.hasMany(GuideTour, { foreignKey: "travel_tour_id" });
-GuideTour.belongsTo(TravelTour, { foreignKey: "travel_tour_id" });
+GuideTour.belongsTo(TravelTour, {
+  foreignKey: "travel_tour_id",
+  as: "travelTour",
+});
 
 //User/TravelGuide
 User.hasOne(TravelGuide, { foreignKey: "user_id" });
