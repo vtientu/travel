@@ -1,29 +1,45 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "../../layouts/LayoutManagement";
-import { FaEllipsisH, FaSearch } from "react-icons/fa";
+import { getLocations } from "../../../services/location.api";
 import { LuSearch } from "react-icons/lu";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import ModalAddLocation from "../../components/ModalManage/ModalAddLocation";
 
-const locations = [
-  {
-    id: 1,
-    location: "Hà Nội",
-    description: "Lorem Ipsum is dabet isum",
-  },
-  {
-    id: 2,
-    location: "Hải Phòng",
-    description: "Lorem Ipsum is dabet isum",
-  },
-];
+// const locations = [
+//   {
+//     id: 1,
+//     location: "Hà Nội",
+//     description: "Lorem Ipsum is dabet isum",
+//   },
+//   {
+//     id: 2,
+//     location: "Hải Phòng",
+//     description: "Lorem Ipsum is dabet isum",
+//   },
+// ];
 
 export default function ManagementLocation() {
+  const [locations, setLocations] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
+
+  useEffect(() => {
+    const fetchLocations = async () => {
+      try {
+        const data = await getLocations();
+        // console.log("Dữ liệu nhận được:", data);
+        setLocations(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.log("Lỗi khi lấy dữ liệu từ API", error);
+        setLocations([]);
+      }
+    };
+
+    fetchLocations();
+  }, []);
 
   return (
     <Layout title="Quản lý Địa điểm">
@@ -66,7 +82,7 @@ export default function ManagementLocation() {
             <tbody>
               {locations.map((location) => (
                 <tr key={location.id} className="border-t">
-                  <td className=" p-2">{location.location}</td>
+                  <td className=" p-2">{location.name_location}</td>
                   <td className=" p-2">{location.description}</td>
                   <td className="flex justify-end p-2">
                     <HiOutlineDotsHorizontal />

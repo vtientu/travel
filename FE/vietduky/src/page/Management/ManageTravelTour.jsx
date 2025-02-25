@@ -1,42 +1,62 @@
 import { LuSearch } from "react-icons/lu";
 import Layout from "../../layouts/LayoutManagement";
+import { getTravelTour } from "../../../services/travel_tour.api";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import ModalAddTravelTour from "../../components/ModalManage/ModalAddTravelTour";
 
-const travelTours = [
-  {
-    id: 1,
-    name: "Du lịch Sapa",
-    startDate: "2025-02-04",
-    endDate: "2025-02-06",
-    member: 30,
-    price: "1.550.000 VNĐ",
-  },
-  {
-    id: 2,
-    name: "Du lịch Sapa",
-    startDate: "2025-02-04",
-    endDate: "2025-02-06",
-    member: 30,
-    price: "1.720.000 VNĐ",
-  },
-  {
-    id: 3,
-    name: "Du lịch Sapa",
-    startDate: "2025-02-04",
-    endDate: "2025-02-06",
-    member: 30,
-    price: "1.610.000 VNĐ",
-  },
-];
+// const travelTours = [
+//   {
+//     id: 1,
+//     name: "Du lịch Sapa",
+//     startDate: "2025-02-04",
+//     endDate: "2025-02-06",
+//     member: 30,
+//     price: "1.550.000 VNĐ",
+//   },
+//   {
+//     id: 2,
+//     name: "Du lịch Sapa",
+//     startDate: "2025-02-04",
+//     endDate: "2025-02-06",
+//     member: 30,
+//     price: "1.720.000 VNĐ",
+//   },
+//   {
+//     id: 3,
+//     name: "Du lịch Sapa",
+//     startDate: "2025-02-04",
+//     endDate: "2025-02-06",
+//     member: 30,
+//     price: "1.610.000 VNĐ",
+//   },
+// ];
 
 export default function ManageTravelTour() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [travelTours, setTravelTours] = useState([]);
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
+
+  // call API
+  useEffect(() => {
+    const fetchTravelTours = async () => {
+      try {
+        const response = await getTravelTour();
+        const data = response.travelTours || response;
+        console.log("Dữ liệu nhận được:", data);
+        
+        setTravelTours(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.log("Lỗi khi lấy dữ liệu từ API", error);
+        setTravelTours([]);        
+      }
+    };
+
+    fetchTravelTours();
+  }, []);
 
   return (
     <Layout>
@@ -117,11 +137,11 @@ export default function ManageTravelTour() {
             <tbody>
               {travelTours.map((travelTour) => (
                 <tr key={travelTour.id} className="border-t">
-                  <td className=" p-2">{travelTour.name}</td>
-                  <td className=" p-2">{travelTour.startDate}</td>
-                  <td className=" p-2">{travelTour.endDate}</td>
-                  <td className=" p-2">{travelTour.member}</td>
-                  <td className=" p-2">{travelTour.price}</td>
+                  <td className=" p-2">{travelTour.tour_id}</td>
+                  <td className=" p-2">{travelTour.start_time}</td>
+                  <td className=" p-2">{travelTour.end_time}</td>
+                  <td className=" p-2">{travelTour.max_people}</td>
+                  <td className=" p-2">{travelTour.price_tour}</td>
                   <td className="flex justify-end p-2">
                     <HiOutlineDotsHorizontal />
                   </td>
