@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-  return sequelize.define(
+  const TravelTour = sequelize.define(
     "TravelTour",
     {
       id: {
@@ -33,4 +33,5 @@ module.exports = (sequelize, Sequelize) => {
       timestamps: false, // Tắt `createdAt` và `updatedAt`
     }
   );
+  return TravelTour;
 };

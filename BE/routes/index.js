@@ -15,6 +15,10 @@ const RestaurantBookingRouter = require("./restaurantBooking.route");
 const HotelBookingRouter = require("./hotelBooking.route");
 const VehicleBookingRouter = require("./vehicleBooking.route");
 const BookingRouter = require("./booking.route");
+const ProgramDiscountRouter = require("./programDiscount.route");
+const DiscountServiceRouter = require("./discountService.route");
+const TravelGuideRouter = require("./travelGuide.route");
+const GuideTourRouter = require("./guideTour.route");
 
 router.use("/tour", TourRouter);
 router.use("/location", LocationRouter);
@@ -31,5 +35,9 @@ router.use("/restaurant-booking", RestaurantBookingRouter);
 router.use("/hotel-booking", HotelBookingRouter);
 router.use("/vehicle-booking", VehicleBookingRouter);
 router.use("/booking", BookingRouter);
+router.use("/program-discount", ProgramDiscountRouter);
+router.use("/discount-service", DiscountServiceRouter);
+router.use("/travel-guide", TravelGuideRouter);
+router.use("/guide-tour", GuideTourRouter);
 
 module.exports = router;
