@@ -57,7 +57,6 @@ const Feedback = require("./feedback.model")(sequelize, Sequelize);
 const GuideTour = require("./guideTour.model.js")(sequelize, Sequelize);
 const TravelGuide = require("./travelGuide.model.js")(sequelize, Sequelize);
 const Location = require("./location.model.js")(sequelize, Sequelize);
-const TourService = require("./tour_service.model")(sequelize, Sequelize);
 const Service = require("./service.model")(sequelize, Sequelize);
 const DiscountService = require("./discountService.model.js")(
   sequelize,
@@ -132,14 +131,6 @@ TravelTour.belongsTo(Tour, { foreignKey: "tour_id" });
 //Location/Tour
 Location.hasMany(Tour, { foreignKey: "location_id" });
 Tour.belongsTo(Location, { foreignKey: "location_id" });
-
-//Tour/TourService
-Tour.hasMany(TourService, { foreignKey: "tour_id" });
-TourService.belongsTo(Tour, { foreignKey: "tour_id" });
-
-//Service/TourService
-Service.hasMany(TourService, { foreignKey: "service_id" });
-TourService.belongsTo(Service, { foreignKey: "service_id" });
 
 //ProgramDiscount/DiscountService
 ProgramDiscount.hasMany(DiscountService, { foreignKey: "program_discount_id" });
@@ -229,7 +220,6 @@ db.Feedback = Feedback;
 db.GuideTour = GuideTour;
 db.TravelGuide = TravelGuide;
 db.Location = Location;
-db.TourService = TourService;
 db.Service = Service;
 db.DiscountService = DiscountService;
 db.ProgramDiscount = ProgramDiscount;

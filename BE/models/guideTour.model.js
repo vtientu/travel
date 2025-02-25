@@ -15,10 +15,6 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.INTEGER,
         allowNull: true,
       },
-      user_id: {
-        type: Sequelize.INTEGER,
-        allowNull: true,
-      },
     },
     {
       tableName: "guide_tour",
