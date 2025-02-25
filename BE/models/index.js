@@ -182,6 +182,10 @@ PostExperience.belongsTo(Customer, {
 Booking.hasMany(Notification, { foreignKey: "booking_id" });
 Notification.belongsTo(Booking, { foreignKey: "booking_id" });
 
+//TravelTour/Booking
+TravelTour.hasMany(Booking, { foreignKey: "travel_tour_id" });
+Booking.belongsTo(TravelTour, { foreignKey: "travel_tour_id" });
+
 // Đối tượng `db` để chứa Sequelize và Models
 const db = {};
 db.sequelize = sequelize;

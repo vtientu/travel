@@ -11,6 +11,10 @@ const PaymentCardRouter = require("./paymentCard.route");
 const NotificationRouter = require("./notification.route");
 const PostExperienceRouter = require("./postExperience.route");
 const FeedbackRouter = require("./feedback.route");
+const RestaurantBookingRouter = require("./restaurantBooking.route");
+const HotelBookingRouter = require("./hotelBooking.route");
+const VehicleBookingRouter = require("./vehicleBooking.route");
+const BookingRouter = require("./booking.route");
 
 router.use("/tour", TourRouter);
 router.use("/location", LocationRouter);
@@ -23,5 +27,9 @@ router.use("/payment-card", PaymentCardRouter);
 router.use("/notification", NotificationRouter);
 router.use("/post-experience", PostExperienceRouter);
 router.use("/feedback", FeedbackRouter);
+router.use("/restaurant-booking", RestaurantBookingRouter);
+router.use("/hotel-booking", HotelBookingRouter);
+router.use("/vehicle-booking", VehicleBookingRouter);
+router.use("/booking", BookingRouter);
 
 module.exports = router;
