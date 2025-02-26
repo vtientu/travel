@@ -7,6 +7,7 @@ router.get("/:id", tourController.getTourById);
 router.post("/create", tourController.createTour);
 router.delete("/delete/:id", tourController.deleteTourById);
 router.put("/update/:id", tourController.updateTourById);
+router.get("/get-by-location-id/:locationId", tourController.getTourByLocationId);
 // router.post("/insert-sample", tourController.insertSampleData);
 
 module.exports = router;
