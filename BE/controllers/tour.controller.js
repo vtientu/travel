@@ -2,9 +2,26 @@ const db = require("../models");
 const Tour = db.Tour;
 
 // Lấy danh sách tất cả Tour
+// exports.getAllTours = async (req, res) => {
+//   try {
+//     const tours = await Tour.findAll();
+//     res.json(tours);
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };
+
+//Lấy danh sách tất cả Tour
 exports.getAllTours = async (req, res) => {
   try {
-    const tours = await Tour.findAll();
+    const tours = await Tour.findAll({
+      include: [
+        {
+          model: db.Location,
+          attributes: ["name_location"],
+        },
+      ],
+    });
     res.json(tours);
   } catch (error) {
     res.status(500).json({ error: error.message });
