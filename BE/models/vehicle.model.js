@@ -7,6 +7,10 @@ module.exports = (sequelize, Sequelize) => {
         primaryKey: true,
         autoIncrement: true,
       },
+      type_vehicle_id: {
+        type: Sequelize.INTEGER.UNSIGNED,
+        allowNull: false,
+      },
       name_vehicle: {
         type: Sequelize.STRING,
         allowNull: false,
