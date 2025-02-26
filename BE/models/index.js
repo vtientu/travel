@@ -29,6 +29,7 @@ const RestaurantBooking = require("./restaurantBooking.model.js")(
 const Hotel = require("./hotel.model.js")(sequelize, Sequelize);
 const HotelBooking = require("./hotelBooking.model.js")(sequelize, Sequelize);
 //Vehicle
+const TypeVehicle = require("./typeVehicle.model.js")(sequelize, Sequelize);
 const Vehicle = require("./vehicle.model.js")(sequelize, Sequelize);
 const VehicleBooking = require("./vehicleBooking.model.js")(
   sequelize,
@@ -187,6 +188,10 @@ Notification.belongsTo(Booking, { foreignKey: "booking_id" });
 TravelTour.hasMany(Booking, { foreignKey: "travel_tour_id" });
 Booking.belongsTo(TravelTour, { foreignKey: "travel_tour_id" });
 
+//TypeVehicle/Vehicle
+// TypeVehicle.hasMany(Vehicle, { foreignKey: "type_vehicle_id" });
+// Vehicle.belongsTo(TypeVehicle, { foreignKey: "type_vehicle_id" });
+
 // Đối tượng `db` để chứa Sequelize và Models
 const db = {};
 db.sequelize = sequelize;
@@ -201,6 +206,7 @@ db.RestaurantBooking = RestaurantBooking;
 db.Hotel = Hotel;
 db.HotelBooking = HotelBooking;
 
+db.TypeVehicle = TypeVehicle;
 db.Vehicle = Vehicle;
 db.VehicleBooking = VehicleBooking;
 
