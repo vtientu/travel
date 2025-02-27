@@ -1,8 +1,9 @@
 import { LuSearch } from "react-icons/lu";
 import Layout from "../../layouts/LayoutManagement";
+import { formatDate } from '../../../utils/dateUtil'
 import { getTravelTour } from "../../../services/travel_tour.api";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ModalAddTravelTour from "../../components/ModalManage/ModalAddTravelTour";
 
 // const travelTours = [
@@ -32,7 +33,7 @@ import ModalAddTravelTour from "../../components/ModalManage/ModalAddTravelTour"
 //   },
 // ];
 
-export default function ManageTravelTour() {
+export default function ManagementTravelTour() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [travelTours, setTravelTours] = useState([]);
 
@@ -41,12 +42,12 @@ export default function ManageTravelTour() {
   };
 
   // call API
-  useEffect(() => {
+  useEffect(() => {    
     const fetchTravelTours = async () => {
       try {
         const response = await getTravelTour();
         const data = response.travelTours || response;
-        console.log("Dữ liệu nhận được:", data);
+        // console.log("Dữ liệu nhận được:", data);
         
         setTravelTours(Array.isArray(data) ? data : []);
       } catch (error) {
@@ -59,7 +60,7 @@ export default function ManageTravelTour() {
   }, []);
 
   return (
-    <Layout>
+    <Layout title="Quản lý Chuyến đi">
       <div>
         {/* Search and Filters */}
         <div className="bg-white p-4 rounded-md flex gap-4 items-center">
@@ -138,8 +139,8 @@ export default function ManageTravelTour() {
               {travelTours.map((travelTour) => (
                 <tr key={travelTour.id} className="border-t">
                   <td className=" p-2">{travelTour.tour_id}</td>
-                  <td className=" p-2">{travelTour.start_time}</td>
-                  <td className=" p-2">{travelTour.end_time}</td>
+                  <td className=" p-2">{formatDate(travelTour.start_time)}</td>
+                  <td className=" p-2">{formatDate(travelTour.end_time)}</td>
                   <td className=" p-2">{travelTour.max_people}</td>
                   <td className=" p-2">{travelTour.price_tour}</td>
                   <td className="flex justify-end p-2">

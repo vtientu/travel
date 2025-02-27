@@ -1,4 +1,3 @@
-import { FaBars, FaUserCircle } from "react-icons/fa";
 import { FiSidebar, FiMoon, FiUser } from "react-icons/fi";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { IoIosArrowForward } from "react-icons/io";
