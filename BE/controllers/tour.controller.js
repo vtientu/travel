@@ -65,7 +65,7 @@ exports.createTour = async (req, res) => {
             rating_tour,
             max_people,
             activity_description,
-            album,
+            image,
             start_location,
             end_location,
         } = req.body;
@@ -78,7 +78,7 @@ exports.createTour = async (req, res) => {
             !rating_tour ||
             !max_people ||
             !activity_description ||
-            !album ||
+            !image ||
             !start_location ||
             !end_location
         ) {
@@ -95,11 +95,11 @@ exports.createTour = async (req, res) => {
             rating_tour,
             max_people,
             activity_description,
-            album,
+            image,
             start_location,
             end_location,
         };
-        const newTour = await db.Tour.create(data); // Sử dụng create thay vì bulkCreate
+        const newTour = await db.Tour.create(data);
         res.json({
             message: "Create tour successfully!",
             tour: newTour,
@@ -158,7 +158,7 @@ exports.updateTourById = async (req, res) => {
             tour.max_people = req.body.max_people;
         if (req.body.activity_description !== undefined)
             tour.activity_description = req.body.activity_description;
-        if (req.body.album !== undefined) tour.album = req.body.album;
+        if (req.body.image !== undefined) tour.image = req.body.image;
         if (req.body.start_location !== undefined)
             tour.start_location = req.body.start_location;
         if (req.body.end_location !== undefined)

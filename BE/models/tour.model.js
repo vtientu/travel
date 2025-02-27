@@ -31,8 +31,8 @@ module.exports = (sequelize, Sequelize) => {
                 type: Sequelize.TEXT,
                 allowNull: true,
             },
-            album: {
-                type: Sequelize.TEXT,
+            image: {
+                type: Sequelize.STRING,
                 allowNull: true,
             },
             start_location: {
