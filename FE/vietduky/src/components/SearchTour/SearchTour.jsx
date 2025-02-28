@@ -1,21 +1,24 @@
-import { useState, useRef } from "react";
-import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
+import {useState, useRef, useEffect} from "react";
+import {FaStar, FaStarHalfAlt, FaRegStar, FaMapMarkerAlt, FaDotCircle} from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 export default function SearchTour() {
   const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState("Khách sạn");
-  const tabs = [
-    "Khách sạn",
-    "Nhà và Căn hộ",
-    "Vé máy bay",
-    "Hoạt động",
-    "Đưa đón sân bay",
-  ];
+
   const [selected, setSelected] = useState("tour");
-  const cities = ["Hồ Chí Minh", "Hà Nội", "Đà Nẵng", "Hải Phòng", "Cần Thơ"];
   const scrollRefs = useRef([]);
-  const navigate = useNavigate(); // Khai báo hook điều hướng
+  const navigate = useNavigate();
+  const [locations, setLocations] = useState([]);
+  const [selectedStart, setSelectedStart] = useState("");
+  const [selectedDestination, setSelectedDestination] = useState("");
+  const [date, setDate] = useState("");
+  useEffect(() => {
+    fetch("http://localhost:3000/api/location/")
+        .then((response) => response.json())
+        .then((data) => setLocations(data))
+        .catch((error) => console.error("Error fetching locations:", error));
+  }, []);
   return (
     <div className="relative">
       {/* Background Image */}
@@ -42,25 +45,6 @@ export default function SearchTour() {
       {/* Search Box */}
       <div className="relative w-full bg-white shadow-lg rounded-lg p-6 max-w-6xl mx-auto -mt-40">
         {/* Tabs */}
-        <div className="flex justify-center">
-          <div className="flex border-b " style={{ justifyContent: "center" }}>
-            {tabs.map((tab) => (
-              <button
-                key={tab}
-                className={`py-2 px-4 text-sm font-medium ${
-                  activeTab === tab
-                    ? "text-red-700 border-b-2 border-red-700"
-                    : "text-gray-500"
-                }`}
-                onClick={() => {
-                  setSelected("ai");
-                  navigate("/personal-ai");
-                }}>
-                {tab}
-              </button>
-            ))}
-          </div>
-        </div>
 
         {/* Buttons */}
         <div className="flex space-x-4 mt-4">
@@ -94,36 +78,67 @@ export default function SearchTour() {
         </div>
 
         {/* Search Form */}
-        <div className="mt-4 space-y-4">
+        <div className="mt-4 space-y-4 p-4 bg-white rounded-lg shadow-md">
           <div className="flex items-center border rounded-lg p-3">
             <span className="text-gray-500 mr-2">🔍</span>
             <input
-              type="text"
-              placeholder="Nhập điểm du lịch hoặc tên khách sạn"
-              className="w-full outline-none"
+                type="text"
+                placeholder="Nhập điểm du lịch"
+                className="w-full outline-none"
             />
           </div>
 
           <div className="grid grid-cols-3 gap-4">
             <div className="flex flex-col border rounded-lg p-3">
-              <span className="text-gray-500 text-sm">Ngày nhận phòng</span>
-              <input type="date" className="outline-none text-gray-700" />
+              <span className="text-gray-500 text-sm">Ngày khởi hành</span>
+              <input
+                  type="date"
+                  className="outline-none text-gray-700"
+                  value={date}
+                  onChange={(e) => setDate(e.target.value)}
+              />
             </div>
 
             <div className="flex flex-col border rounded-lg p-3">
-              <span className="text-gray-500 text-sm">Ngày trả phòng</span>
-              <input type="date" className="outline-none text-gray-700" />
+          <span className="text-gray-500 text-sm flex items-center">
+            <FaDotCircle className="mr-2" /> Điểm khởi hành
+          </span>
+              <select
+                  className="outline-none text-gray-700"
+                  value={selectedStart}
+                  onChange={(e) => setSelectedStart(e.target.value)}
+              >
+                <option value="">Chọn điểm khởi hành</option>
+                {locations.map((location) => (
+                    <option key={location.id} value={location.name_location}>
+                      {location.name_location}
+                    </option>
+                ))}
+              </select>
             </div>
 
             <div className="flex flex-col border rounded-lg p-3">
-              <span className="text-gray-500 text-sm">Khách & Phòng</span>
-              <select className="outline-none text-gray-700">
-                <option>2 người lớn, 1 phòng</option>
-                <option>1 người lớn, 1 phòng</option>
-                <option>3 người lớn, 2 phòng</option>
+          <span className="text-gray-500 text-sm flex items-center">
+            <FaMapMarkerAlt className="mr-2" /> Điểm đến
+          </span>
+              <select
+                  className="outline-none text-gray-700"
+                  value={selectedDestination}
+                  onChange={(e) => setSelectedDestination(e.target.value)}
+              >
+                <option value="">Chọn điểm đến</option>
+                {locations.map((location) => (
+                    <option key={location.id} value={location.name_location}>
+                      {location.name_location}
+                    </option>
+                ))}
               </select>
             </div>
           </div>
+
+          <button className="w-full h-200 bg-red-600 text-white py-2 rounded-lg font-semibold">
+            TÌM
+          </button>
         </div>
       </div>
     </div>

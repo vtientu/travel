@@ -45,13 +45,15 @@ export default function Sidebar({ setSelectedMenu }) {
     <div>
       {/* Sidebar */}
       <aside className="w-64 bg-red-700 text-white p-4 h-screen">
-        <img
-          className="mb-8"
-          src="/Image/Logo.png"
-          alt="Viet Du Ky"
-          width={175}
-          height={125}
-        />
+        <a href="/">
+          <img
+              className="mb-8"
+              src="/Image/Logo.png"
+              alt="Viet Du Ky"
+              width={175}
+              height={125}
+          />
+        </a>
         <nav className="mb-10">
           <ul>
             {menuItems.map((item) => (

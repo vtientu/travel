@@ -1,36 +1,79 @@
-import { useState, useRef } from "react";
+import {useState, useRef, useEffect} from "react";
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
 import Header from "../components/Header/Header";
 import SearchTour from "../components/SearchTour/SearchTour";
 import SearchButton from "../components/SearchButton/SearchButton";
 import Footer from "../components/Footer/Footer";
 
 export default function LayoutLandingPage() {
-  const [search, setSearch] = useState("");
-  const [activeTab, setActiveTab] = useState("Khách sạn");
-  const tabs = [
-    "Khách sạn",
-    "Nhà và Căn hộ",
-    "Vé máy bay",
-    "Hoạt động",
-    "Đưa đón sân bay",
-  ];
-  const [selected, setSelected] = useState("tour");
-  const cities = ["Hồ Chí Minh", "Hà Nội", "Đà Nẵng", "Hải Phòng", "Cần Thơ"];
+  const [discounts, setDiscounts] = useState([]);
   const scrollRefs = useRef([]);
-  const navigate = useNavigate(); // Khai báo hook điều hướng
+  const [tours, setTours] = useState([]);
+  const [filteredTours, setFilteredTours] = useState([]);
+  const [activeTab, setActiveTab] = useState("Tất cả");
+  const [cities, setCities] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [discountRes, tourRes, locationRes] = await Promise.all([
+          fetch("http://localhost:3000/api/discount-service/").then((res) => res.json()),
+          fetch("http://localhost:3000/api/tour").then((res) => res.json()),
+          fetch("http://localhost:3000/api/location/").then((res) => res.json()),
+        ]);
+
+        if (discountRes?.data) {
+          setDiscounts(discountRes.data);
+        }
+
+        setTours(tourRes);
+        setFilteredTours(tourRes);
+
+        const cityList = ["Tất cả", ...locationRes.map((location) => location.name_location)];
+        setCities(cityList);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (activeTab === "Tất cả") {
+      setFilteredTours(tours);
+      return;
+    }
+
+    const fetchToursByLocation = async () => {
+      try {
+        const res = await fetch(`http://localhost:3000/api/tour/get-by-location-id/${activeTab}`);
+        const data = await res.json();
+        console.log(`Dữ liệu tour cho locationId (${activeTab}):`, data);
+
+        if (Array.isArray(data)) {
+          setFilteredTours(data);
+        } else {
+          setFilteredTours([]);
+        }
+      } catch (error) {
+        console.error(`Lỗi khi fetch tour cho locationId (${activeTab}):`, error);
+        setFilteredTours([]);
+      }
+    };
+
+    fetchToursByLocation();
+  }, [activeTab, tours]);
 
   const handleMouseDown = (index, e) => {
     if (!scrollRefs.current[index]) return;
 
-    e.preventDefault(); // Ngăn chặn hành vi kéo thả mặc định
+    e.preventDefault();
     const startX = e.clientX;
     const scrollLeft = scrollRefs.current[index].scrollLeft;
 
     const onMouseMove = (moveEvent) => {
       const x = moveEvent.clientX;
-      const walk = (x - startX) * 2; // Điều chỉnh tốc độ cuộn
+      const walk = (x - startX) * 2;
       scrollRefs.current[index].scrollLeft = scrollLeft - walk;
     };
 
@@ -43,19 +86,19 @@ export default function LayoutLandingPage() {
     document.addEventListener("mouseup", onMouseUp);
   };
 
-  const renderStars = (rating) => {
-    const stars = [];
-    for (let i = 1; i <= 5; i++) {
-      if (i <= rating) {
-        stars.push(<FaStar key={i} className="text-yellow-400" />);
-      } else if (i - 0.5 === rating) {
-        stars.push(<FaStarHalfAlt key={i} className="text-yellow-400" />);
-      } else {
-        stars.push(<FaRegStar key={i} className="text-yellow-400" />);
-      }
-    }
-    return stars;
-  };
+  // const renderStars = (rating) => {
+  //   const stars = [];
+  //   for (let i = 1; i <= 5; i++) {
+  //     if (i <= rating) {
+  //       stars.push(<FaStar key={i} className="text-yellow-400" />);
+  //     } else if (i - 0.5 === rating) {
+  //       stars.push(<FaStarHalfAlt key={i} className="text-yellow-400" />);
+  //     } else {
+  //       stars.push(<FaRegStar key={i} className="text-yellow-400" />);
+  //     }
+  //   }
+  //   return stars;
+  // };
 
   return (
       <div className="bg-white" style={{backgroundImage: "url('/Image/Background.png')", backgroundSize: "cover", backgroundPosition: "center", width: "100%", minHeight: "100vh",}}>
@@ -68,7 +111,7 @@ export default function LayoutLandingPage() {
         </div>
 
          {/* Search Button */}
-         <SearchButton />
+         {/*<SearchButton />*/}
 
         {/* Gói quà chào mừng cho người dùng! */}
         <div className="p-6 relative w-4/5 mx-auto">
@@ -77,39 +120,11 @@ export default function LayoutLandingPage() {
             🎁 Gói quà chào mừng cho người dùng!
           </h2>
         </div>
-        <div
-          className="flex space-x-4 mt-8 overflow-x-auto scrollbar-hide cursor-grab"
-          ref={(el) => (scrollRefs.current[0] = el)}
-          onMouseDown={(e) => handleMouseDown(0, e)}
-        >
-          <img
-            src="/Image/Qua chao mung.png"
-            alt="Khuyến mãi"
-            width={800}
-            height={200}
-            className="rounded-lg pointer-events-none"
-          />
-          <img
-            src="/Image/Qua chao mung.png"
-            alt="Khuyến mãi"
-            width={800}
-            height={200}
-            className="rounded-lg pointer-events-none"
-          />
-          <img
-            src="/Image/Qua chao mung.png"
-            alt="Khuyến mãi"
-            width={800}
-            height={200}
-            className="rounded-lg pointer-events-none"
-          />
-          <img
-            src="/Image/Qua chao mung.png"
-            alt="Khuyến mãi"
-            width={800}
-            height={200}
-            className="rounded-lg pointer-events-none"
-          />
+        <div className="flex space-x-4 mt-8 overflow-x-auto scrollbar-hide cursor-grab" ref={(el) => (scrollRefs.current[0] = el)} onMouseDown={(e) => handleMouseDown(0, e)}>
+          <img src="/Image/Qua chao mung.png" alt="Khuyến mãi" width={800} height={200} className="rounded-lg pointer-events-none"/>
+          <img src="/Image/Qua chao mung.png" alt="Khuyến mãi" width={800} height={200} className="rounded-lg pointer-events-none"/>
+          <img src="/Image/Qua chao mung.png" alt="Khuyến mãi" width={800} height={200} className="rounded-lg pointer-events-none"/>
+          <img src="/Image/Qua chao mung.png" alt="Khuyến mãi" width={800} height={200} className="rounded-lg pointer-events-none"/>
         </div>
       </div>
 
@@ -117,158 +132,75 @@ export default function LayoutLandingPage() {
         <div className="p-6 relative w-3/5 mx-auto">
         <div className="flex justify-between items-center ">
           <h2 className="text-xl font-bold">Chương trình khuyến mại</h2>
-          <a href="#" className="text-red-600 hover:underline">
+          <a href="/deals" className="text-red-600 hover:underline">
             Xem tất cả
           </a>
         </div>
-        <div
-          className="flex space-x-4 mt-8 overflow-x-auto scrollbar-hide cursor-grab"
-          style={{ scrollbarWidth: "none" }}
-          ref={(el) => (scrollRefs.current[1] = el)}
-          onMouseDown={(e) => handleMouseDown(1, e)}
-        >
-          <img
-            src="/Image/Uudai.png"
-            alt="Khuyến mãi"
-            width={800}
-            height={200}
-            className="rounded-lg pointer-events-none"
-          />
-          <img
-            src="/Image/Uudai.png"
-            alt="Khuyến mãi"
-            width={800}
-            height={200}
-            className="rounded-lg pointer-events-none"
-          />
-          <img
-            src="/Image/Uudai.png"
-            alt="Khuyến mãi"
-            width={800}
-            height={200}
-            className="rounded-lg pointer-events-none"
-          />
-          <img
-            src="/Image/Uudai.png"
-            alt="Khuyến mãi"
-            width={800}
-            height={200}
-            className="rounded-lg pointer-events-none"
-          />
-        </div>
-      </div>
 
-        {/* Khuyến mãi chuyến bay và hoạt động  */}
-        <div className="p-6 relative w-3/5 mx-auto scrollbar-hide">
-        <div className="flex justify-between items-center ">
-          <h2 className="text-xl font-bold">
-            Khuyến mại Chuyến bay và Hoạt động
-          </h2>
-          <a href="#" className="text-red-600 hover:underline">
-            Xem tất cả
-          </a>
-        </div>
-        <div
-          className="flex space-x-4 mt-8 overflow-x-auto scrollbar-hide cursor-grab"
-          style={{ scrollbarWidth: "none" }}
-          ref={(el) => (scrollRefs.current[2] = el)}
-          onMouseDown={(e) => handleMouseDown(2, e)}
-        >
-          <img
-            src="/Image/Image [sc-fFubgz].png"
-            alt="Khuyến mãi"
-            width={800}
-            height={200}
-            className="rounded-lg pointer-events-none"
-          />
-          <img
-            src="/Image/Image [sc-fFubgz].png"
-            alt="Khuyến mãi"
-            width={800}
-            height={200}
-            className="rounded-lg pointer-events-none"
-          />
-          <img
-            src="/Image/Div [afa2c-box].png"
-            alt="Khuyến mãi"
-            width={800}
-            height={200}
-            className="rounded-lg pointer-events-none"
-          />
-          <img
-            src="/Image/Div [afa2c-box].png"
-            alt="Khuyến mãi"
-            width={800}
-            height={200}
-            className="rounded-lg pointer-events-none"
-          />
+        <div className="flex space-x-4 mt-8 overflow-x-auto scrollbar-hide cursor-grab" style={{ scrollbarWidth: "none" }} ref={(el) => (scrollRefs.current[1] = el)} onMouseDown={handleMouseDown}>
+          {discounts.map((discount) => (
+              <div key={discount.id} className="bg-white shadow-lg rounded-lg p-4 min-w-[300px]">
+                <h3 className="text-lg font-semibold">{discount.programDiscount.discount_name}</h3>
+                <p className="text-sm text-gray-600">{discount.programDiscount.description}</p>
+                <p className="text-red-500 font-bold">Giảm {discount.programDiscount.percent_discount}%</p>
+                <p className="text-gray-700">Giá gốc: {discount.travelTour.price_tour.toLocaleString()} VND</p>
+                <p className="text-green-600 font-semibold">
+                  Giá sau giảm: {(discount.travelTour.price_tour - discount.programDiscount.discount_value).toLocaleString()} VND
+                </p>
+              </div>
+          ))}
         </div>
       </div>
 
         {/* Tour trong nước nổi bật */}
         <div className="p-6 relative w-3/5 mx-auto">
-        <h2 className="text-xl font-bold">Tour trong nước nổi bật</h2>
+          <h2 className="text-xl font-bold">Tour trong nước nổi bật</h2>
 
-        <div className="flex justify-between items-center border-b pb-2">
-          <div className="flex space-x-4">
-            {cities.map((city) => (
-              <button
-                key={city}
-                className={`px-4 py-2 text-sm font-medium ${
-                  activeTab === city
-                    ? "text-red-700 border-b-2 border-red-700"
-                    : "text-gray-500"
-                }`}
-                onClick={() => setActiveTab(city)}
-              >
-                {city}
-              </button>
+          <div className="flex justify-between items-center border-b pb-2">
+            <div className="flex space-x-6">
+              {cities.map((city) => (
+                  <button
+                      key={city}
+                      className={`px-4 py-2 text-sm font-medium ${
+                          activeTab === city ? "text-red-700 border-b-2 border-red-700" : "text-gray-500"
+                      }`}
+                      onClick={() => setActiveTab(city)}
+                  >
+                    {city}
+                  </button>
+              ))}
+            </div>
+            <p className="text-red-600 font-medium cursor-pointer">
+              Xem tất cả chuyến đi ({activeTab})
+            </p>
+          </div>
+
+          <div
+              className="flex space-x-4 mt-8 overflow-x-auto scrollbar-hide cursor-grab"
+              style={{ scrollbarWidth: "none" }}
+              ref={(el) => (scrollRefs.current[3] = el)}
+          >
+            {filteredTours.map((tour) => (
+                <div key={tour.id} className="w-72 bg-white shadow-lg rounded-lg overflow-hidden">
+                  <img
+                      src={tour.image || "/Image/Image [sc-fFubgz] (1).png"}
+                      alt={tour.name_tour}
+                      width={300}
+                      height={200}
+                      className="w-full"
+                  />
+                  <div className="p-4">
+                    <h3 className="font-bold text-lg">{tour.name_tour}</h3>
+                    <div className="flex items-center space-x-2">
+                      <p className="text-gray-500 text-xs">📍 {tour.endLocation.name_location}</p>
+                    </div>
+                    <p className="text-gray-400 text-xs">{tour.activity_description}</p>
+                    <p className="text-red-600 font-bold">VND: {tour.price_tour.toLocaleString()}</p>
+                  </div>
+                </div>
             ))}
           </div>
-          <p className="text-red-600 font-medium">
-            Xem tất cả các chỗ nghỉ ({activeTab})
-          </p>
         </div>
-
-        <div
-          className="flex space-x-4 mt-8 overflow-x-auto scrollbar-hide cursor-grab"
-          style={{ scrollbarWidth: "none" }}
-          ref={(el) => (scrollRefs.current[3] = el)}
-          onMouseDown={(e) => handleMouseDown(3, e)}
-        >
-          {[...Array(5)].map((_, index) => (
-            <div
-              key={index}
-              className="w-72 bg-white shadow-lg rounded-lg overflow-hidden"
-            >
-              <img
-                src="/Image/Image [sc-fFubgz] (1).png"
-                alt="Khách sạn"
-                width={300}
-                height={200}
-                className="w-full"
-              />
-              <div className="p-4">
-                <h3 className="font-bold text-lg">Tên khách sạn {index + 1}</h3>
-                <div className="flex items-center space-x-2">
-                  <div className="flex items-center space-x-1 text-xs">
-                    {renderStars(4.5)}
-                  </div>
-                  <p className="text-gray-500 text-xs">
-                    📍 Quận {index + 1}, Hồ Chí Minh
-                  </p>
-                </div>
-                <p className="text-gray-400 text-xs">
-                  Giá mỗi đêm chưa gồm thuế và phí
-                </p>
-                <p className="text-red-600 font-bold">
-                  VND: {450000 + index * 100000}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
 
         {/* Khám phá địa điểm vui chơi ở Việt Nam */}
         <div className="p-6 relative w-3/5 mx-auto scrollbar-hide">
@@ -280,28 +212,11 @@ export default function LayoutLandingPage() {
             Xem tất cả
           </a>
         </div>
-        <div
-          className="flex space-x-4 mt-8 overflow-x-auto scrollbar-hide cursor-grab"
-          style={{ scrollbarWidth: "none" }}
-          ref={(el) => (scrollRefs.current[4] = el)}
-          onMouseDown={(e) => handleMouseDown(4, e)}
-        >
+        <div className="flex space-x-4 mt-8 overflow-x-auto scrollbar-hide cursor-grab" style={{ scrollbarWidth: "none" }} ref={(el) => (scrollRefs.current[4] = el)} onMouseDown={(e) => handleMouseDown(4, e)}>
           {[...Array(6)].map((_, index) => (
             <div key={index} style={{ textAlign: "center" }}>
-              <img
-                src="/Image/Div [afa2c-box] (1).png"
-                alt="Khuyến mãi"
-                className="rounded-lg pointer-events-none"
-                style={{ display: "block", margin: "0 auto" }} // Căn giữa ảnh
-              />
-              <p
-                style={{
-                  marginTop: "8px",
-                  fontSize: "1rem",
-                  fontWeight: "500",
-                  textAlign: "center",
-                }}
-              >
+              <img src="/Image/Div [afa2c-box] (1).png" alt="Khuyến mãi" className="rounded-lg pointer-events-none" style={{ display: "block", margin: "0 auto" }}/>
+              <p style={{marginTop: "8px", fontSize: "1rem", fontWeight: "500", textAlign: "center",}}>
                 Hồ Chí Minh
               </p>
             </div>
@@ -309,7 +224,6 @@ export default function LayoutLandingPage() {
         </div>
       </div>
 
-        {/* Footer */}
         <Footer/>
     </div>
   );
