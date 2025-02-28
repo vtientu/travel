@@ -6,6 +6,46 @@ export default function ModalAddLocation({ onClose }) {
   const [loading, setLoading] = useState(false); // Trạng thái loading
   const [error, setError] = useState(""); // Lưu lỗi nếu có
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+
+    if (!locationName.trim()) {
+      setError("Tên địa điểm không được để trống!");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:3000/api/location/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: locationName.trim(),
+          description: description.trim(),
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Thêm địa điểm thành công!");
+        setLocationName("");
+        setDescription("");
+        onClose();
+        window.location.reload();
+      } else {
+        setError(data.message || "Có lỗi xảy ra, vui lòng thử lại!");
+      }
+    } catch (err) {
+      setError("Không thể kết nối đến API!");
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
       <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
         <div className="bg-white rounded-lg shadow-lg w-1/4 p-6">
