@@ -54,8 +54,10 @@ exports.getTourById = async (req, res) => {
 //Tạo một Tour mới
 exports.createTour = async (req, res) => {
   try {
+    console.log("Received data:", req.body);
+    console.log("Received file:", req.file);
+
     const {
-      location_id,
       name_tour,
       price_tour,
       day_number,
@@ -69,45 +71,46 @@ exports.createTour = async (req, res) => {
     const image = req.file ? `/uploads/tourImage/${req.file.filename}` : null;
 
     if (
-      !location_id ||
-      !name_tour ||
-      !price_tour ||
-      !day_number ||
-      !rating_tour ||
-      !max_people ||
-      !activity_description ||
-      !start_location ||
-      !end_location
+        !name_tour ||
+        !price_tour ||
+        !day_number ||
+        !rating_tour ||
+        !max_people ||
+        !activity_description ||
+        !start_location ||
+        !end_location
     ) {
       return res.status(400).json({
         message: "Please provide all required fields!",
       });
     }
 
-    const data = {
-      location_id,
+    const tourData = {
       name_tour,
-      price_tour,
-      day_number,
-      rating_tour,
-      max_people,
+      price_tour: Number(price_tour),
+      day_number: Number(day_number),
+      rating_tour: Number(rating_tour),
+      max_people: Number(max_people),
       activity_description,
       image,
-      start_location,
-      end_location,
+      start_location: Number(start_location),
+      end_location: Number(end_location),
     };
-    const newTour = await db.Tour.create(data);
+
+    const newTour = await db.Tour.create(tourData);
     res.json({
       message: "Create tour successfully!",
       tour: newTour,
     });
   } catch (error) {
+    console.error("Error:", error);
     res.status(500).json({
       message: "Error inserting tour",
       error: error.message,
     });
   }
 };
+
 
 //Xóa một Tour theo ID
 exports.deleteTourById = async (req, res) => {

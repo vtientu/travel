@@ -9,8 +9,8 @@ export default function Sidebar({ setSelectedMenu }) {
   const menuItems = [
     { id: 1, name: "Thống kê", path: "/#" },
     { id: 2, name: "Quản lý chuyến du lịch", path: "/managementTour" },
-    { id: 3, name: "Quản lý hành trình", path: "/managementLocation" },
-    { id: 4, name: "Quản lý địa điểm", path: "/managementTravelTour" },
+    { id: 3, name: "Quản lý địa điểm ", path: "/managementLocation" },
+    { id: 4, name: "Quản lý hành trình", path: "/managementTravelTour" },
     { id: 5, name: "Quản lý khách sạn", path: "/managementHotel" },
     { id: 6, name: "Quản lý nhà hàng", path: "/managementRestaurant" },
     {

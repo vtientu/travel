@@ -110,9 +110,6 @@ export default function LayoutLandingPage() {
         <SearchTour />
         </div>
 
-         {/* Search Button */}
-         {/*<SearchButton />*/}
-
         {/* Gói quà chào mừng cho người dùng! */}
         <div className="p-6 relative w-4/5 mx-auto">
         <div className="flex justify-between items-center ">
