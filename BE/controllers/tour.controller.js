@@ -17,10 +17,8 @@ exports.getAllTours = async (req, res) => {
   try {
     const tours = await Tour.findAll({
       include: [
-        {
-          model: db.Location,
-          attributes: ["name_location"],
-        },
+        { model: Location, as: "startLocation" },
+        { model: Location, as: "endLocation" },
       ],
     });
     res.json(tours);
