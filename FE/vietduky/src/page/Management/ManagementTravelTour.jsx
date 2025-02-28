@@ -1,63 +1,63 @@
 import { LuSearch } from "react-icons/lu";
 import Layout from "../../layouts/LayoutManagement";
-import { formatDate } from '../../../utils/dateUtil'
-import { getTravelTour } from "../../../services/travel_tour.api";
+import { formatDate } from "../../utils/dateUtil";
+import {
+  getTravelTour,
+  deleteTravelTour,
+} from "../../services/travel_tour.api";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { useEffect, useState } from "react";
 import ModalAddTravelTour from "../../components/ModalManage/ModalAddTravelTour";
-
-// const travelTours = [
-//   {
-//     id: 1,
-//     name: "Du lịch Sapa",
-//     startDate: "2025-02-04",
-//     endDate: "2025-02-06",
-//     member: 30,
-//     price: "1.550.000 VNĐ",
-//   },
-//   {
-//     id: 2,
-//     name: "Du lịch Sapa",
-//     startDate: "2025-02-04",
-//     endDate: "2025-02-06",
-//     member: 30,
-//     price: "1.720.000 VNĐ",
-//   },
-//   {
-//     id: 3,
-//     name: "Du lịch Sapa",
-//     startDate: "2025-02-04",
-//     endDate: "2025-02-06",
-//     member: 30,
-//     price: "1.610.000 VNĐ",
-//   },
-// ];
+import { MdDelete, MdEdit } from "react-icons/md";
 
 export default function ManagementTravelTour() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [travelTours, setTravelTours] = useState([]);
+  const [openDropdown, setOpenDropdown] = useState(null); // ID của địa điểm đang mở menu
+
+  // Toggle dropdown
+  const toggleDropdown = (id) => {
+    setOpenDropdown(openDropdown === id ? null : id);
+  };
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
 
   // call API
-  useEffect(() => {    
+  useEffect(() => {
     const fetchTravelTours = async () => {
       try {
         const response = await getTravelTour();
         const data = response.travelTours || response;
         // console.log("Dữ liệu nhận được:", data);
-        
+
         setTravelTours(Array.isArray(data) ? data : []);
       } catch (error) {
         console.log("Lỗi khi lấy dữ liệu từ API", error);
-        setTravelTours([]);        
+        setTravelTours([]);
       }
     };
 
     fetchTravelTours();
   }, []);
+
+  const handleSuccess = (newTravelTour) => {
+    setTravelTours((prev) => [...prev, newTravelTour]);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      const response = await deleteTravelTour(id);
+      alert("Xóa hành trình thành công");
+      setTravelTours((prev) =>
+        prev.filter((travelTour) => travelTour.id !== id)
+      );
+    } catch (error) {
+      alert("Có lỗi xảy ra, vui lòng thử lại!");
+      console.log("Lỗi khi xóa hành trình", error);
+    }
+  };
 
   return (
     <Layout title="Quản lý Chuyến đi">
@@ -143,8 +143,30 @@ export default function ManagementTravelTour() {
                   <td className=" p-2">{formatDate(travelTour.end_time)}</td>
                   <td className=" p-2">{travelTour.max_people}</td>
                   <td className=" p-2">{travelTour.price_tour}</td>
-                  <td className="flex justify-end p-2">
-                    <HiOutlineDotsHorizontal />
+                  <td className="flex justify-end p-2 relative">
+                    {/* Nút 3 chấm */}
+                    <button
+                      onClick={() => toggleDropdown(travelTour.id)}
+                      className="relative"
+                    >
+                      <HiOutlineDotsHorizontal className="text-xl cursor-pointer" />
+                    </button>
+
+                    {/* Dropdown menu */}
+                    {openDropdown === travelTour.id && (
+                      <div className="absolute right-0 mt-2 w-48 bg-white shadow-md rounded-md z-10">
+                        <button className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left">
+                          <MdEdit className="mr-2 text-gray-700" /> 
+                          Cập nhật hành trình
+                        </button>
+                        <button
+                          onClick={() => handleDelete(travelTour.id)}
+                          className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left text-red-600"
+                        >
+                          <MdDelete className="mr-2" /> Xóa hành trình
+                        </button>
+                      </div>
+                    )}
                   </td>
                 </tr>
               ))}

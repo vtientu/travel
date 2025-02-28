@@ -44,6 +44,39 @@ export default function ModalAddTravelTour({ onClose }) {
   };
 
   return (
+    <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center">
+      <div className="bg-white p-6 rounded-lg shadow-lg  ">
+        <form>
+          <div className="flex gap-6">
+            {/* Cột trái */}
+            <div>
+              <h2 className="text-lg font-semibold">Thêm Travel Tour</h2>
+              <h6 className="text-sm mb-4">
+                Quản trị viên thêm Travel Tour trong Tour
+              </h6>
+              {/* Tên Tour */}
+              <label className="block mb-2 font-medium before:content-['*'] before:text-red-500 before:mr-1">Tour</label>
+              <select className="w-full p-2 border rounded mb-4">
+                <option>
+                  Chọn Tour
+                </option>
+                <option value="sapa">Du lịch Sapa</option>
+              </select>
+              <div className="flex items-center gap-4">
+                {/* Điểm khởi hành */}
+                <div>
+                  <label className="block mb-2 font-medium before:content-['*'] before:text-red-500 before:mr-1 ">
+                    Ngày khởi hành
+                  </label>
+                  <select className="w-[230px] p-2 border rounded text-gray-500">
+                    <option value="" disabled selected>
+                      Chọn ngày khởi hành
+                    </option>
+                    <option value="hanoi">Hà Nội</option>
+                    <option value="hcm">TP. Hồ Chí Minh</option>
+                    <option value="danang">Đà Nẵng</option>
+                  </select>
+                </div>
       <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center">
         <div className="bg-white p-6 rounded-lg shadow-lg">
           <form onSubmit={handleSubmit}>
