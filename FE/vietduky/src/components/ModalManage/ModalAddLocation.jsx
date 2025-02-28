@@ -1,13 +1,35 @@
 import { useState } from "react";
+import { createLocation } from "../../services/location.api";
 
-export default function ModalAddLocation({ onClose }) {
+export default function ModalAddLocation({ onClose, onSuccess }) {
   const [locationName, setLocationName] = useState("");
-  const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  // Xử lý submit form
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const newLocation = {
+        name: locationName,
+      };
+      const response = await createLocation(newLocation);
+      alert("Thêm địa điểm thành công");
+      onSuccess(response);
+      onClose();
+    } catch (error) {
+      alert("Có lỗi xảy ra, vui lòng thử lại!");
+      console.log("Lỗi khi thêm địa điểm", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white rounded-lg shadow-lg w-1/4 p-6">
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="relative pb-3">
             {/* Tiêu đề và mô tả */}
             <div>
@@ -35,12 +57,13 @@ export default function ModalAddLocation({ onClose }) {
                 className="w-full border rounded p-2"
                 placeholder="Nhập tên địa điểm"
                 value={locationName}
-                // onChange={(e) => setLocationName(e.target.value)}
+                onChange={(e) => setLocationName(e.target.value)}
+                required
               />
             </div>
 
             {/* Mô tả */}
-            <div className="mb-4">
+            {/* <div className="mb-4">
               <label className="block font-medium mb-1">Mô tả</label>
               <textarea
                 className="w-full border rounded p-2"
@@ -49,7 +72,7 @@ export default function ModalAddLocation({ onClose }) {
                 value={description}
                 // onChange={(e) => setDescription(e.target.value)}
               />
-            </div>
+            </div> */}
           </div>
           {/* Button Actions */}
           <div className="flex justify-end gap-4 mt-4">

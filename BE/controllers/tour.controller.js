@@ -57,6 +57,8 @@ exports.getTourById = async (req, res) => {
 //Tạo một Tour mới
 exports.createTour = async (req, res) => {
     try {
+        console.log("Request Body:", req.body); // Kiểm tra dữ liệu đầu vào
+
         const {
             location_id,
             name_tour,

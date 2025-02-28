@@ -15,12 +15,12 @@ export default function ModalAddTravelTour({ onClose }) {
               </h6>
               {/* Tên Tour */}
               <label className="block mb-2 font-medium before:content-['*'] before:text-red-500 before:mr-1">Tour</label>
-              <input
-                type="text"
-                className="w-full p-2 border rounded mb-4"
-                placeholder="Nhập tên tour"
-                required
-              />
+              <select className="w-full p-2 border rounded mb-4">
+                <option>
+                  Chọn Tour
+                </option>
+                <option value="sapa">Du lịch Sapa</option>
+              </select>
               <div className="flex items-center gap-4">
                 {/* Điểm khởi hành */}
                 <div>
