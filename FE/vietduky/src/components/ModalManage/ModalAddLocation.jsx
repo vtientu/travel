@@ -15,12 +15,12 @@ export default function ModalAddLocation({ onClose, onSuccess }) {
         name: locationName,
       };
       const response = await createLocation(newLocation);
-      alert("Thêm địa điểm thành công");
+      alert("Thêm vị trí thành công");
       onSuccess(response);
       onClose();
     } catch (error) {
       alert("Có lỗi xảy ra, vui lòng thử lại!");
-      console.log("Lỗi khi thêm địa điểm", error);
+      console.log("Lỗi khi thêm vị trí", error);
     } finally {
       setLoading(false);
     }
@@ -33,9 +33,9 @@ export default function ModalAddLocation({ onClose, onSuccess }) {
           <div className="relative pb-3">
             {/* Tiêu đề và mô tả */}
             <div>
-              <h2 className="text-lg font-semibold">Thêm địa điểm</h2>
+              <h2 className="text-lg font-semibold">Thêm vị trí</h2>
               <p className="text-gray-500 mb-4">
-                Quản trị viên thêm địa điểm cho Tour
+                Quản trị viên thêm vị trí cho Tour
               </p>
             </div>
 
@@ -49,13 +49,13 @@ export default function ModalAddLocation({ onClose, onSuccess }) {
           </div>
 
           <div>
-            {/* Tên địa điểm */}
+            {/* Tên vị trí */}
             <div className="mb-4">
-              <label className="block font-medium mb-1">Tên địa điểm</label>
+              <label className="block font-medium mb-1">Tên vị trí</label>
               <input
                 type="text"
                 className="w-full border rounded p-2"
-                placeholder="Nhập tên địa điểm"
+                placeholder="Nhập tên vị trí"
                 value={locationName}
                 onChange={(e) => setLocationName(e.target.value)}
                 required

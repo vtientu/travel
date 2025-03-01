@@ -9,6 +9,10 @@ import PromotionIcon from "../../assets/icons/promotion.svg";
 import ServiceIcon from "../../assets/icons/service.svg";
 import SystemConfigIcon from "../../assets/icons/system-config.svg";
 import AccountIcon from "../../assets/icons/account.svg";
+import ArrowBottom from "../../assets/icons/arrow-bottom.svg";
+import ArrowRight from "../../assets/icons/arrow-right.svg";
+import ArrowTop from "../../assets/icons/arrow-top.svg";
+import ArrowLeft from "../../assets/icons/arrow-left.svg";
 
 const Icons = {
   Sidebar: barChartIcon,
@@ -22,6 +26,10 @@ const Icons = {
   ServiceIcon: ServiceIcon,
   SystemConfigIcon: SystemConfigIcon,
   AccountIcon: AccountIcon,
+  ArrowBottom: ArrowBottom,
+  ArrowRight: ArrowRight,
+  ArrowTop: ArrowTop,
+  ArrowLeft: ArrowLeft,
 };
 
 export default Icons;

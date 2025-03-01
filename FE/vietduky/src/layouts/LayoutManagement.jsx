@@ -2,23 +2,25 @@ import { useState } from "react";
 import Sidebar from "../components/Sidebar/Sidebar";
 import HeaderManage from "../components/HeaderManage/HeaderManage";
 
-export default function LayoutManagement({ children, title}) {
-    const [isOpen, setIsOpen] = useState(true);
-    const [selectedMenu, setSelectedMenu] = useState("Quản lý Tour");
+export default function LayoutManagement({ children, title }) {
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [selectedMenu, setSelectedMenu] = useState("Quản lý Tour");
 
-
-    const toggleSidebar = () => {
-        setIsOpen(!isOpen);
-    }
+  const toggleSidebar = () => {
+    setIsCollapsed(!isCollapsed);
+  };
 
   return (
     <div className="flex h-screen">
-      {isOpen && <Sidebar setSelectedMenu={setSelectedMenu} closeSidebar={toggleSidebar}/>}
-      
+      <Sidebar setSelectedMenu={setSelectedMenu} isCollapsed={isCollapsed} />
+
       {/* Main Content */}
       <main className="flex-1">
         {/* Header */}
-        <HeaderManage toggleSidebar={toggleSidebar} selectedMenu={selectedMenu}/>
+        <HeaderManage
+          toggleSidebar={toggleSidebar}
+          selectedMenu={selectedMenu}
+        />
 
         {/* Content */}
         <div>{children}</div>

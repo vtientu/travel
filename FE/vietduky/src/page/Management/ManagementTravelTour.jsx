@@ -13,7 +13,7 @@ import { MdDelete, MdEdit } from "react-icons/md";
 export default function ManagementTravelTour() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [travelTours, setTravelTours] = useState([]);
-  const [openDropdown, setOpenDropdown] = useState(null); // ID của địa điểm đang mở menu
+  const [openDropdown, setOpenDropdown] = useState(null); // ID của vị trí đang mở menu
 
   // Toggle dropdown
   const toggleDropdown = (id) => {
@@ -80,7 +80,7 @@ export default function ManagementTravelTour() {
             />
           </div>
 
-          {/* Bộ lọc địa điểm */}
+          {/* Bộ lọc vị trí */}
           <div>
             <select
               defaultValue=""
@@ -121,7 +121,7 @@ export default function ManagementTravelTour() {
         <div className="mt-2 bg-white p-4">
           <table className="w-full border-collapse">
             <thead>
-              <tr className="text-SmokyGray">
+              <tr className="text-SmokyGray text-left">
                 <th className="p-2">Tên Tour</th>
                 <th className="p-2">Ngày khởi hành</th>
                 <th className="p-2">Ngày về</th>

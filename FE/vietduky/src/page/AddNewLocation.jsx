@@ -14,20 +14,20 @@ export default function AddNewLocation(){
                     onClick={() => setShow(true)}
                     onMouseEnter={(e) => (e.target.style.backgroundColor = "red")}
                     onMouseLeave={(e) => (e.target.style.backgroundColor = "#A31820")}>
-                Thêm địa điểm
+                Thêm vị trí
             </Button>
 
             {/* Modal */}
             <Modal show={show} onHide={() => setShow(false)}  centered>
                 <Modal.Header closeButton>
-                    <Modal.Title className="fw-bold">Thêm địa điểm</Modal.Title>
+                    <Modal.Title className="fw-bold">Thêm vị trí</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <p className="text-muted">Quản trị viên thêm địa điểm cho Tour</p>
+                    <p className="text-muted">Quản trị viên thêm vị trí cho Tour</p>
                     <Form>
-                        {/* Tên địa điểm */}
+                        {/* Tên vị trí */}
                         <Form.Group className="mb-3">
-                            <Form.Label className="fw-semibold">Tên địa điểm</Form.Label>
+                            <Form.Label className="fw-semibold">Tên vị trí</Form.Label>
                             <Form.Control
                                 type="text"
                                 placeholder="Nhập tên lớp"

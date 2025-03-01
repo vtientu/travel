@@ -76,7 +76,7 @@ export default function ManagementVehicle() {
         <div className="mt-2 bg-white p-4">
           <table className="w-full border-collapse">
             <thead>
-              <tr className="text-SmokyGray">
+              <tr className="text-SmokyGray text-left">
                 <th className="p-2">Tên Phương tiện</th>
                 <th className="p-2">Biển số xe</th>
                 <th

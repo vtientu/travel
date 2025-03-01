@@ -79,7 +79,7 @@ export default function ManagementRestaurant() {
         <div className="mt-2 bg-white p-4">
           <table className="w-full border-collapse">
             <thead>
-              <tr className="text-SmokyGray">
+              <tr className="text-SmokyGray text-left">
                 <th className="p-2">Tên Nhà hàng</th>
                 <th className="p-2">Địa chỉ</th>
                 <th className="p-2">Số điện thoại</th>

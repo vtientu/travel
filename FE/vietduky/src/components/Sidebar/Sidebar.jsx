@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import Icons from "../Icons/Icon";
+import { HiChevronDown, HiChevronRight } from "react-icons/hi";
+import { FiMenu } from "react-icons/fi";
 
-export default function Sidebar({ setSelectedMenu }) {
+export default function Sidebar({ setSelectedMenu, isCollapsed }) {
   const [selected, setSelected] = useState(null);
+  const [openSubMenu, setOpenSubMenu] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -11,140 +14,176 @@ export default function Sidebar({ setSelectedMenu }) {
     { id: 1, name: "Thống kê", icon: Icons.Sidebar, path: "/#" },
     {
       id: 2,
-      name: "Quản lý chuyến du lịch",
+      name: "Quản lý Tour",
       icon: Icons.TourIcon,
-      path: "/managementTour",
+      subItems: [
+        { id: 201, name: "Vị trí", path: "/managementLocation" },
+        { id: 202, name: "Chuyến du lịch", path: "/managementTour" },
+      ],
     },
     {
       id: 3,
-      name: "Quản lý hành trình",
-      icon: Icons.TravelTourIcon,
-      path: "/managementTravelTour",
-    },
-    {
-      id: 4,
-      name: "Quản lý địa điểm",
-      icon: Icons.LocationIcon,
-      path: "/managementLocation",
-    },
-    {
-      id: 5,
       name: "Quản lý khách sạn",
       icon: Icons.HotelIcon,
       path: "/managementHotel",
     },
     {
-      id: 6,
+      id: 4,
       name: "Quản lý nhà hàng",
       icon: Icons.RestaurantIcon,
       path: "/managementRestaurant",
     },
     {
-      id: 7,
+      id: 5,
       name: "Quản lý phương tiện",
       icon: Icons.VehicleIcon,
-      path: "/managementVehicle",
       subItems: [
-        { id: 101, name: "Loại phương tiện" },
-        { id: 102, name: "Phương tiện" },
+        { id: 501, name: "Loại phương tiện" },
+        { id: 502, name: "Phương tiện" },
       ],
     },
     {
-      id: 8,
+      id: 6,
       name: "Quản lý khuyến mãi",
       icon: Icons.PromotionIcon,
       path: "/#",
     },
-    { id: 9, name: "Quản lý dịch vụ", icon: Icons.ServiceIcon, path: "/#" },
+    { id: 7, name: "Quản lý dịch vụ", icon: Icons.ServiceIcon, path: "/#" },
   ];
 
   const systemItems = [
-    { id: 10, name: "Cấu hình hệ thống", icon: Icons.SystemConfigIcon },
-    { id: 11, name: "Quản lý tài khoản", icon: Icons.AccountIcon },
+    {
+      id: 8,
+      name: "Cấu hình hệ thống",
+      icon: Icons.SystemConfigIcon,
+      path: "/#",
+      subItems: [],
+    },
+    {
+      id: 9,
+      name: "Quản lý tài khoản",
+      icon: Icons.AccountIcon,
+      path: "/#",
+      subItems: [],
+    },
   ];
 
   useEffect(() => {
     const activeItem = menuItems.find((item) =>
-      location.pathname.includes(item.path)
+      item.path ? location.pathname.includes(item.path) : false
     );
     if (activeItem) {
       setSelected(activeItem.id);
       setSelectedMenu(activeItem.name);
     }
-  }, [location.path]);
+  }, [location.pathname]);
 
   return (
-    <div>
-      {/* Sidebar */}
-      <aside className="w-64 bg-red-700 text-white p-4 h-screen">
-        <a href="/">
-          <img
-              className="mb-8"
-              src="/Image/Logo.png"
-              alt="Viet Du Ky"
-              width={175}
-              height={125}
-          />
-        </a>
-        <nav className="mb-10">
-          <ul>
-            {menuItems.map((item) => (
-              <li
-                key={item.id}
-                className={`flex items-center gap-2 p-1 rounded mb-2 cursor-pointer ${
-                  selected === item.id ? "bg-[#F4F4F5] text-black" : ""
-                }`}
-                onClick={() => {
-                  navigate(item.path);
-                }}
-              >
-                {item.icon && (
-                  <img
-                    src={item.icon}
-                    alt={item.name}
-                    width={16}
-                    height={16}
-                    className={`transition-all ${
-                      selected === item.id ? "" : "filter invert"
-                    }`}
-                  />
+    <aside
+      className={`h-screen bg-[#9A1B21] text-white p-4 transition-all duration-300 ${
+        isCollapsed ? "w-20" : "w-64"
+      }`}
+    >
+      <a href="/" className="flex justify-center">
+        <img
+          src="/Image/Logo.png"
+          alt="Viet Du Ky"
+          width={isCollapsed ? 50 : 175}
+          height={isCollapsed ? 50 : 125}
+          className="transition-all duration-300"
+        />
+      </a>
+
+      <nav className="mb-6">
+        <ul>
+          {menuItems.map((item) => {
+            const isSelected = selected === item.id || openSubMenu === item.id;
+            return (
+              <li key={item.id}>
+                <div
+                  className={`flex items-center justify-between p-2 rounded cursor-pointer ${
+                    isSelected
+                      ? "bg-[#F4F4F5] text-black"
+                      : "hover:bg-[#B22222]"
+                  }`}
+                  onClick={() => {
+                    if (item.subItems) {
+                      setOpenSubMenu(openSubMenu === item.id ? null : item.id);
+                    } else {
+                      navigate(item.path);
+                      setSelected(item.id);
+                      setOpenSubMenu(null);
+                    }
+                  }}
+                >
+                  <div className="flex items-center gap-2">
+                    <img
+                      src={item.icon}
+                      alt={item.name}
+                      width={20}
+                      height={20}
+                      className={`filter ${isSelected ? "invert-0" : "invert"}`}
+                    />
+                    {!isCollapsed && item.name}
+                  </div>
+                  {!isCollapsed &&
+                    item.subItems &&
+                    (openSubMenu === item.id ? (
+                      <img src={Icons.ArrowBottom} className="filter invert" />
+                    ) : (
+                      <img src={Icons.ArrowRight} className="filter invert" />
+                    ))}
+                </div>
+
+                {!isCollapsed && item.subItems && openSubMenu === item.id && (
+                  <ul className="ml-6 border-l border-gray-300 pl-3 mt-1">
+                    {item.subItems.map((subItem) => (
+                      <li
+                        key={subItem.id}
+                        className={`py-1 cursor-pointer ${
+                          selected === subItem.id
+                            ? "text-black font-medium"
+                            : "hover:text-gray-300"
+                        }`}
+                        onClick={() => {
+                          navigate(subItem.path);
+                          setSelected(item.id);
+                        }}
+                      >
+                        {subItem.name}
+                      </li>
+                    ))}
+                  </ul>
                 )}
-                {item.name}
               </li>
-            ))}
-          </ul>
-        </nav>
-        <nav>
-          <p className="text-sm">Hệ thống</p>
-          <ul>
-            {systemItems.map((item) => (
-              <li
-                key={item.id}
-                className={`flex items-center gap-2 p-2 rounded mb-2 cursor-pointer ${
-                  selected === item.id ? "bg-[#F4F4F5] text-black" : ""
+            );
+          })}
+        </ul>
+      </nav>
+
+      <p className="text-sm opacity-70 mb-2">{!isCollapsed && "Hệ thống"}</p>
+      <nav>
+        <ul>
+          {systemItems.map((item) => (
+            <li
+              key={item.id}
+              className="flex items-center gap-2 p-2 rounded cursor-pointer hover:bg-[#B22222]"
+              onClick={() => setSelectedMenu(item.name)}
+            >
+              <img
+                src={item.icon}
+                alt={item.name}
+                width={20}
+                height={20}
+                className={`filter ${
+                  selected === item.id ? "invert-0" : "invert"
                 }`}
-                onClick={() => {
-                  setSelected(item.id);
-                  setSelectedMenu(item.name);
-                }}
-              >
-                {item.icon && (
-                  <img
-                    src={item.icon}
-                    alt={item.name}
-                    width={16}
-                    height={16}
-                    className={`transition-all ${
-                      selected === item.id ? "" : "filter invert"
-                    }`}
-                  />
-                )}
-                {item.name}
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </aside>
-    </div>
+              />
+              {!isCollapsed && item.name}
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </aside>
   );
 }

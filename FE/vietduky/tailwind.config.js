@@ -5,7 +5,8 @@ export default {
     extend: {
       colors: {
         GrayishBlue: "#71717AB2",
-        SmokyGray: "#71717A"
+        SmokyGray: "#71717A",
+        RedPrice: "#A80F21"
       }
     },
   },

@@ -199,11 +199,11 @@ export default function LayoutLandingPage() {
           </div>
         </div>
 
-        {/* Khám phá địa điểm vui chơi ở Việt Nam */}
+        {/* Khám phá vị trí vui chơi ở Việt Nam */}
         <div className="p-6 relative w-3/5 mx-auto scrollbar-hide">
         <div className="flex justify-between items-center ">
           <h2 className="text-xl font-bold">
-            Khám phá địa điểm vui chơi ở Việt Nam
+            Khám phá vị trí vui chơi ở Việt Nam
           </h2>
           <a href="#" className="text-red-600 hover:underline">
             Xem tất cả

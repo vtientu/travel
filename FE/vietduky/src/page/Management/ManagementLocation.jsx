@@ -9,7 +9,7 @@ import { MdEdit, MdDelete } from "react-icons/md";
 export default function ManagementLocation() {
   const [locations, setLocations] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [openDropdown, setOpenDropdown] = useState(null); // ID của địa điểm đang mở menu
+  const [openDropdown, setOpenDropdown] = useState(null); // ID của vị trí đang mở menu
 
   // Toggle dropdown
   const toggleDropdown = (id) => {
@@ -42,16 +42,16 @@ export default function ManagementLocation() {
   const handleDelete = async (id) => {
     try {
       const response = await deleteLocation(id);
-      alert("Xóa địa điểm thành công");
+      alert("Xóa vị trí thành công");
       setLocations((prev) => prev.filter((location) => location.id !== id));
     } catch (error) {
       alert("Có lỗi xảy ra, vui lòng thử lại!");
-      console.log("Lỗi khi xóa địa điểm", error);
+      console.log("Lỗi khi xóa vị trí", error);
     }
   };
 
   return (
-    <Layout title="Quản lý Địa điểm">
+    <Layout title="Quản lý vị trí">
       <div className="overflow-visible">
         {/* Search */}
         <div className="bg-white p-4 mb-4 rounded-md flex gap-4 items-center">
@@ -69,7 +69,7 @@ export default function ManagementLocation() {
             className="bg-red-700 text-white px-4 py-2 rounded-md shadow-md"
             onClick={toggleModal}
           >
-            Thêm địa điểm
+            Thêm vị trí
           </button>
         </div>
 
@@ -77,9 +77,9 @@ export default function ManagementLocation() {
         <div className="mt-2 bg-white p-4">
           <table className="w-full border-collapse">
             <thead>
-              <tr className="text-SmokyGray">
-                <th className="p-2">Tên địa điểm</th>
-                {/* <th className="p-2">Mô tả địa điểm</th> */}
+              <tr className="text-SmokyGray text-left">
+                <th className="p-2">Tên vị trí</th>
+                {/* <th className="p-2">Mô tả vị trí</th> */}
                 <th
                   className="text-end p-2"
                   style={{ width: "1%", whiteSpace: "nowrap" }}
@@ -107,15 +107,15 @@ export default function ManagementLocation() {
                     {/* Dropdown menu */}
                     {openDropdown === location.id && (
                       <div className="absolute right-0 mt-2 w-48 bg-white shadow-md rounded-md z-10">
-                        <button className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left">
+                        <button className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left whitespace-nowrap">
                           <MdEdit className="mr-2 text-gray-700" /> Cập nhật địa
                           điểm
                         </button>
                         <button
                           onClick={() => handleDelete(location.id)}
-                          className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left text-red-600"
+                          className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left text-red-600 whitespace-nowrap"
                         >
-                          <MdDelete className="mr-2" /> Xóa địa điểm
+                          <MdDelete className="mr-2" /> Xóa vị trí
                         </button>
                       </div>
                     )}
