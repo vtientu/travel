@@ -30,6 +30,27 @@ exports.getTravelTourById = async (req, res) => {
   }
 };
 
+//Lấy thông tin travel tour theo tour_id
+exports.getTravelTourByTourId = async (req, res) => {
+  try {
+    const tourId = req.params.id;
+    const travelTour = await TravelTour.findAll({ where: { tour_id: tourId } });
+
+    if (!travelTour || travelTour.length === 0) {
+      return res.status(404).json({
+        message: "Travel tour not found!",
+      });
+    }
+
+    res.json(travelTour);
+  } catch (error) {
+    res.status(500).json({
+      message: "Error retrieving travel tour with tour_id=" + req.params.id,
+      error: error.message,
+    });
+  }
+};
+
 //Tạo travel tour mới
 exports.createTravelTour = async (req, res) => {
   try {
