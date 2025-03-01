@@ -19,6 +19,19 @@ export default function DropdownMenu({ tour }) {
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
+  const handleDelete = async (id) => {
+      try {
+        // const response = await deleteTour(id);
+        alert("Xóa tour thành công");
+        setTours((prev) => prev.filter((tour) => tour.id !== id));
+      } catch (error) {
+        alert("Có lỗi xảy ra, vui lòng thử lại!");
+        console.log("Lỗi khi xóa tour", error);
+      } finally {
+        setOpenDropdown(null);
+      }
+    };
+
   return (
     <div
       className="relative dropdown-container flex items-center gap-2"
@@ -55,7 +68,7 @@ export default function DropdownMenu({ tour }) {
             onClick={() => console.log("Xóa tour", tour.id)}
             className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left text-red-600"
           >
-            <MdDelete className="mr-2" /> Xóa chuyến đi
+            <MdDelete className="mr-2" onClick={() => handleDelete(tour.id)}/> Xóa chuyến đi
           </button>
         </div>
       )}

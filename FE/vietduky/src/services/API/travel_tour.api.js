@@ -24,7 +24,7 @@ export function createTravelTour(data) {
     data,
   })
     .then(response => {
-      //   console.log("Dữ liệu API trả về:", response.data); 
+        console.log("Dữ liệu API trả về:", response.data); 
       return response.data;
     })
     .catch(error => {

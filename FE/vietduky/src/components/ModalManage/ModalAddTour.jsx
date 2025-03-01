@@ -2,9 +2,8 @@ import TextEditor from "../../lib/TextEditor";
 import { FaArrowRight } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { MdDelete, MdEdit } from "react-icons/md";
-import { HiOutlineDotsHorizontal } from "react-icons/hi";
-import { getTravelTour } from "../../services/API/travel_tour.api";
-import { getService } from "../../services/API/service.api";
+import { HiOutlineDotsHorizontal, HiOutlineInbox } from "react-icons/hi";
+import { fetchLocations, fetchServices, fetchTravelTours } from "../../services/service";
 import { formatDayDMY } from "../../utils/dateUtil";
 
 export default function ModalAddTour({ onClose }) {
@@ -19,33 +18,21 @@ export default function ModalAddTour({ onClose }) {
     activity_description: "",
     start_location: "",
     end_location: "",
+    type_id: "",
+    service_id: "",
+    rating_tour: "5",
     image: null,
   });
   const [travelTours, setTravelTours] = useState([]);
   const [openDropdown, setOpenDropdown] = useState(null); // ID của Địa điểm đang mở menu
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/location/")
-      .then((res) => res.json())
-      .then((data) => setLocations(data))
-      .catch((error) => console.error("Lỗi khi tải vị trí:", error));
-  }, []);
-
-  useEffect(() => {
-    const fetchService = async () => {
-      try {
-        const response = await getService();
-        const data = response.services || response;
-        console.log("Dữ liệu nhận được:", data);
-
-        setServices(Array.isArray(data) ? data : []);
-      } catch (error) {
-        console.log("Lỗi khi lấy dữ liệu từ API", error);
-        setServices([]);
-      }
+    const fetchData = async () => {
+      setLocations(await fetchLocations());
+      setServices(await fetchServices());
+      // setTravelTours(await fetchTravelTours());
     };
-
-    fetchService();
+    fetchData();
   }, []);
 
   // Xử lý khi thay đổi input
@@ -86,24 +73,6 @@ export default function ModalAddTour({ onClose }) {
       alert("Đã xảy ra lỗi!");
     }
   };
-
-  // call API
-  useEffect(() => {
-    const fetchTravelTours = async () => {
-      try {
-        const response = await getTravelTour();
-        const data = response.travelTours || response;
-        // console.log("Dữ liệu nhận được:", data);
-
-        setTravelTours(Array.isArray(data) ? data : []);
-      } catch (error) {
-        console.log("Lỗi khi lấy dữ liệu từ API", error);
-        setTravelTours([]);
-      }
-    };
-
-    fetchTravelTours();
-  }, []);
 
   // Toggle dropdown
   const toggleDropdown = (id) => {
@@ -264,14 +233,18 @@ export default function ModalAddTour({ onClose }) {
                 Dịch vụ
               </label>
               <select className="w-full p-2 border rounded text-gray-500">
-                <option value="" disabled selected>
+                <option value="" disabled>
                   Chọn dịch vụ kèm theo
                 </option>
-                {services.map((service) => (
-                  <option key={service.id} value={service.id}>
-                    {service?.name_service}
-                  </option>
-                ))}
+                {services.length > 0 ? (
+                  services.map((service) => (
+                    <option key={service.id} value={service.id}>
+                      {service.name_service}
+                    </option>
+                  ))
+                ) : (
+                  <option disabled>Không có dịch vụ</option>
+                )}
               </select>
 
               {/* Ảnh minh họa */}
@@ -317,7 +290,7 @@ export default function ModalAddTour({ onClose }) {
                     ></div>
                   )}
 
-                  <div className="mt-4 mb-4 bg-white">
+                  {/* <div className="mt-4 mb-4 bg-white">
                     <table className="w-full border-collapse border rounded-lg shadow-md bg-white">
                       <thead>
                         <tr className="text-SmokyGray">
@@ -328,64 +301,78 @@ export default function ModalAddTour({ onClose }) {
                           <th className="p-2"></th>
                         </tr>
                       </thead>
-                      <tbody>
-                        {travelTours.map((travelTour, index) => (
-                          <tr
-                            key={travelTour.id}
-                            className={`border-t text-center ${
-                              index % 2 === 0 ? "bg-white" : "bg-[#e4e4e7]"
-                            }`}
-                          >
-                            <td className="p-2 text-left">
-                              {formatDayDMY(travelTour.start_time)}
-                            </td>
-                            <td className="p-2">
-                              {formatDayDMY(travelTour.end_time)}
-                            </td>
-                            <td className="p-2">{travelTour.max_people}</td>
-                            <td className="p-2 text-RedPrice">
-                              {travelTour.price_tour.toLocaleString("vi-VN")}{" "}
-                              VNĐ
-                            </td>
-                            <td className="flex justify-end p-2 relative">
-                              {/* Nút 3 chấm */}
-                              <button
-                                onClick={() => toggleDropdown(travelTour.id)}
-                                className="relative"
-                              >
-                                <HiOutlineDotsHorizontal className="text-xl cursor-pointer" />
-                              </button>
+                      {travelTours.length > 0 ? (
+                        <tbody>
+                          {travelTours.map((travelTour, index) => (
+                            <tr
+                              key={travelTour.id}
+                              className={`border-t text-center ${
+                                index % 2 === 0 ? "bg-white" : "bg-[#e4e4e7]"
+                              }`}
+                            >
+                              <td className="p-2 text-left">
+                                {formatDayDMY(travelTour.start_time)}
+                              </td>
+                              <td className="p-2">
+                                {formatDayDMY(travelTour.end_time)}
+                              </td>
+                              <td className="p-2">{travelTour.max_people}</td>
+                              <td className="p-2 text-RedPrice">
+                                {travelTour.price_tour.toLocaleString("vi-VN")}{" "}
+                                VNĐ
+                              </td>
+                              <td className="flex justify-end p-2 relative">
+                                <button
+                                  onClick={() => toggleDropdown(travelTour.id)}
+                                  className="relative"
+                                >
+                                  <HiOutlineDotsHorizontal className="text-xl cursor-pointer" />
+                                </button>
 
-                              {/* Dropdown menu */}
-                              {openDropdown === travelTour.id && (
-                                <div className="absolute right-0 mt-2 w-48 bg-white shadow-md rounded-md z-10">
-                                  <button className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left whitespace-nowrap">
-                                    <MdEdit className="mr-2 text-gray-700" />{" "}
-                                    Cập nhật chuyến đi
-                                  </button>
-                                  <button className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left whitespace-nowrap">
-                                    <MdEdit className="mr-2 text-gray-700" />{" "}
-                                    Thêm hành trình
-                                  </button>
-                                  <button
-                                    onClick={() =>
-                                      console.log(
-                                        "Xóa hành trình",
-                                        travelTour.id
-                                      )
-                                    }
-                                    className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left text-red-600 whitespace-nowrap"
-                                  >
-                                    <MdDelete className="mr-2" /> Xóa hành trình
-                                  </button>
-                                </div>
-                              )}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
+                                {openDropdown === travelTour.id && (
+                                  <div className="absolute right-0 mt-2 w-48 bg-white shadow-md rounded-md z-10">
+                                    <button className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left whitespace-nowrap">
+                                      <MdEdit className="mr-2 text-gray-700" />{" "}
+                                      Cập nhật chuyến đi
+                                    </button>
+                                    <button className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left whitespace-nowrap">
+                                      <MdEdit className="mr-2 text-gray-700" />{" "}
+                                      Thêm hành trình
+                                    </button>
+                                    <button
+                                      onClick={() =>
+                                        console.log(
+                                          "Xóa hành trình",
+                                          travelTour.id
+                                        )
+                                      }
+                                      className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left text-red-600 whitespace-nowrap"
+                                    >
+                                      <MdDelete className="mr-2" /> Xóa hành
+                                      trình
+                                    </button>
+                                  </div>
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      ) : (
+                        <tr>
+                          <td colSpan="5" className="p-6 text-center">
+                            <div className="flex flex-col items-center">
+                              <div className="p-4 bg-gray-100 rounded-full mb-2">
+                                <HiOutlineInbox className="text-4xl text-gray-500" />
+                              </div>
+                              <p className="text-gray-500 text-lg">
+                                Chưa có hành trình nào
+                              </p>
+                            </div>
+                          </td>
+                        </tr>
+                      )}
                     </table>
-                  </div>
+                  </div> */}
                 </div>
               </div>
               <div>
