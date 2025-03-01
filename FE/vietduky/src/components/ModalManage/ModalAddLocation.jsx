@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createLocation } from "../../services/location.api";
+import { createLocation } from "../../services/API/location.api";
 
 export default function ModalAddLocation({ onClose, onSuccess }) {
   const [locationName, setLocationName] = useState("");

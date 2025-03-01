@@ -1,4 +1,4 @@
-import restClient from "./restClient";
+import restClient from "../restClient";
 // import { StorageService } from "./storage";
 
 export function getTours(page = 1, limit = 10) {

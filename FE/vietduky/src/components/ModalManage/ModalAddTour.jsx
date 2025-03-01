@@ -3,11 +3,14 @@ import { FaArrowRight } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
-import { getTravelTour } from "../../services/travel_tour.api";
+import { getTravelTour } from "../../services/API/travel_tour.api";
+import { getService } from "../../services/API/service.api";
 import { formatDayDMY } from "../../utils/dateUtil";
 
 export default function ModalAddTour({ onClose }) {
   const [locations, setLocations] = useState([]);
+  const [services, setServices] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [tourData, setTourData] = useState({
     name_tour: "",
     price_tour: "",
@@ -26,6 +29,23 @@ export default function ModalAddTour({ onClose }) {
       .then((res) => res.json())
       .then((data) => setLocations(data))
       .catch((error) => console.error("Lỗi khi tải vị trí:", error));
+  }, []);
+
+  useEffect(() => {
+    const fetchService = async () => {
+      try {
+        const response = await getService();
+        const data = response.services || response;
+        console.log("Dữ liệu nhận được:", data);
+
+        setServices(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.log("Lỗi khi lấy dữ liệu từ API", error);
+        setServices([]);
+      }
+    };
+
+    fetchService();
   }, []);
 
   // Xử lý khi thay đổi input
@@ -84,6 +104,28 @@ export default function ModalAddTour({ onClose }) {
 
     fetchTravelTours();
   }, []);
+
+  // Toggle dropdown
+  const toggleDropdown = (id) => {
+    setOpenDropdown(openDropdown === id ? null : id);
+  };
+
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      const response = await deleteTravelTour(id);
+      alert("Xóa hành trình thành công");
+      setTravelTours((prev) =>
+        prev.filter((travelTour) => travelTour.id !== id)
+      );
+    } catch (error) {
+      alert("Có lỗi xảy ra, vui lòng thử lại!");
+      console.log("Lỗi khi xóa hành trình", error);
+    }
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center">
@@ -225,9 +267,11 @@ export default function ModalAddTour({ onClose }) {
                 <option value="" disabled selected>
                   Chọn dịch vụ kèm theo
                 </option>
-                <option value="hanoi">Hà Nội</option>
-                <option value="hcm">TP. Hồ Chí Minh</option>
-                <option value="danang">Đà Nẵng</option>
+                {services.map((service) => (
+                  <option key={service.id} value={service.id}>
+                    {service?.name_service}
+                  </option>
+                ))}
               </select>
 
               {/* Ảnh minh họa */}
@@ -255,7 +299,10 @@ export default function ModalAddTour({ onClose }) {
                     <button className="border px-4 py-2 rounded-md">
                       Nhập danh sách hành trình
                     </button>
-                    <button className="bg-red-700 text-white px-4 py-2 rounded-md">
+                    <button
+                      className="bg-red-700 text-white px-4 py-2 rounded-md"
+                      onClick={toggleModal}
+                    >
                       Thêm hành trình
                     </button>
                   </div>

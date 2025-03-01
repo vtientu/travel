@@ -4,7 +4,7 @@ import { formatDate } from "../../utils/dateUtil";
 import {
   getTravelTour,
   deleteTravelTour,
-} from "../../services/travel_tour.api";
+} from "../../services/API/travel_tour.api";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { useEffect, useState } from "react";
 import ModalAddTravelTour from "../../components/ModalManage/ModalAddTravelTour";

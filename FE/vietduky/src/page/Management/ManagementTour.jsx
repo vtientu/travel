@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getTours } from "../../services/tour.api";
+import { getTours } from "../../services/API/tour.api";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import Layout from "../../layouts/LayoutManagement";
 import ModalAddTour from "../../components/ModalManage/ModalAddTour";

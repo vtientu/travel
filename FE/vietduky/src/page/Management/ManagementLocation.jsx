@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Layout from "../../layouts/LayoutManagement";
-import { getLocations, deleteLocation } from "../../services/location.api";
+import { getLocations, deleteLocation } from "../../services/API/location.api";
 import { LuSearch } from "react-icons/lu";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import ModalAddLocation from "../../components/ModalManage/ModalAddLocation";
