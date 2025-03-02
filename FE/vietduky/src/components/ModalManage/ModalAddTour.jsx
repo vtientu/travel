@@ -3,7 +3,12 @@ import { FaArrowRight } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { HiOutlineDotsHorizontal, HiOutlineInbox } from "react-icons/hi";
-import { fetchLocations, fetchServices, fetchTravelTours } from "../../services/service";
+import {
+  fetchLocations,
+  fetchServices,
+  fetchTravelTours,
+} from "../../services/service";
+import { createTour } from "../../services/API/tour.api";
 import { formatDayDMY } from "../../utils/dateUtil";
 
 export default function ModalAddTour({ onClose }) {
@@ -14,10 +19,11 @@ export default function ModalAddTour({ onClose }) {
     name_tour: "",
     price_tour: "",
     day_number: "",
-    max_people: "",
+    max_people: "10",
     activity_description: "",
     start_location: "",
     end_location: "",
+    available_month: "3",
     type_id: "",
     service_id: "",
     rating_tour: "5",
@@ -41,6 +47,10 @@ export default function ModalAddTour({ onClose }) {
     setTourData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleEditorChange = (content) => {
+    setTourData((prev) => ({ ...prev, activity_description: content }));
+  };
+
   // Xử lý tải ảnh
   const handleFileChange = (e) => {
     setTourData((prev) => ({ ...prev, image: e.target.files[0] }));
@@ -49,28 +59,30 @@ export default function ModalAddTour({ onClose }) {
   // Xử lý gửi dữ liệu lên API
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const formData = new FormData();
-    Object.keys(tourData).forEach((key) => {
-      formData.append(key, tourData[key]);
-    });
-
+  
+    if (!tourData.activity_description.trim()) {
+      alert("Vui lòng nhập mô tả hành trình!");
+      return;
+    }
+  
     try {
-      const response = await fetch("http://localhost:3000/api/tour/create", {
-        method: "POST",
-        body: formData,
+      const formData = new FormData();
+      Object.keys(tourData).forEach((key) => {
+        if (tourData[key] !== null && tourData[key] !== undefined) {
+          formData.append(key, tourData[key]);
+        }
       });
-
-      const result = await response.json();
-      if (response.ok) {
-        alert("Tạo tour thành công!");
-        onClose(); // Đóng modal sau khi tạo tour thành công
+  
+      const response = await createTour(formData);
+      if (response) {
+        alert("Tạo Tour mới thành công");
+        onClose();
       } else {
-        alert(`Lỗi: ${result.message}`);
+        alert("Có lỗi xảy ra, vui lòng thử lại!");
       }
     } catch (error) {
-      console.error("Lỗi khi gửi dữ liệu:", error);
-      alert("Đã xảy ra lỗi!");
+      alert(`Lỗi: ${JSON.stringify(error.response?.data)}`);
+      console.error("Lỗi API:", error.response?.data || error.message);
     }
   };
 
@@ -119,7 +131,6 @@ export default function ModalAddTour({ onClose }) {
                 placeholder="Mã tour"
                 // value={tourData.name_tour}
                 // onChange={handleChange}
-                required
               />
 
               {/* Tên Tour */}
@@ -219,20 +230,40 @@ export default function ModalAddTour({ onClose }) {
               <label className="block mb-2 font-medium before:content-['*'] before:text-red-500 before:mr-1">
                 Loại Tour
               </label>
-              <select className="w-full p-2 border rounded text-gray-500">
+              {/* <select className="w-full p-2 border rounded text-gray-500">
                 <option value="" disabled selected>
                   Chọn loại Tour
                 </option>
                 <option value="hanoi">Hà Nội</option>
                 <option value="hcm">TP. Hồ Chí Minh</option>
                 <option value="danang">Đà Nẵng</option>
-              </select>
+              </select> */}
+              <input
+                type="text"
+                name="type_id"
+                className="w-full p-2 border rounded mb-4"
+                placeholder="Nhập loại tour"
+                value={tourData.type_id}
+                onChange={handleChange}
+                required
+              />
 
               {/* Dịch vụ */}
               <label className="block mb-2 font-medium before:content-['*'] before:text-red-500 before:mr-1">
                 Dịch vụ
               </label>
-              <select className="w-full p-2 border rounded text-gray-500">
+              <select
+                name="service_id"
+                className="w-full p-2 border rounded text-gray-500"
+                value={tourData.service_id} // Giữ service_id đúng giá trị ID
+                onChange={(e) => {
+                  setTourData((prev) => ({
+                    ...prev,
+                    service_id: e.target.value,
+                  }));
+                }}
+                required
+              >
                 <option value="" disabled>
                   Chọn dịch vụ kèm theo
                 </option>
@@ -290,7 +321,7 @@ export default function ModalAddTour({ onClose }) {
                     ></div>
                   )}
 
-                  {/* <div className="mt-4 mb-4 bg-white">
+                  <div className="mt-4 mb-4 bg-white">
                     <table className="w-full border-collapse border rounded-lg shadow-md bg-white">
                       <thead>
                         <tr className="text-SmokyGray">
@@ -372,14 +403,17 @@ export default function ModalAddTour({ onClose }) {
                         </tr>
                       )}
                     </table>
-                  </div> */}
+                  </div>
                 </div>
               </div>
               <div>
                 <label className="block mb-2 font-medium">
                   Mô tả hành trình
                 </label>
-                <TextEditor />
+                <TextEditor
+                  value={tourData.activity_description}
+                  onChange={handleEditorChange}
+                />
               </div>
             </div>
           </div>

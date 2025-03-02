@@ -22,6 +22,9 @@ export function createTour(data) {
     url: "tour/create",
     method: "POST",
     data,
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
   })
     .then(response => {
       //   console.log("Dữ liệu API trả về:", response.data); 
