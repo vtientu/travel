@@ -16,7 +16,7 @@ import LayoutLandingPage from "./layouts/LayoutLandingPage.jsx";
 import ManagementHotel from "./page/Management/ManagementHotel.jsx";
 import ManagementRestaurant from "./page/Management/ManagementRestaurant.jsx";
 import ManagementVehicle from "./page/Management/ManagementVehicle.jsx";
-import ModalAddTour from "./components/ModalManage/ModalAddTour.jsx";
+// import ModalAddTour from "./components/ModalManage/ModalAddTour.jsx";
 
 function App() {
   return (
@@ -42,7 +42,7 @@ function App() {
           <Route path={"/managementRestaurant"} element={<ManagementRestaurant/>}/>
           <Route path={"/managementVehicle"} element={<ManagementVehicle/>}/>
 
-          <Route path={"/modalL"} element={<ModalAddTour/>}/>
+          {/* <Route path={"/modalL"} element={<ModalAddTour/>}/> */}
         </Routes>
     </BrowserRouter>
   );

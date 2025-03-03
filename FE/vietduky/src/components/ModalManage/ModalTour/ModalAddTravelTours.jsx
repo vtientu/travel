@@ -1,18 +1,40 @@
-import { useState } from "react";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import { useEffect, useState } from "react";
 import { FaArrowRight } from "react-icons/fa";
-import { createTravelTour } from "../../services/API/travel_tour.api";
+import { useLocation } from "react-router-dom";
 
-export default function ModalAddTravelTour({ onClose }) {
+export default function TestModal({ onClose, onAddTravelTour }) {
   const [loading, setLoading] = useState(false);
   const [travelTourData, setTravelTourData] = useState({
-    tour_id: "", // Cần nhập ID Tour
-    start_time: new Date(),
-    end_time: new Date(),
+    start_time: new Date().toISOString().split("T")[0], // Định dạng YYYY-MM-DD
+    end_time: new Date().toISOString().split("T")[0],
     max_people: "",
     price_tour: "",
   });
+
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+
+  useEffect(() => {
+    const start_time = searchParams.get("start_time");
+    const end_time = searchParams.get("end_time");
+    const max_people = searchParams.get("max_people");
+    const price_tour = searchParams.get("price_tour");
+
+    if (start_time && end_time && max_people && price_tour) {
+      const newTravelTour = {
+        start_time,
+        end_time,
+        max_people: parseInt(max_people, 10),
+        price_tour: parseInt(price_tour, 10),
+      };
+
+      setTourData((prev) => ({
+        ...prev,
+        travel_tour: [...prev.travel_tour, newTravelTour],
+      }));
+    }
+  }, [location.search]); // Chạy lại khi query string thay đổi
+
 
   // Cập nhật state khi nhập dữ liệu
   const handleChange = (e) => {
@@ -23,37 +45,19 @@ export default function ModalAddTravelTour({ onClose }) {
     }));
   };
 
-  // Cập nhật ngày
-  const handleDateChange = (date, field) => {
-    setTravelTourData((prev) => ({
-      ...prev,
-      [field]: date,
-    }));
-  };
-
-  const handleSubmit = async (e) => {
+  // Submit form
+  const handleSubmit = (e) => {
     e.preventDefault();
-    setLoading(true);
-
-    const formattedData = {
-      ...travelTourData,
-      start_time: travelTourData.start_time.toISOString().split("T")[0], // Chuyển ngày về format YYYY-MM-DD
-      end_time: travelTourData.end_time.toISOString().split("T")[0],
-      max_people: parseInt(travelTourData.max_people, 10), // Đảm bảo là số nguyên
-      price_tour: parseFloat(travelTourData.price_tour), // Đảm bảo là số
+    e.stopPropagation();
+    const newTravelTour = {
+      start_time: travelTourData.start_time,
+      end_time: travelTourData.end_time,
+      max_people: travelTourData.max_people,
+      price_tour: travelTourData.price_tour,
     };
 
-    try {
-      const response = await createTravelTour(formattedData);
-
-      alert("Thêm Travel Tour thành công!");
-      onClose();
-    } catch (error) {
-      alert("Có lỗi xảy ra, vui lòng thử lại!");
-      console.log("Lỗi khi thêm Travel Tour", error);
-    } finally {
-      setLoading(false);
-    }
+    onAddTravelTour(newTravelTour); // Thêm vào danh sách
+    onClose(); // Đóng modal
   };
 
   return (
@@ -63,34 +67,19 @@ export default function ModalAddTravelTour({ onClose }) {
           <h2 className="text-lg font-semibold">Thêm Travel Tour</h2>
           <h6 className="text-sm mb-4">Quản trị viên thêm Travel Tour trong Tour</h6>
 
-          {/* ID Tour */}
-          {/* <label className="block mb-2 font-medium">
-            ID Tour <span className="text-red-500">*</span>
-          </label>
-          <input
-            type="number"
-            name="tour_id"
-            value={travelTourData.tour_id}
-            onChange={handleChange}
-            className="w-full p-2 border rounded"
-            placeholder="Nhập ID Tour"
-            required
-          /> */}
-
           <div className="flex items-center gap-4 mt-4">
             {/* Ngày khởi hành */}
             <div>
               <label className="block mb-2 font-medium">
                 Ngày khởi hành <span className="text-red-500">*</span>
               </label>
-              <DatePicker
-                selected={travelTourData.start_time}
-                onChange={(date) => handleDateChange(date, "start_time")}
-                selectsStart
-                startDate={travelTourData.start_time}
-                endDate={travelTourData.end_time}
-                dateFormat="yyyy-MM-dd"
+              <input
+                type="date"
+                name="start_time"
+                value={travelTourData.start_time}
+                onChange={handleChange}
                 className="w-[200px] p-2 border rounded text-gray-500"
+                required
               />
             </div>
 
@@ -101,15 +90,13 @@ export default function ModalAddTravelTour({ onClose }) {
               <label className="block mb-2 font-medium">
                 Ngày về <span className="text-red-500">*</span>
               </label>
-              <DatePicker
-                selected={travelTourData.end_time}
-                onChange={(date) => handleDateChange(date, "end_time")}
-                selectsEnd
-                startDate={travelTourData.start_time}
-                endDate={travelTourData.end_time}
-                minDate={travelTourData.start_time}
-                dateFormat="yyyy-MM-dd"
+              <input
+                type="date"
+                name="end_time"
+                value={travelTourData.end_time}
+                onChange={handleChange}
                 className="w-[200px] p-2 border rounded text-gray-500"
+                required
               />
             </div>
           </div>
@@ -148,7 +135,8 @@ export default function ModalAddTravelTour({ onClose }) {
               Hủy
             </button>
             <button
-              type="submit"
+              type="button"
+              onClick={handleSubmit}
               className="bg-red-700 text-white px-4 py-2 rounded"
               disabled={loading}
             >

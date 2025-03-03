@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { getTours } from "../../services/API/tour.api";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import Layout from "../../layouts/LayoutManagement";
-import ModalAddTour from "../../components/ModalManage/ModalAddTour";
+import ModalAddTour from "../../components/ModalManage/ModalTour/ModalAddTour";
 import { LuSearch } from "react-icons/lu";
 import { MdDelete, MdEdit } from "react-icons/md";
 import DropdownMenu from "../../components/Dropdown/DropdownMenuTour";
