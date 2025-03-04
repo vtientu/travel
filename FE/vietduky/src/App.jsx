@@ -1,4 +1,5 @@
 import "./App.css";
+import Icons from "./components/Icons/Icon.jsx";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LoginPage from "./page/LoginPage.jsx";
 import PersonalAIPage from "./page/PersonalAIPage.jsx";

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import Icons from "../Icons/Icon";
 
 export default function Sidebar({ setSelectedMenu }) {
   const [selected, setSelected] = useState(null);
@@ -7,28 +8,59 @@ export default function Sidebar({ setSelectedMenu }) {
   const location = useLocation();
 
   const menuItems = [
-    { id: 1, name: "Thống kê", path: "/#" },
-    { id: 2, name: "Quản lý chuyến du lịch", path: "/managementTour" },
-    { id: 3, name: "Quản lý địa điểm ", path: "/managementLocation" },
-    { id: 4, name: "Quản lý hành trình", path: "/managementTravelTour" },
-    { id: 5, name: "Quản lý khách sạn", path: "/managementHotel" },
-    { id: 6, name: "Quản lý nhà hàng", path: "/managementRestaurant" },
+    { id: 1, name: "Thống kê", icon: Icons.Sidebar, path: "/#" },
+    {
+      id: 2,
+      name: "Quản lý chuyến du lịch",
+      icon: Icons.TourIcon,
+      path: "/managementTour",
+    },
+    {
+      id: 3,
+      name: "Quản lý hành trình",
+      icon: Icons.TravelTourIcon,
+      path: "/managementTravelTour",
+    },
+    {
+      id: 4,
+      name: "Quản lý địa điểm",
+      icon: Icons.LocationIcon,
+      path: "/managementLocation",
+    },
+    {
+      id: 5,
+      name: "Quản lý khách sạn",
+      icon: Icons.HotelIcon,
+      path: "/managementHotel",
+    },
+    {
+      id: 6,
+      name: "Quản lý nhà hàng",
+      icon: Icons.RestaurantIcon,
+      path: "/managementRestaurant",
+    },
     {
       id: 7,
       name: "Quản lý phương tiện",
+      icon: Icons.VehicleIcon,
       path: "/managementVehicle",
       subItems: [
-        { id: 101, name: "Loại phương tiện"},
-        { id: 102, name: "Phương tiện"},
+        { id: 101, name: "Loại phương tiện" },
+        { id: 102, name: "Phương tiện" },
       ],
     },
-    { id: 8, name: "Quản lý khuyến mãi", path: "/#" },
-    { id: 9, name: "Quản lý dịch vụ", path: "/#" },
+    {
+      id: 8,
+      name: "Quản lý khuyến mãi",
+      icon: Icons.PromotionIcon,
+      path: "/#",
+    },
+    { id: 9, name: "Quản lý dịch vụ", icon: Icons.ServiceIcon, path: "/#" },
   ];
 
   const systemItems = [
-    { id: 10, name: "Cấu hình hệ thống" },
-    { id: 11, name: "Quản lý tài khoản" }
+    { id: 10, name: "Cấu hình hệ thống", icon: Icons.SystemConfigIcon },
+    { id: 11, name: "Quản lý tài khoản", icon: Icons.AccountIcon },
   ];
 
   useEffect(() => {
@@ -59,13 +91,24 @@ export default function Sidebar({ setSelectedMenu }) {
             {menuItems.map((item) => (
               <li
                 key={item.id}
-                className={`p-1 rounded mb-2 cursor-pointer ${
+                className={`flex items-center gap-2 p-1 rounded mb-2 cursor-pointer ${
                   selected === item.id ? "bg-[#F4F4F5] text-black" : ""
                 }`}
                 onClick={() => {
                   navigate(item.path);
                 }}
               >
+                {item.icon && (
+                  <img
+                    src={item.icon}
+                    alt={item.name}
+                    width={16}
+                    height={16}
+                    className={`transition-all ${
+                      selected === item.id ? "" : "filter invert"
+                    }`}
+                  />
+                )}
                 {item.name}
               </li>
             ))}
@@ -77,7 +120,7 @@ export default function Sidebar({ setSelectedMenu }) {
             {systemItems.map((item) => (
               <li
                 key={item.id}
-                className={`p-2 rounded mb-2 cursor-pointer ${
+                className={`flex items-center gap-2 p-2 rounded mb-2 cursor-pointer ${
                   selected === item.id ? "bg-[#F4F4F5] text-black" : ""
                 }`}
                 onClick={() => {
@@ -85,6 +128,17 @@ export default function Sidebar({ setSelectedMenu }) {
                   setSelectedMenu(item.name);
                 }}
               >
+                {item.icon && (
+                  <img
+                    src={item.icon}
+                    alt={item.name}
+                    width={16}
+                    height={16}
+                    className={`transition-all ${
+                      selected === item.id ? "" : "filter invert"
+                    }`}
+                  />
+                )}
                 {item.name}
               </li>
             ))}

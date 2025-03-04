@@ -1,118 +1,97 @@
 import { useState } from "react";
+import { createLocation } from "../../services/location.api";
 
-export default function ModalAddLocation({ onClose }) {
+export default function ModalAddLocation({ onClose, onSuccess }) {
   const [locationName, setLocationName] = useState("");
-  const [description, setDescription] = useState("");
-  const [loading, setLoading] = useState(false); // Trạng thái loading
-  const [error, setError] = useState(""); // Lưu lỗi nếu có
+  const [loading, setLoading] = useState(false);
 
+  // Xử lý submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError("");
-
-    if (!locationName.trim()) {
-      setError("Tên địa điểm không được để trống!");
-      setLoading(false);
-      return;
-    }
 
     try {
-      const response = await fetch("http://localhost:3000/api/location/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: locationName.trim(),
-          description: description.trim(),
-        }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        alert("Thêm địa điểm thành công!");
-        setLocationName("");
-        setDescription("");
-        onClose();
-        window.location.reload();
-      } else {
-        setError(data.message || "Có lỗi xảy ra, vui lòng thử lại!");
-      }
-    } catch (err) {
-      setError("Không thể kết nối đến API!");
+      const newLocation = {
+        name: locationName,
+      };
+      const response = await createLocation(newLocation);
+      alert("Thêm địa điểm thành công");
+      onSuccess(response);
+      onClose();
+    } catch (error) {
+      alert("Có lỗi xảy ra, vui lòng thử lại!");
+      console.log("Lỗi khi thêm địa điểm", error);
     } finally {
       setLoading(false);
     }
   };
+
   return (
-      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-        <div className="bg-white rounded-lg shadow-lg w-1/4 p-6">
-          <form onSubmit={handleSubmit}>
-            <div className="relative pb-3">
-              <h2 className="text-lg font-semibold">Thêm địa điểm</h2>
-              <p className="text-gray-500 mb-4">Quản trị viên thêm địa điểm cho Tour</p>
-              <button
-                  type="button"
-                  onClick={onClose}
-                  className="absolute top-0 right-0 text-gray-500 hover:text-gray-700 text-2xl leading-none"
-              >
-                &times;
-              </button>
-            </div>
-
-            {/* Hiển thị lỗi nếu có */}
-            {error && <p className="text-red-500 mb-2">{error}</p>}
-
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white rounded-lg shadow-lg w-1/4 p-6">
+        <form onSubmit={handleSubmit}>
+          <div className="relative pb-3">
+            {/* Tiêu đề và mô tả */}
             <div>
-              {/* Tên địa điểm */}
-              <div className="mb-4">
-                <label className="block font-medium mb-1">Tên địa điểm</label>
-                <input
-                    type="text"
-                    className="w-full border rounded p-2"
-                    placeholder="Nhập tên địa điểm"
-                    value={locationName}
-                    onChange={(e) => setLocationName(e.target.value)}
-                    required
-                />
-              </div>
-
-              {/* Mô tả */}
-              <div className="mb-4">
-                <label className="block font-medium mb-1">Mô tả</label>
-                <textarea
-                    className="w-full border rounded p-2"
-                    rows="3"
-                    placeholder="Nhập mô tả"
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    required
-                />
-              </div>
+              <h2 className="text-lg font-semibold">Thêm địa điểm</h2>
+              <p className="text-gray-500 mb-4">
+                Quản trị viên thêm địa điểm cho Tour
+              </p>
             </div>
 
-            {/* Button Actions */}
-            <div className="flex justify-end gap-4 mt-4">
-              <button
-                  type="button"
-                  className="hover:bg-gray-300 hover:text-white border border-solid border-gray-300 px-4 py-2 rounded-md"
-                  onClick={onClose}
-                  disabled={loading}
-              >
-                Hủy
-              </button>
-              <button
-                  type="submit"
-                  className="bg-red-700 text-white px-4 py-2 rounded-md"
-                  disabled={loading}
-              >
-                {loading ? "Đang gửi..." : "Tạo mới"}
-              </button>
+            {/* Nút đóng ở góc trên cùng bên phải */}
+            <button
+              onClick={onClose}
+              className="absolute top-0 right-0 text-gray-500 hover:text-gray-700 text-2xl leading-none"
+            >
+              &times;
+            </button>
+          </div>
+
+          <div>
+            {/* Tên địa điểm */}
+            <div className="mb-4">
+              <label className="block font-medium mb-1">Tên địa điểm</label>
+              <input
+                type="text"
+                className="w-full border rounded p-2"
+                placeholder="Nhập tên địa điểm"
+                value={locationName}
+                onChange={(e) => setLocationName(e.target.value)}
+                required
+              />
             </div>
-          </form>
-        </div>
+
+            {/* Mô tả */}
+            {/* <div className="mb-4">
+              <label className="block font-medium mb-1">Mô tả</label>
+              <textarea
+                className="w-full border rounded p-2"
+                rows="3"
+                placeholder="Nhập mô tả"
+                value={description}
+                // onChange={(e) => setDescription(e.target.value)}
+              />
+            </div> */}
+          </div>
+          {/* Button Actions */}
+          <div className="flex justify-end gap-4 mt-4">
+            <button
+              type="button"
+              className="hover:bg-gray-300 hover:text-white border border-solid border-gray-300 px-4 py-2 rounded-md"
+              onClick={onClose}
+            >
+              Hủy
+            </button>
+            <button
+              type="submit"
+              className="bg-red-700 text-white px-4 py-2 rounded-md"
+            >
+              Tạo mới
+            </button>
+          </div>
+        </form>
       </div>
+    </div>
   );
 }
