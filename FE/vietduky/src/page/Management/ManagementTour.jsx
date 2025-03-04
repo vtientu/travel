@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { getTours } from "../../services/API/tour.api";
-import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import Layout from "../../layouts/LayoutManagement";
 import ModalAddTour from "../../components/ModalManage/ModalTour/ModalAddTour";
 import { LuSearch } from "react-icons/lu";
-import { MdDelete, MdEdit } from "react-icons/md";
 import DropdownMenu from "../../components/Dropdown/DropdownMenuTour";
+import ModalManageTravelTour from "../../components/ModalManage/ModalTour/ModalManageTravelTour"; // Import modal quản lý hành trình
 
 export default function ManagementTour() {
   const [tours, setTours] = useState([]);
   const [location, setLocation] = useState("");
   const [priceFilter, setPriceFilter] = useState("");
+  const [selectedTour, setSelectedTour] = useState(null);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAddTourModalOpen, setIsAddTourModalOpen] = useState(false); // Modal thêm Tour
+  const [isManageTravelTourModalOpen, setIsManageTravelTourModalOpen] = useState(false); // Modal quản lý hành trình
   const [openDropdown, setOpenDropdown] = useState(null);
 
   // Toggle dropdown
@@ -20,8 +21,14 @@ export default function ManagementTour() {
     setOpenDropdown(openDropdown === id ? null : id);
   };
 
-  const toggleModal = () => {
-    setIsModalOpen(!isModalOpen);
+  // Mở/đóng modal thêm Tour
+  const toggleAddTourModal = () => {
+    setIsAddTourModalOpen(!isAddTourModalOpen);
+  };
+
+  // Mở/đóng modal quản lý hành trình
+  const toggleManageTravelTourModal = () => {
+    setIsManageTravelTourModalOpen(!isManageTravelTourModalOpen);
   };
 
   // call API to get tours
@@ -29,7 +36,6 @@ export default function ManagementTour() {
     const fetchTours = async () => {
       try {
         const data = await getTours();
-        // console.log("Dữ liệu nhận được:", data);
         setTours(Array.isArray(data) ? data : []);
       } catch (error) {
         console.log("Lỗi khi lấy dữ liệu từ API", error);
@@ -39,6 +45,15 @@ export default function ManagementTour() {
 
     fetchTours();
   }, []);
+
+  const handleDeleteTour = (id) => {
+    setTours((prev) => prev.filter((tour) => tour.id !== id));
+  };
+
+  const handleManageTravelTour = (tourId) => {
+    setSelectedTour(tourId); // Lưu ID của tour được chọn
+    toggleManageTravelTourModal(); // Mở modal quản lý hành trình
+  };
 
   return (
     <Layout title="Quản lý Tour">
@@ -89,7 +104,7 @@ export default function ManagementTour() {
           {/* Nút thêm tour */}
           <button
             className="bg-red-700 text-white px-4 py-2 rounded-md shadow-md"
-            onClick={toggleModal}
+            onClick={toggleAddTourModal}
           >
             Thêm Tour mới
           </button>
@@ -114,16 +129,18 @@ export default function ManagementTour() {
                   <th className="p-2">Số ngày</th>
                   <th className="p-2">Số lượng hành trình</th>
                   <th className="p-2">Giá Tour</th>
-                  <th className="text-end p-2">
-                    Thao tác
-                  </th>
+                  <th className="text-end p-2">Thao tác</th>
                 </tr>
               </thead>
               <tbody>
                 {tours.map((tour) => (
                   <tr key={tour.id} className="border-t text-center">
                     <td className="p-2 text-left">{tour.name_tour}</td>
-                    <td className="p-2 text-left">{tour?.startLocation?.name_location}<span> → </span>{tour?.endLocation?.name_location}</td>
+                    <td className="p-2 text-left">
+                      {tour?.startLocation?.name_location}
+                      <span> → </span>
+                      {tour?.endLocation?.name_location}
+                    </td>
                     <td className="p-2">{tour.day_number}</td>
                     <td className="p-2">{tour.max_people}</td>
                     <td className="p-2">
@@ -135,28 +152,14 @@ export default function ManagementTour() {
                         onClick={() => toggleDropdown(tour.id)}
                         className="relative"
                       >
-                        <DropdownMenu tour={tour} />
+                        <DropdownMenu
+                          tour={tour}
+                          onDelete={handleDeleteTour}
+                          onManageTravelTour={() =>
+                            handleManageTravelTour(tour.id)
+                          }
+                        />
                       </button>
-
-                      {/* Dropdown menu */}
-                      {/* {openDropdown === tour.id && (
-                        <div className="absolute right-0 mt-2 w-48 bg-white shadow-md rounded-md z-10">
-                          <button className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left whitespace-nowrap">
-                            <MdEdit className="mr-2 text-gray-700" /> Cập nhật
-                            chuyến đi
-                          </button>
-                          <button className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left whitespace-nowrap">
-                            <MdEdit className="mr-2 text-gray-700" /> Thêm hành
-                            trình
-                          </button>
-                          <button
-                            onClick={() => console.log("Xóa tour", tour.id)}
-                            className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left text-red-600 whitespace-nowrap"
-                          >
-                            <MdDelete className="mr-2" /> Xóa chuyến đi
-                          </button>
-                        </div>
-                      )} */}
                     </td>
                   </tr>
                 ))}
@@ -165,8 +168,16 @@ export default function ManagementTour() {
           </div>
         </div>
 
-        {/* Modal thêm tour */}
-        {isModalOpen && <ModalAddTour onClose={toggleModal} />}
+        {/* Modal thêm Tour */}
+        {isAddTourModalOpen && <ModalAddTour onClose={toggleAddTourModal} />}
+
+        {/* Modal quản lý hành trình */}
+        {isManageTravelTourModalOpen && (
+          <ModalManageTravelTour
+            tourId={selectedTour}
+            onClose={toggleManageTravelTourModal}
+          />
+        )}
       </div>
     </Layout>
   );

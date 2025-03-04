@@ -17,6 +17,21 @@ export function getTravelTour(page = 1, limit = 10) {
     });
 }
 
+export function getTravelTourByTourId(tour_id) {
+  return restClient({
+    url: `travel-tour/tour/${tour_id}`,
+    method: "GET",
+  })
+    .then(response => {
+      //   console.log("Dữ liệu API trả về:", response.data); 
+      return response.data;
+    })
+    .catch(error => {
+      console.error("Lỗi API:", error);
+      throw error;
+    });
+}
+
 export function createTravelTour(data) {
   return restClient({
     url: "travel-tour/create",

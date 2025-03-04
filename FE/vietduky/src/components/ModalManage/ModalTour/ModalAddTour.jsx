@@ -88,6 +88,10 @@ export default function ModalAddTour({ onClose }) {
         }
       });
 
+      for (let[key, value] of formData.entries()) {
+        console.log(`${key}: ${value}`);
+      }
+
       const response = await createTour(formData);
       if (response) {
         alert("Tạo Tour mới thành công");
@@ -111,6 +115,7 @@ export default function ModalAddTour({ onClose }) {
     setOpenDropdown(openDropdown === id ? null : id);
   };
 
+  // Toggle modal
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
@@ -139,7 +144,8 @@ export default function ModalAddTour({ onClose }) {
                 type="text"
                 name="name_tour"
                 className="w-full p-2 border rounded mb-4"
-                placeholder="Mã tour"
+                placeholder="Mã Tour"
+                disabled
               />
 
               {/* Tên Tour */}
@@ -164,7 +170,7 @@ export default function ModalAddTour({ onClose }) {
                   </label>
                   <select
                     name="start_location"
-                    className="w-[230px] p-2 border rounded text-gray-500"
+                    className="w-[320px] p-2 border rounded text-gray-500"
                     value={tourData.start_location}
                     onChange={handleChange}
                     required
@@ -190,7 +196,7 @@ export default function ModalAddTour({ onClose }) {
                   </label>
                   <select
                     name="end_location"
-                    className="w-[230px] p-2 border rounded text-gray-500"
+                    className="w-[320px] p-2 border rounded text-gray-500"
                     value={tourData.end_location}
                     onChange={handleChange}
                     required
