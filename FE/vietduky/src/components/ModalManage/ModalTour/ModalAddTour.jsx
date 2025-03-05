@@ -3,7 +3,11 @@ import { FaArrowRight } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { HiOutlineDotsHorizontal, HiOutlineInbox } from "react-icons/hi";
-import { fetchLocations, fetchServices } from "../../../services/service";
+import {
+  fetchLocations,
+  fetchServices,
+  fetchTypeTours,
+} from "../../../services/service";
 import { createTour } from "../../../services/API/tour.api";
 import { formatDayDMY } from "../../../utils/dateUtil";
 import TestModal from "./ModalAddTravelTours";
@@ -12,6 +16,7 @@ export default function ModalAddTour({ onClose }) {
   const [travelTours, setTravelTours] = useState([]);
   const [locations, setLocations] = useState([]);
   const [services, setServices] = useState([]);
+  const [typeTours, setTypeTours] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [tourData, setTourData] = useState({
     name_tour: "",
@@ -26,7 +31,7 @@ export default function ModalAddTour({ onClose }) {
     service_id: "",
     rating_tour: "5",
     image: null,
-    travel_tour: [],
+    travel_tours: [],
   });
 
   const [openDropdown, setOpenDropdown] = useState(null); // ID của Địa điểm đang mở menu
@@ -35,6 +40,7 @@ export default function ModalAddTour({ onClose }) {
     const fetchData = async () => {
       setLocations(await fetchLocations());
       setServices(await fetchServices());
+      setTypeTours(await fetchTypeTours());
     };
     fetchData();
   }, []);
@@ -52,7 +58,7 @@ export default function ModalAddTour({ onClose }) {
   const handleAddTravelTour = (newTravelTour) => {
     setTourData((prev) => ({
       ...prev,
-      travel_tour: [...prev.travel_tour, newTravelTour],
+      travel_tours: [...prev.travel_tours, newTravelTour],
     }));
     setIsModalOpen(false);
   };
@@ -60,7 +66,7 @@ export default function ModalAddTour({ onClose }) {
   const handleDeleteTravelTour = (index) => {
     setTourData((prev) => ({
       ...prev,
-      travel_tour: prev.travel_tour.filter((_, i) => i !== index),
+      travel_tours: prev.travel_tours.filter((_, i) => i !== index),
     }));
   };
 
@@ -81,14 +87,14 @@ export default function ModalAddTour({ onClose }) {
     try {
       const formData = new FormData();
       Object.keys(tourData).forEach((key) => {
-        if (key === "travel_tour") {
+        if (key === "travel_tours") {
           formData.append(key, JSON.stringify(tourData[key]));
         } else if (tourData[key] !== null && tourData[key] !== undefined) {
           formData.append(key, tourData[key]);
         }
       });
 
-      for (let[key, value] of formData.entries()) {
+      for (let [key, value] of formData.entries()) {
         console.log(`${key}: ${value}`);
       }
 
@@ -99,7 +105,7 @@ export default function ModalAddTour({ onClose }) {
           ...tourData,
           name_tour: "",
           price_tour: "",
-          travel_tour: [],
+          travel_tours: [],
         });
       } else {
         alert("Có lỗi xảy ra, vui lòng thử lại!");
@@ -121,8 +127,8 @@ export default function ModalAddTour({ onClose }) {
   };
 
   useEffect(() => {
-    console.log("Updated travel_tour:", tourData.travel_tour);
-  }, [tourData.travel_tour]);
+    console.log("Updated travel tour:", tourData.travel_tours);
+  }, [tourData.travel_tours]);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center">
@@ -170,7 +176,7 @@ export default function ModalAddTour({ onClose }) {
                   </label>
                   <select
                     name="start_location"
-                    className="w-[320px] p-2 border rounded text-gray-500"
+                    className="w-[250px] p-2 border rounded text-gray-500"
                     value={tourData.start_location}
                     onChange={handleChange}
                     required
@@ -196,7 +202,7 @@ export default function ModalAddTour({ onClose }) {
                   </label>
                   <select
                     name="end_location"
-                    className="w-[320px] p-2 border rounded text-gray-500"
+                    className="w-[250px] p-2 border rounded text-gray-500"
                     value={tourData.end_location}
                     onChange={handleChange}
                     required
@@ -245,23 +251,31 @@ export default function ModalAddTour({ onClose }) {
               <label className="block mb-2 font-medium before:content-['*'] before:text-red-500 before:mr-1">
                 Loại Tour
               </label>
-              {/* <select className="w-full p-2 border rounded text-gray-500">
-                <option value="" disabled selected>
+              <select
+                name="type_id"
+                value={tourData.type_id}
+                onChange={(e) => {
+                  setTourData((prev) => ({
+                    ...prev,
+                    type_id: e.target.value,
+                  }));
+                }}
+                required
+                className="w-full p-2 border rounded text-gray-500"
+              >
+                <option value="" disabled>
                   Chọn loại Tour
                 </option>
-                <option value="hanoi">Hà Nội</option>
-                <option value="hcm">TP. Hồ Chí Minh</option>
-                <option value="danang">Đà Nẵng</option>
-              </select> */}
-              <input
-                type="text"
-                name="type_id"
-                className="w-full p-2 border rounded mb-4"
-                placeholder="Nhập loại tour"
-                value={tourData.type_id}
-                onChange={handleChange}
-                required
-              />
+                {typeTours.length > 0 ? (
+                  typeTours.map((typeTours) => (
+                    <option key={typeTours.id} value={typeTours.id}>
+                      {typeTours.name_type}
+                    </option>
+                  ))
+                ) : (
+                  <option disabled>Không có loại Tour</option>
+                )}
+              </select>
 
               {/* Dịch vụ */}
               <label className="block mb-2 font-medium before:content-['*'] before:text-red-500 before:mr-1">
@@ -339,10 +353,10 @@ export default function ModalAddTour({ onClose }) {
                           <th className="p-2"></th>
                         </tr>
                       </thead>
-                      {tourData.travel_tour.length > 0 ? (
+                      {tourData.travel_tours.length > 0 ? (
                         <tbody>
-                          {tourData.travel_tour.length > 0 ? (
-                            tourData.travel_tour.map((travelTour, index) => (
+                          {tourData.travel_tours.length > 0 ? (
+                            tourData.travel_tours.map((travelTour, index) => (
                               <tr
                                 key={index}
                                 className={`border-t text-center ${

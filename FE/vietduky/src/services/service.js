@@ -3,6 +3,8 @@ import { getService } from "../services/API/service.api";
 import { getLocations, createLocation } from "../services/API/location.api";
 import { getTravelTour } from "../services/API/travel_tour.api";
 import { getTours, createTour } from "../services/API/tour.api";
+import { getTypeTours } from "./API/type_tour";
+import { use } from "react";
 
 export const fetchLocations = async () => {
   try {
@@ -43,3 +45,13 @@ export const fetchTours = async () => {
     return [];
   }
 };
+
+export const fetchTypeTours = async () => {
+  try {
+    const response = await getTypeTours();    
+    return Array.isArray(response) ? response : [];
+  } catch (error) {
+    console.error("Lỗi khi lấy dữ liệu từ API", error);
+    return [];
+  }
+}
