@@ -18,6 +18,7 @@ import ManagementRestaurant from "./page/Management/ManagementRestaurant.jsx";
 import ManagementVehicle from "./page/Management/ManagementVehicle.jsx";
 import ModalAddTour from "./components/ModalManage/ModalTour/ModalManageTravelTour.jsx";
 import ModalManageTravelTour from "./components/ModalManage/ModalTour/ModalManageTravelTour.jsx";
+import BookingTour from "./page/Booking/BookingInformation.jsx";
 
 function App() {
   return (
@@ -44,6 +45,8 @@ function App() {
           <Route path={"/managementVehicle"} element={<ManagementVehicle/>}/>
 
           <Route path={"/modalL"} element={<ModalManageTravelTour/>}/>
+
+          <Route path={"/booking"} element={<BookingTour/>}/>
         </Routes>
     </BrowserRouter>
   );
