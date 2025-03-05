@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const TourRouter = require("./tour.route");
+const TypeTourRouter = require("./typeTour.route");
 const TravelTourRouter = require("./travel_tour.route");
 const LocationRouter = require("./location.route");
 const ServiceRouter = require("./service.route");
@@ -20,6 +21,7 @@ const TravelGuideRouter = require("./travelGuide.route");
 const GuideTourRouter = require("./guideTour.route");
 
 router.use("/tour", TourRouter);
+router.use("/type-tour", TypeTourRouter);
 router.use("/location", LocationRouter);
 router.use("/service", ServiceRouter);
 router.use("/travel-tour", TravelTourRouter);
