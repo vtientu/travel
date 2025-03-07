@@ -20,7 +20,7 @@ import ModalAddTour from "./components/ModalManage/ModalTour/ModalManageTravelTo
 import ModalManageTravelTour from "./components/ModalManage/ModalTour/ModalManageTravelTour.jsx";
 import LayoutBookingTour from "./layouts/LayoutBookingTour.jsx";
 import BookingTour from "./page/Booking/BookingInformation.jsx";
-import BookingDetails from "./page/Booking/BookingDetails.jsx";
+import BookingConfirm from "./page/Booking/BookingConfirm.jsx";
 import BookingComplete from "./page/Booking/BookingComplete.jsx";
 
 function App() {
@@ -50,7 +50,7 @@ function App() {
           <Route path={"/modalL"} element={<ModalManageTravelTour/>}/>
 
           <Route path={"/booking"} element={<BookingTour/>}/>
-          <Route path={"/bookingConfirm"} element={<BookingDetails/>}/>
+          <Route path={"/bookingConfirm"} element={<BookingConfirm/>}/>
           <Route path={"/bookingComplete"} element={<BookingComplete/>}/>
         </Routes>
     </BrowserRouter>

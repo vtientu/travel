@@ -1,31 +1,33 @@
-import React from 'react';
+import React from "react";
 
 const ContactInfo = () => {
   return (
-    <div className="p-6 bg-[#f8f8f8] rounded-lg border border-gray-300 shadow-md">
-      <div className="text-[#d80027] text-lg font-bold">Thông tin liên lạc</div>
-      <div className="border-t border-gray-200 my-3"></div>
+    <div className="p-6 bg-gray-50 rounded-xl shadow-md border border-gray-200">
+      {/* Tiêu đề */}
+      <h2 className="text-red-600 text-lg font-bold">Thông tin liên lạc</h2>
+      <div className="border-t border-gray-300 my-3"></div>
 
-      <div className="grid grid-cols-2 gap-y-4 gap-x-6">
+      {/* Nội dung */}
+      <div className="grid grid-cols-2 gap-4 text-gray-900">
         <div>
-          <div className="text-gray-900 font-bold">Họ tên</div>
-          <div className="text-gray-700">E-DIGI_Google + mạnh</div>
+          <p className="font-semibold">Họ tên</p>
+          <p className="text-gray-700">E-DIGI_Google + mạnh</p>
         </div>
         <div>
-          <div className="text-gray-900 font-bold">Email</div>
-          <div className="text-gray-700">sapoc@gmail.com</div>
+          <p className="font-semibold">Email</p>
+          <p className="text-gray-700">sapoc@gmail.com</p>
         </div>
         <div>
-          <div className="text-gray-900 font-bold">Địa chỉ</div>
-          <div className="text-gray-700">HN</div>
+          <p className="font-semibold">Địa chỉ</p>
+          <p className="text-gray-700">HN</p>
         </div>
         <div>
-          <div className="text-gray-900 font-bold">Điện thoại</div>
-          <div className="text-gray-700">*******005</div>
+          <p className="font-semibold">Điện thoại</p>
+          <p className="text-gray-700">*******005</p>
         </div>
         <div className="col-span-2">
-          <div className="text-gray-900 font-bold">Ghi chú</div>
-          <div className="text-gray-700">Không có ghi chú</div>
+          <p className="font-semibold">Ghi chú</p>
+          <p className="text-gray-700">Không có ghi chú</p>
         </div>
       </div>
     </div>

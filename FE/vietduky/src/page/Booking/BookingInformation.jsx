@@ -9,14 +9,22 @@ import TourBooking from "../../components/BookingTour/TourBooking";
 export default function BookingTour() {
   return (
     <LayoutBookingTour title="Đặt tour">
-      <div className="justify-start items-start gap-2.5 inline-flex">
-        <div className="py-0.5 flex-col justify-start items-start gap-6 inline-flex">
-          <ContactForm />
-          <PassengerInfoForm />
-          <PaymentMethod />
-          <TermsAndConditions />
+      <div className="w-full mx-auto p-6 flex gap-12">
+        {/* Cột trái: Form điền thông tin */}
+        <div className="flex flex-col gap-8 w-2/3">
+          {[
+            ContactForm,
+            PaymentMethod,
+            TermsAndConditions,
+          ].map((Component, index) => (
+            <div key={index} className="p-6 rounded-xl">
+              <Component />
+            </div>
+          ))}
         </div>
-        <div className="flex-col justify-start items-end gap-2.5 inline-flex">
+
+        {/* Cột phải: TourBooking */}
+        <div className="w-1/3 bg-white rounded-xl">
           <TourBooking />
         </div>
       </div>
