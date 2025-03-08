@@ -137,24 +137,95 @@ exports.createBooking = async (req, res) => {
       travel_tour_id,
       number_adult,
       number_children,
+      number_newborn,
       total_cost,
+      name,
+      phone,
+      email,
+      address,
     } = req.body;
+
+    // Kiểm tra các trường bắt buộc
+    if (!user_id || !travel_tour_id || !name || !phone || !email) {
+      return res.status(400).json({
+        message: "Vui lòng điền đầy đủ thông tin bắt buộc!",
+      });
+    }
+
+    // Kiểm tra số lượng người
+    if (number_adult < 0 || number_children < 0 || number_newborn < 0) {
+      return res.status(400).json({
+        message: "Số lượng người không được âm!",
+      });
+    }
+
+    if (number_adult === 0 && number_children === 0 && number_newborn === 0) {
+      return res.status(400).json({
+        message: "Phải có ít nhất một người trong booking!",
+      });
+    }
+
+    // Kiểm tra tổng chi phí
+    if (!total_cost || total_cost <= 0) {
+      return res.status(400).json({
+        message: "Tổng chi phí phải lớn hơn 0!",
+      });
+    }
+
+    // Kiểm tra định dạng email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        message: "Email không hợp lệ!",
+      });
+    }
+
+    // Kiểm tra định dạng số điện thoại
+    const phoneRegex = /(84|0[3|5|7|8|9])+([0-9]{8})\b/;
+    if (!phoneRegex.test(phone)) {
+      return res.status(400).json({
+        message: "Số điện thoại không hợp lệ!",
+      });
+    }
+
+    // Kiểm tra tour có tồn tại không
+    const tour = await TravelTour.findByPk(travel_tour_id);
+    if (!tour) {
+      return res.status(404).json({
+        message: "Tour không tồn tại!",
+      });
+    }
+
+    // Kiểm tra người dùng có tồn tại không
+    const user = await User.findByPk(user_id);
+    if (!user) {
+      return res.status(404).json({
+        message: "Người dùng không tồn tại!",
+      });
+    }
 
     const newBooking = await Booking.create({
       user_id,
       travel_tour_id,
       number_adult,
       number_children,
+      number_newborn,
       total_cost,
+      booking_date: new Date(),
+      name,
+      phone,
+      email,
+      address,
+      status: 0,
     });
 
     res.status(201).json({
-      message: "Booking created successfully!",
+      message: "Đặt tour thành công!",
       data: newBooking,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error creating booking",
+      message: "Lỗi khi đặt tour!",
       error: error.message,
     });
   }

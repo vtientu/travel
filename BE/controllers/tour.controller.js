@@ -21,6 +21,7 @@ exports.getAllTours = async (req, res) => {
             include: [
                 {model: Location, as: "startLocation"},
                 {model: Location, as: "endLocation"},
+                {model: TypeTour, as: "typeTour"},
             ],
         });
         res.json(tours);

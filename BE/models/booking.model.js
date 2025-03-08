@@ -33,6 +33,11 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: true,
         defaultValue: 0,
       },
+      number_newborn: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        defaultValue: 0,
+      },
       total_cost: {
         type: Sequelize.INTEGER,
         allowNull: true,
@@ -43,6 +48,20 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: true,
         defaultValue: 0, // 0: Pending, 1: Confirmed, 2: Canceled
       },
+      name: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      phone: {
+        type: Sequelize.STRING,
+      },
+      email: {
+        type: Sequelize.STRING,
+      },
+      address: {
+        type: Sequelize.STRING,
+      },
+      
     },
     {
       tableName: "booking", // Đảm bảo tên bảng khớp với DB

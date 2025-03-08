@@ -11,10 +11,6 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
-      service_id: {
-        type: Sequelize.INTEGER,
-        allowNull: true,
-      },
       code_tour: {
         type: Sequelize.STRING,
         allowNull: true,
