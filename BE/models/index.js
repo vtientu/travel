@@ -70,6 +70,7 @@ const ProgramDiscount = require("./programDiscount.model.js")(
     sequelize,
     Sequelize
 );
+const TourActivities = require("./tour_activities.model")(sequelize, Sequelize);
 
 // Mối quan hệ (Associations)
 // User/Booking
@@ -205,9 +206,9 @@ Booking.belongsTo(Passenger, {foreignKey: "booking_id", as: "passenger"});
 Service.hasMany(Tour, {foreignKey: "service_id"});
 Tour.belongsTo(Service, {foreignKey: "service_id"});
 
-//TypeVehicle/Vehicle
-// TypeVehicle.hasMany(Vehicle, { foreignKey: "type_vehicle_id" });
-// Vehicle.belongsTo(TypeVehicle, { foreignKey: "type_vehicle_id" });
+//Tour/TourActivities
+Tour.hasMany(TourActivities, { foreignKey: "tour_id" });
+TourActivities.belongsTo(Tour, { foreignKey: "tour_id" });
 
 // Đối tượng `db` để chứa Sequelize và Models
 const db = {};
@@ -249,5 +250,6 @@ db.Location = Location;
 db.Service = Service;
 db.DiscountService = DiscountService;
 db.ProgramDiscount = ProgramDiscount;
+db.TourActivities = TourActivities;
 
 module.exports = db;

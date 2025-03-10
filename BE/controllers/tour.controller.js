@@ -1,8 +1,10 @@
 const db = require("../models");
+const { Op } = require("sequelize");
 const Tour = db.Tour;
 const Location = db.Location;
 const TypeTour = db.TypeTour;
 const TravelTour = db.TravelTour;
+const TourActivities = db.TourActivities;
 
 // Lấy danh sách tất cả Tour
 // exports.getAllTours = async (req, res) => {
@@ -36,8 +38,26 @@ exports.getTourById = async (req, res) => {
         const tourId = req.params.id;
         const tour = await Tour.findByPk(tourId, {
             include: [
-                {model: Location, as: "startLocation"},
-                {model: Location, as: "endLocation"},
+                { 
+                    model: Location, 
+                    as: "startLocation",
+                    attributes: ['id', 'name_location']
+                },
+                { 
+                    model: Location, 
+                    as: "endLocation",
+                    attributes: ['id', 'name_location']
+                },
+                { 
+                    model: TypeTour, 
+                    as: "typeTour",
+                    attributes: ['id', 'name_type']
+                },
+                {
+                    model: TourActivities,
+                    attributes: ['id', 'day', 'title', 'description', 'detail'],
+                    order: [['day', 'ASC']]
+                }
             ],
         });
 
@@ -45,7 +65,10 @@ exports.getTourById = async (req, res) => {
             return res.status(404).json({message: "Tour not found!"});
         }
 
-        res.json(tour);
+        res.json({
+            message: "Lấy thông tin tour thành công!",
+            data: tour
+        });
     } catch (error) {
         res.status(500).json({
             message: "Error retrieving tour with id=" + req.params.id,
@@ -53,7 +76,148 @@ exports.getTourById = async (req, res) => {
         });
     }
 };
+exports.searchTour = async (req, res) => {
+    try {
+        const { 
+            start, 
+            end, 
+            date,
+            page = 1,
+            limit = 10
+        } = req.query;
 
+        // Tìm location_id từ tên địa điểm
+        const startLocation = await Location.findOne({
+            where: db.sequelize.literal(`LOWER(name_location) LIKE LOWER('%${start}%')`),
+        });
+
+        const endLocation = await Location.findOne({
+            where: db.sequelize.literal(`LOWER(name_location) LIKE LOWER('%${end}%')`),
+        });
+
+        if (!startLocation || !endLocation) {
+            return res.status(404).json({
+                message: "Không tìm thấy địa điểm khởi hành hoặc điểm đến!"
+            });
+        }
+
+        // Tìm các tour_id từ travel_tour theo ngày
+        const travelTours = await TravelTour.findAll({
+            where: db.sequelize.literal(`DATE(start_time) = '${date}'`),
+            attributes: ['tour_id'],
+            group: ['tour_id', 'id']
+        });
+
+        const tourIds = travelTours.map(tour => tour.tour_id);
+
+        if (tourIds.length === 0) {
+            return res.status(404).json({
+                message: "Không tìm thấy tour nào cho ngày đã chọn!"
+            });
+        }
+
+        // Xây dựng điều kiện tìm kiếm
+        const whereCondition = {
+            start_location: startLocation.id,
+            end_location: endLocation.id,
+            id: {
+                [Op.in]: tourIds
+            }
+        };
+
+        // Đếm tổng số tour thỏa mãn điều kiện
+        const total = await Tour.count({
+            where: whereCondition
+        });
+
+        // Tính toán offset cho phân trang
+        const offset = (page - 1) * limit;
+        const totalPages = Math.ceil(total / limit);
+
+        // Query tour với phân trang
+        const tours = await Tour.findAll({
+            where: whereCondition,
+            include: [
+                { 
+                    model: Location, 
+                    as: "startLocation",
+                    attributes: ['id', 'name_location']
+                },
+                { 
+                    model: Location, 
+                    as: "endLocation",
+                    attributes: ['id', 'name_location']
+                },
+                { 
+                    model: TypeTour, 
+                    as: "typeTour",
+                    attributes: ['id', 'name_type']
+                }
+            ],
+            limit: parseInt(limit),
+            offset: parseInt(offset),
+            order: [['id', 'DESC']] // Sử dụng id thay vì createdAt
+        });
+
+        res.json({
+            message: "Tìm kiếm tour thành công!",
+            data: {
+                tours,
+                pagination: {
+                    total,
+                    totalPages,
+                    currentPage: parseInt(page),
+                    limit: parseInt(limit)
+                }
+            }
+        });
+
+    } catch (error) {
+        console.error("Error searching tours:", error);
+        res.status(500).json({
+            message: "Lỗi khi tìm kiếm tour!",
+            error: error.message
+        });
+    }
+};    
+exports.getTourActivities = async (req, res) => {
+    try {
+        const tourId = req.params.id;
+
+        // Kiểm tra tour có tồn tại không
+        const tour = await Tour.findByPk(tourId);
+        if (!tour) {
+            return res.status(404).json({
+                message: "Tour không tồn tại!"
+            });
+        }
+
+        // Lấy danh sách hoạt động
+        const activities = await TourActivities.findAll({
+            where: {
+                tour_id: tourId
+            },
+            order: [['day', 'ASC']], // Sắp xếp theo ngày tăng dần
+            attributes: ['id', 'day', 'title', 'description', 'detail']
+        });
+
+        res.json({
+            message: "Lấy danh sách hoạt động thành công!",
+            data: {
+                tour_id: tourId,
+                tour_name: tour.name_tour,
+                activities: activities
+            }
+        });
+
+    } catch (error) {
+        console.error("Error getting tour activities:", error);
+        res.status(500).json({
+            message: "Lỗi khi lấy danh sách hoạt động!",
+            error: error.message
+        });
+    }
+};
 // Tạo`code_tour` = `[Loại Tour] + [Điểm khởi hành] + [STT]`
 const generateTourCode = async (type_id, start_location) => {
     try {

@@ -20,6 +20,7 @@ const DiscountServiceRouter = require("./discountService.route");
 const TravelGuideRouter = require("./travelGuide.route");
 const GuideTourRouter = require("./guideTour.route");
 const VoucherRouter = require("./voucher.route");
+const TourActivitiesRouter = require("./tourActivities.route");
 
 router.use("/tour", TourRouter);
 router.use("/type-tour", TypeTourRouter);
@@ -41,4 +42,5 @@ router.use("/discount-service", DiscountServiceRouter);
 router.use("/travel-guide", TravelGuideRouter);
 router.use("/guide-tour", GuideTourRouter);
 router.use("/voucher", VoucherRouter);
+router.use("/tour-activities", TourActivitiesRouter);
 module.exports = router;
