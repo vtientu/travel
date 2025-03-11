@@ -30,6 +30,10 @@ module.exports = (sequelize, Sequelize) => {
       end_date: {
         type: Sequelize.DATE,
       },
+      image: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
     },
     {
       tableName: "voucher", // Tên bảng trong MySQL

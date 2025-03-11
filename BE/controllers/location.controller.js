@@ -37,15 +37,18 @@ exports.getLocationById = async (req, res) => {
 exports.createLocation = async (req, res) => {
   try {
     const { name } = req.body;
-    if (!name) {
+    const imageUrl = req.file ? req.file.path : null;
+    if (!name || !imageUrl) {
       return res.status(400).json({
-        message: "Please enter location name!",
+        message: "Name and image are required!",
       });
     }
-    const data = { name_location: name };
-
-    const location = await Location.create(data);
-    res.json({
+    const newLocation = {
+      name_location: name,
+      image: imageUrl,
+    };
+    const location = await Location.create(newLocation);
+    res.status(201).json({
       message: "Location created successfully!",
       data: location,
     });
@@ -89,9 +92,10 @@ exports.updateLocation = async (req, res) => {
         message: "Location not found!",
       });
     }
-    const { name_location } = req.body;
-
-    if (name_location != undefined) location.name_location = name_location;
+    const { name } = req.body;
+    const imageUrl = req.file ? req.file.path : null;
+    if (imageUrl != undefined) location.image = imageUrl;
+    if (name != undefined) location.name_location = name;
     await location.save();
     res.json({
       message: "Location updated successfully!",

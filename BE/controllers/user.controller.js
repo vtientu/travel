@@ -46,9 +46,7 @@ exports.getUserById = async (req, res) => {
 exports.addNewUser = async (req, res) => {
   try {
     const { username, password } = req.body;
-    const avatarPath = req.file
-      ? `/uploads/avatars/${req.file.filename}`
-      : null;
+    const avatarUrl = req.file ? req.file.path : null;
 
     // Kiểm tra xem username đã tồn tại chưa
     const existingUser = await User.findOne({ where: { username } });
@@ -63,7 +61,7 @@ exports.addNewUser = async (req, res) => {
     const newUser = await User.create({
       username,
       password: hashedPassword,
-      avatar: avatarPath,
+      avatar: avatarUrl,
     });
 
     res.status(201).json({
@@ -82,9 +80,7 @@ exports.updateUser = async (req, res) => {
   try {
     const id = req.params.id;
     const { username, password } = req.body;
-    const avatarPath = req.file
-      ? `/uploads/avatars/${req.file.filename}`
-      : null;
+    const avatarUrl = req.file ? req.file.path : null;
 
     const user = await User.findByPk(id);
     if (!user) {
@@ -97,7 +93,7 @@ exports.updateUser = async (req, res) => {
     // Cập nhật thông tin user
     if (username) user.username = username;
     if (password) user.password = hashedPassword;
-    if (avatarPath) user.avatar = avatarPath;
+    if (avatarUrl) user.avatar = avatarUrl;
 
     await user.save();
 
