@@ -3,8 +3,8 @@ const Voucher = db.Voucher;
 
 // Hàm tạo mã voucher ngẫu nhiên
 const generateVoucherCode = () => {
-  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  let result = '';
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let result = "";
   for (let i = 0; i < 8; i++) {
     result += chars.charAt(Math.floor(Math.random() * chars.length));
   }
@@ -13,7 +13,9 @@ const generateVoucherCode = () => {
 
 // Hàm kiểm tra mã voucher tồn tại
 const isVoucherCodeExists = async (code) => {
-  const existingVoucher = await Voucher.findOne({ where: { voucher_code: code } });
+  const existingVoucher = await Voucher.findOne({
+    where: { voucher_code: code },
+  });
   return existingVoucher !== null;
 };
 
@@ -70,9 +72,18 @@ exports.getVoucherByCode = async (req, res) => {
 //Tạo một Voucher mới
 exports.createVoucher = async (req, res) => {
   try {
-    const { voucher_code, discount_percentage, discount_amount, status, quantity, start_date, end_date } = req.body;
+    const {
+      voucher_code,
+      discount_percentage,
+      discount_amount,
+      status,
+      quantity,
+      start_date,
+      end_date,
+    } = req.body;
+    const image = req.file ? req.file.path : null;
     console.log(req.body);
-    
+
     if (!status || !quantity) {
       return res.status(400).json({
         message: "Please enter status and quantity!",
@@ -80,7 +91,7 @@ exports.createVoucher = async (req, res) => {
     }
 
     let finalVoucherCode = voucher_code;
-    
+
     if (!finalVoucherCode) {
       // Tạo mã mới và kiểm tra trùng lặp
       do {
@@ -95,14 +106,15 @@ exports.createVoucher = async (req, res) => {
       }
     }
 
-    const data = { 
-      voucher_code: finalVoucherCode, 
-      discount_percentage, 
-      discount_amount, 
-      status, 
-      quantity, 
-      start_date, 
-      end_date 
+    const data = {
+      voucher_code: finalVoucherCode,
+      discount_percentage,
+      discount_amount,
+      status,
+      quantity,
+      start_date,
+      end_date,
+      image,
     };
 
     const voucher = await Voucher.create(data);
@@ -150,15 +162,26 @@ exports.updateVoucher = async (req, res) => {
         message: "Voucher not found!",
       });
     }
-    const { voucher_code, discount_percentage, discount_amount, status, quantity, start_date, end_date } = req.body;
+    const {
+      voucher_code,
+      discount_percentage,
+      discount_amount,
+      status,
+      quantity,
+      start_date,
+      end_date,
+    } = req.body;
+    const image = req.file ? req.file.path : null;
 
     if (voucher_code != undefined) voucher.voucher_code = voucher_code;
-    if (discount_percentage != undefined) voucher.discount_percentage = discount_percentage;
+    if (discount_percentage != undefined)
+      voucher.discount_percentage = discount_percentage;
     if (discount_amount != undefined) voucher.discount_amount = discount_amount;
     if (status != undefined) voucher.status = status;
     if (quantity != undefined) voucher.quantity = quantity;
     if (start_date != undefined) voucher.start_date = start_date;
     if (end_date != undefined) voucher.end_date = end_date;
+    if (image != null) voucher.image = image;
     await voucher.save();
     res.json({
       message: "Voucher updated successfully!",

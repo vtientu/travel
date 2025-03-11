@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const userController = require("../controllers/user.controller");
-const { uploadAvatar } = require("../utils/upload");
+const { uploadAvatar } = require("../utils/cloudinary");
 
 router.get("/", userController.getAllUsers);
 router.get("/:id", userController.getUserById);
