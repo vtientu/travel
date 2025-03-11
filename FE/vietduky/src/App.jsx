@@ -22,6 +22,7 @@ import LayoutBookingTour from "./layouts/LayoutBookingTour.jsx";
 import BookingTour from "./page/Booking/BookingInformation.jsx";
 import BookingConfirm from "./page/Booking/BookingConfirm.jsx";
 import BookingComplete from "./page/Booking/BookingComplete.jsx";
+import PaymentForm from "./components/CreditCard/CreditCardForm.jsx";
 
 function App() {
   return (
@@ -52,6 +53,8 @@ function App() {
           <Route path={"/booking"} element={<BookingTour/>}/>
           <Route path={"/bookingConfirm"} element={<BookingConfirm/>}/>
           <Route path={"/bookingComplete"} element={<BookingComplete/>}/>
+
+          <Route path={"/credit"} element={<PaymentForm/>} />
         </Routes>
     </BrowserRouter>
   );

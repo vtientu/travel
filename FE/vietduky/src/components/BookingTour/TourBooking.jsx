@@ -1,4 +1,5 @@
 import React from "react";
+import TermsAndConditions from "./TermsAndConditions";
 
 const TourBooking = () => {
   return (
@@ -42,6 +43,11 @@ const TourBooking = () => {
         <button className="w-full py-3 mt-4 bg-gray-300 text-gray-500 font-bold rounded-lg cursor-not-allowed">
           Đặt tour
         </button>
+
+        {/* Điều khoản */}
+        <div className="w-full mt-4">
+          <TermsAndConditions />
+        </div>
       </div>
 
       {/* Nút gọi tư vấn */}

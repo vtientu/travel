@@ -7,14 +7,14 @@ const TermsAndConditions = () => {
 
   return (
     <div className="w-full flex flex-col gap-2.5">
-      <div className="text-xl font-bold text-neutral-900">
+      {/* <div className="text-xl font-bold text-neutral-900">
         Điều khoản bắt buộc khi đăng ký online
       </div>
       <div className=" h-[342px] p-5 bg-gray-100 rounded-[10px] border border-gray-400 flex justify-center items-center">
         <div className=" h-[300px] overflow-scroll scroll-hidden">
           <TermsAndConditionsDoc />
         </div>
-      </div>
+      </div> */}
       <div className="flex items-center gap-2.5">
         <input
           type="checkbox"
@@ -28,7 +28,7 @@ const TermsAndConditions = () => {
           bảo vệ dữ liệu cá nhân và
           <span className="text-[#a80f21] cursor-pointer">
             {" "}
-            các điều khoản trên.
+            các điều khoản.
           </span>
         </p>
       </div>

@@ -15,7 +15,6 @@ export default function BookingTour() {
           {[
             ContactForm,
             PaymentMethod,
-            TermsAndConditions,
           ].map((Component, index) => (
             <div key={index} className="p-6 rounded-xl">
               <Component />

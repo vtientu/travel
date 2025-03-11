@@ -4,6 +4,18 @@ const PassengerInfoForm = ({ passengers }) => {
   const [passengerData, setPassengerData] = useState([]);
   const [assistance, setAssistance] = useState(false);
 
+  const groupedPassengers = passengerData.reduce((acc, passenger) => {
+    if (!acc[passenger.type]) {
+      acc[passenger.type] = {
+        label: passenger.label,
+        desc: passenger.desc,
+        list: [],
+      };
+    }
+    acc[passenger.type].list.push(passenger);
+    return acc;
+  }, {});
+
   useEffect(() => {
     // Check if passengers is valid before updating
     if (passengers && typeof passengers === "object") {
@@ -13,14 +25,24 @@ const PassengerInfoForm = ({ passengers }) => {
           for (let i = 0; i < count; i++) {
             newPassengers.push({
               type,
-              label: type === "adult" ? "Người lớn" : type === "child" ? "Trẻ em" : "Em bé",
-              desc: type === "adult" ? "Từ 12 trở lên" : type === "child" ? "Từ 5 - 11 tuổi" : "Dưới 2 tuổi",
+              label:
+                type === "adult"
+                  ? "Người lớn"
+                  : type === "child"
+                  ? "Trẻ em"
+                  : "Em bé",
+              desc:
+                type === "adult"
+                  ? "Từ 12 trở lên"
+                  : type === "child"
+                  ? "Từ 5 - 11 tuổi"
+                  : "Dưới 2 tuổi",
               name: "",
               phone: "",
               gender: "",
               birthdate: "",
               singleRoom: false,
-              note: ""
+              note: "",
             });
           }
         });
@@ -37,7 +59,7 @@ const PassengerInfoForm = ({ passengers }) => {
 
   const handleAssistanceChange = (e) => {
     setAssistance(e.target.checked);
-  }
+  };
 
   return (
     <div className="space-y-6">
@@ -72,122 +94,132 @@ const PassengerInfoForm = ({ passengers }) => {
           Thêm danh sách khách hàng
         </button>
       </div>
-      {passengerData.map((passenger, index) => (
-        <div key={index} className=" bg-white rounded-md">
-          <h3 className="text-lg font-semibold">
-            <span className="font-bold">{passenger.label}</span>
-            <span> ({passenger.desc})</span>
+      {Object.entries(groupedPassengers).map(([type, group]) => (
+        <div key={type} className="space-y-4">
+          <h3 className="font-bold">
+            <span className="font-bold">{group.label}</span>
+            <span>({group.desc})</span>
           </h3>
 
-          <div className="grid grid-cols-5 gap-4 mt-2 items-center">
-            <div className="border-r border-gray-300">
-              <label className="text-sm font-semibold block mb-1">Họ tên</label>
-              <input
-                type="text"
-                name="name"
-                value={passenger.name}
-                onChange={(e) =>
-                  handleChangeInput(index, "name", e.target.value)
-                }
-                placeholder="Liên hệ"
-                className="w-full p-2 rounded-md text-sm outline-none"
-              />
-            </div>
+          {group.list.map((passenger, index) => (
+            <div key={index} className=" bg-white rounded-md">
+              <div className="grid grid-cols-5 gap-4 mt-2 items-center">
+                <div className="border-r border-gray-300">
+                  <label className="text-sm font-semibold block mb-1">
+                    Họ tên
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={passenger.name}
+                    onChange={(e) =>
+                      handleChangeInput(index, "name", e.target.value)
+                    }
+                    placeholder="Liên hệ"
+                    className="w-full p-2 rounded-md text-sm outline-none"
+                  />
+                </div>
 
-            <div className="border-r border-gray-300">
-              <label className="text-sm font-semibold block mb-1">
-                Điện thoại
-              </label>
-              <input
-                type="text"
-                name="phone"
-                value={passenger.phone}
-                onChange={(e) =>
-                  handleChangeInput(index, "phone", e.target.value)
-                }
-                placeholder="Số điện thoại"
-                className="w-full p-2 rounded-md text-sm outline-none"
-              />
-            </div>
+                <div className="border-r border-gray-300">
+                  <label className="text-sm font-semibold block mb-1">
+                    Điện thoại
+                  </label>
+                  <input
+                    type="text"
+                    name="phone"
+                    value={passenger.phone}
+                    onChange={(e) =>
+                      handleChangeInput(index, "phone", e.target.value)
+                    }
+                    placeholder="Số điện thoại"
+                    className="w-full p-2 rounded-md text-sm outline-none"
+                  />
+                </div>
 
-            <div className="border-r border-gray-300">
-              <label className="text-sm font-semibold block mb-1">
-                Giới tính
-              </label>
-              <select
-                name="gender"
-                value={passenger.gender}
-                onChange={(e) => handleChangeInput(index, "gender", e.target.value)}
-                className="w-full p-2 text-sm outline-none focus:border-black transition-all bg-transparent appearance-none pr-6 bg-no-repeat bg-right text-gray-400"
-                style={{ appearance: "none" }}
-              >
-                <option value="" disabled hidden>
-                  Chọn giới tính
-                </option>
-                <option value="male" className="text-black">
-                  Nam
-                </option>
-                <option value="female" className="text-black">
-                  Nữ
-                </option>
-              </select>
-            </div>
+                <div className="border-r border-gray-300">
+                  <label className="text-sm font-semibold block mb-1">
+                    Giới tính
+                  </label>
+                  <select
+                    name="gender"
+                    value={passenger.gender}
+                    onChange={(e) =>
+                      handleChangeInput(index, "gender", e.target.value)
+                    }
+                    className="w-full p-2 text-sm outline-none focus:border-black transition-all bg-transparent appearance-none pr-6 bg-no-repeat bg-right text-gray-400"
+                    style={{ appearance: "none" }}
+                  >
+                    <option value="" disabled hidden>
+                      Chọn giới tính
+                    </option>
+                    <option value="male" className="text-black">
+                      Nam
+                    </option>
+                    <option value="female" className="text-black">
+                      Nữ
+                    </option>
+                  </select>
+                </div>
 
-            <div className="border-r border-gray-300">
-              <label className="text-sm font-semibold block mb-1">
-                Ngày sinh
-              </label>
-              <input
-                type="text"
-                name="birthdate"
-                value={passenger.birthdate}
-                onFocus={(e) => (e.target.type = "date")}
-                onBlur={(e) => (e.target.type = "text")}
-                onChange={(e) =>
-                  handleChangeInput(index, "birthdate", e.target.value)
-                }
-                placeholder="Chọn ngày sinh"
-                className="w-full p-2 text-sm outline-none focus:border-black transition-all bg-transparent"
-              />
-            </div>
+                <div className="border-r border-gray-300">
+                  <label className="text-sm font-semibold block mb-1">
+                    Ngày sinh
+                  </label>
+                  <input
+                    type="text"
+                    name="birthdate"
+                    value={passenger.birthdate}
+                    onFocus={(e) => (e.target.type = "date")}
+                    onBlur={(e) => (e.target.type = "text")}
+                    onChange={(e) =>
+                      handleChangeInput(index, "birthdate", e.target.value)
+                    }
+                    placeholder="Chọn ngày sinh"
+                    className="w-full p-2 text-sm outline-none focus:border-black transition-all bg-transparent"
+                  />
+                </div>
 
-            <div className="flex flex-col gap-2">
-              <label className="text-sm font-semibold">Phòng đơn</label>
+                <div className="flex flex-col gap-2">
+                  <label className="text-sm font-semibold">Phòng đơn</label>
 
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  name="singleRoom"
-                  checked={passenger.singleRoom}
-                  onChange={(e) =>
-                    handleChangeInput(index, "singleRoom", e.target.checked)
-                  }
-                  className="hidden"
-                  id={`singleRoomToggle-${index}`}
-                />
-                <label
-                  htmlFor={`singleRoomToggle-${index}`}
-                  className={`relative cursor-pointer w-10 h-5 rounded-full flex items-center transition-all ${
-                    passenger.singleRoom ? "bg-red-500" : "bg-gray-300"
-                  }`}
-                >
-                  <span
-                    className={`absolute w-4 h-4 bg-white rounded-full transition-all ${
-                      passenger.singleRoom ? "translate-x-5" : "translate-x-0"
-                    }`}
-                  ></span>
-                </label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      name="singleRoom"
+                      checked={passenger.singleRoom}
+                      onChange={(e) =>
+                        handleChangeInput(index, "singleRoom", e.target.checked)
+                      }
+                      className="hidden"
+                      id={`singleRoomToggle-${index}`}
+                    />
+                    <label
+                      htmlFor={`singleRoomToggle-${index}`}
+                      className={`relative cursor-pointer w-10 h-5 rounded-full flex items-center transition-all ${
+                        passenger.singleRoom ? "bg-red-500" : "bg-gray-300"
+                      }`}
+                    >
+                      <span
+                        className={`absolute w-4 h-4 bg-white rounded-full transition-all ${
+                          passenger.singleRoom
+                            ? "translate-x-5"
+                            : "translate-x-0"
+                        }`}
+                      ></span>
+                    </label>
 
-                <span
-                  className={`text-sm font-semibold ${
-                    passenger.singleRoom ? "text-red-500" : "text-black"
-                  }`}
-                >
-                  240.000 ₫
-                </span>
+                    <span
+                      className={`text-sm font-semibold ${
+                        passenger.singleRoom ? "text-red-500" : "text-black"
+                      }`}
+                    >
+                      240.000 ₫
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          ))}
         </div>
       ))}
 
