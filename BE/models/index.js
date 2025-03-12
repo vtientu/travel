@@ -71,7 +71,7 @@ const ProgramDiscount = require("./programDiscount.model.js")(
     Sequelize
 );
 const TourActivities = require("./tour_activities.model")(sequelize, Sequelize);
-
+const TourService = require("./tour_service.model")(sequelize, Sequelize);      
 // Mối quan hệ (Associations)
 // User/Booking
 User.hasMany(Booking, {foreignKey: "user_id"});
@@ -128,6 +128,20 @@ Feedback.belongsTo(User, {foreignKey: "user_id"});
 //Tour/Feedback
 Tour.hasMany(Feedback, {foreignKey: "tour_id"});
 Feedback.belongsTo(Tour, {foreignKey: "tour_id", as: "tour"});
+
+//Tour/TourService
+Tour.belongsToMany(Service, {
+  through: TourService,
+  foreignKey: 'tour_id',
+  otherKey: 'service_id',
+  as: 'Services'
+});
+Service.belongsToMany(Tour, {
+  through: TourService,
+  foreignKey: 'service_id',
+  otherKey: 'tour_id',
+  as: 'Tours'
+});
 
 //Tour/TravelTour
 Tour.hasMany(TravelTour, {foreignKey: "tour_id"});
@@ -202,10 +216,6 @@ Tour.belongsTo(TypeTour, {foreignKey: "type_id", as: "typeTour"});
 Passenger.hasMany(Booking, {foreignKey: "booking_id"});
 Booking.belongsTo(Passenger, {foreignKey: "booking_id", as: "passenger"});
 
-//Service/Tour
-Service.hasMany(Tour, {foreignKey: "service_id"});
-Tour.belongsTo(Service, {foreignKey: "service_id"});
-
 //Tour/TourActivities
 Tour.hasMany(TourActivities, { foreignKey: "tour_id" });
 TourActivities.belongsTo(Tour, { foreignKey: "tour_id" });
@@ -251,5 +261,6 @@ db.Service = Service;
 db.DiscountService = DiscountService;
 db.ProgramDiscount = ProgramDiscount;
 db.TourActivities = TourActivities;
+db.TourService = TourService;
 
 module.exports = db;

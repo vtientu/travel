@@ -21,7 +21,7 @@ const TravelGuideRouter = require("./travelGuide.route");
 const GuideTourRouter = require("./guideTour.route");
 const VoucherRouter = require("./voucher.route");
 const TourActivitiesRouter = require("./tourActivities.route");
-
+const TourServiceRouter = require("./tour_service.route");
 router.use("/tour", TourRouter);
 router.use("/type-tour", TypeTourRouter);
 router.use("/location", LocationRouter);
@@ -43,4 +43,5 @@ router.use("/travel-guide", TravelGuideRouter);
 router.use("/guide-tour", GuideTourRouter);
 router.use("/voucher", VoucherRouter);
 router.use("/tour-activities", TourActivitiesRouter);
+router.use("/tour-service", TourServiceRouter);
 module.exports = router;
