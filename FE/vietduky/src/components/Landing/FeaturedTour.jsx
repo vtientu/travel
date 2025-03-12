@@ -1,9 +1,8 @@
-import {useState, useRef, useEffect} from "react";
-import {useNavigate} from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { Heart } from "lucide-react";
 
-
-export default function LayoutLandingPage() {
-    const scrollRefs = useRef([]);
+export default function FeaturedTour() {
     const [tours, setTours] = useState([]);
     const [filteredTours, setFilteredTours] = useState([]);
     const [activeTab, setActiveTab] = useState("Tất cả");
@@ -13,19 +12,18 @@ export default function LayoutLandingPage() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [discountRes, tourRes, locationRes] = await Promise.all([
-                    fetch("http://localhost:3000/api/discount-service/").then((res) => res.json()),
+                const [tourRes, locationRes] = await Promise.all([
                     fetch("http://localhost:3000/api/tour").then((res) => res.json()),
                     fetch("http://localhost:3000/api/location/").then((res) => res.json()),
                 ]);
 
                 setTours(tourRes);
-                setFilteredTours(tourRes);
+                setFilteredTours(tourRes.slice(0, 6));
 
                 const cityList = ["Tất cả", ...locationRes.map((location) => location.name_location)];
                 setCities(cityList);
             } catch (error) {
-                console.error("Error fetching data:", error);
+                console.error("Lỗi khi lấy dữ liệu:", error);
             }
         };
 
@@ -34,57 +32,17 @@ export default function LayoutLandingPage() {
 
     useEffect(() => {
         if (activeTab === "Tất cả") {
-            setFilteredTours(tours);
-            return;
+            setFilteredTours(tours.slice(0, 6));
+        } else {
+            const filtered = tours.filter((tour) => tour.endLocation.name_location === activeTab);
+            setFilteredTours(filtered.slice(0, 6));
         }
-
-        const fetchToursByLocation = async () => {
-            try {
-                const res = await fetch(`http://localhost:3000/api/tour/get-by-location-id/${activeTab}`);
-                const data = await res.json();
-                console.log(`Dữ liệu tour cho locationId (${activeTab}):`, data);
-
-                if (Array.isArray(data)) {
-                    setFilteredTours(data);
-                } else {
-                    setFilteredTours([]);
-                }
-            } catch (error) {
-                console.error(`Lỗi khi fetch tour cho locationId (${activeTab}):`, error);
-                setFilteredTours([]);
-            }
-        };
-
-        fetchToursByLocation();
     }, [activeTab, tours]);
 
-    const handleMouseDown = (index, e) => {
-        if (!scrollRefs.current[index]) return;
-
-        e.preventDefault(); // Ngăn chặn hành vi kéo thả mặc định
-        const startX = e.clientX;
-        const scrollLeft = scrollRefs.current[index].scrollLeft;
-
-        const onMouseMove = (moveEvent) => {
-            const x = moveEvent.clientX;
-            const walk = (x - startX) * 2; // Điều chỉnh tốc độ cuộn
-            scrollRefs.current[index].scrollLeft = scrollLeft - walk;
-        };
-
-        const onMouseUp = () => {
-            document.removeEventListener("mousemove", onMouseMove);
-            document.removeEventListener("mouseup", onMouseUp);
-        };
-
-        document.addEventListener("mousemove", onMouseMove);
-        document.addEventListener("mouseup", onMouseUp);
-    };
-
     return (
-        <div>
-            {/* Tour trong nước nổi bật */}
-            <div className="p-6 relative w-3/5 mx-auto scrollbar-hide">
-                <h2 className="text-xl font-bold">Tour trong nước nổi bật</h2>
+        <div className="bg-transparent py-10 px-5">
+            <div className="max-w-6xl mx-auto scrollbar-hide">
+                <h2 className="text-2xl font-bold text-gray-800">Tour trong nước nổi bật</h2>
 
                 <div className="flex justify-between items-center border-b pb-2">
                     <div className="flex space-x-6">
@@ -100,41 +58,45 @@ export default function LayoutLandingPage() {
                             </button>
                         ))}
                     </div>
-                    <p className="text-red-600 font-medium cursor-pointer"
-                       onClick={() => navigate("/listTour")}>
-                        Xem tất cả chuyến đi ({activeTab})
-                    </p>
                 </div>
 
-                {/* Danh sách tour với scroll ngang */}
-                <div
-                    className="flex space-x-4 mt-8 overflow-x-auto scrollbar-hide cursor-grab "
-                    style={{ maxWidth: "72rem", scrollbarWidth: "none" }} // 4 thẻ ~ 72rem
-                    ref={(el) => (scrollRefs.current[2] = el)}
-                    onMouseDown={(e) => handleMouseDown(2, e)}
-                >
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 max-w-6xl mx-auto">
                     {filteredTours.map((tour) => (
                         <div
                             key={tour.id}
-                            className="w-72 bg-white shadow-lg rounded-lg overflow-hidden snap-center flex-shrink-0"
+                            className="bg-white rounded-xl shadow-lg overflow-hidden mb-6 cursor-pointer"
+                            onClick={() => navigate(`/tour/${tour.id}`)}
                         >
-                            <img
-                                src={tour.image || "/Image/Image [sc-fFubgz] (1).png"}
-                                alt={tour.name_tour}
-                                width={300}
-                                height={200}
-                                className="w-full"
-                            />
+                            <div className="relative">
+                                <img
+                                    src={tour.image || "/Image/Image [sc-fFubgz] (1).png"}
+                                    alt={tour.name_tour}
+                                    className="w-full h-48 object-cover rounded-xl"
+                                />
+                                <button className="absolute top-2 left-2 bg-transparent  rounded-full p-2  backdrop-blur-md">
+                                    <Heart className="text-gray-600" size={18} />
+                                </button>
+                            </div>
+
                             <div className="p-4">
-                                <h3 className="font-bold text-lg">{tour.name_tour}</h3>
-                                <div className="flex items-center space-x-2">
-                                    <p className="text-gray-500 text-xs">📍 {tour.endLocation.name_location}</p>
-                                </div>
+                                <h3 className="text-lg font-semibold text-gray-800">{tour.name_tour}</h3>
+                                <p className="text-sm text-gray-600">📍 {tour.endLocation.name_location}</p>
                                 <p className="text-gray-400 text-xs">{tour.activity_description}</p>
-                                <p className="text-red-600 font-bold">VND: {tour.price_tour.toLocaleString()}</p>
+                                <p className="text-red-600 font-bold text-lg">
+                                    VND: {tour.price_tour.toLocaleString()}
+                                </p>
                             </div>
                         </div>
                     ))}
+                </div>
+                {/* Nút xem thêm */}
+                <div className="text-center mt-6">
+                    <button
+                        className="border border-red-500 text-red-500 px-6 py-2 rounded-lg hover:bg-red-500 hover:text-white transition duration-300"
+                        onClick={() => navigate("/listTour")}
+                    >
+                        Xem thêm Tours
+                    </button>
                 </div>
             </div>
         </div>
