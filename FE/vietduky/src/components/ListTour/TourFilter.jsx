@@ -65,6 +65,20 @@ export default function TourFilter() {
                             ))}
                         </div>
 
+                        <h3 className="text-lg font-semibold mb-2 mt-4">Tour theo chủ đề</h3>
+                        <div className="grid grid-cols-2 gap-2 mb-4">
+                            {["Cao cấp", "Tiêu chuẩn", "Tiết kiệm", "Giá tốt"].map((item) => (
+                                <Button
+                                    key={item}
+                                    variant={tourType === item ? "default" : "outline"}
+                                    className="border rounded-lg px-4 py-2"
+                                    onClick={() => setTourType(item)}
+                                >
+                                    {item}
+                                </Button>
+                            ))}
+                        </div>
+
                         <Button className="w-full bg-red-600 text-white text-lg py-3 rounded-lg">Áp dụng</Button>
                     </Card>
                 </div>

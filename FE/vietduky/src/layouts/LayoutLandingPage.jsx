@@ -1,9 +1,10 @@
 import Header from "../components/Header/Header";
 import SearchTour from "../components/SearchTour/SearchTour";
 import Footer from "../components/Footer/Footer";
-import PromotionalProgram from "../components/Landing/Promotional Program.jsx";
+import PromotionalProgram from "../components/Landing/PromotionalProgram.jsx";
 import FeaturedTour from "../components/Landing/FeaturedTour.jsx";
 import LocationVN from "../components/Landing/LocationVN.jsx";
+import ExpireTour from "../components/Landing/ExpireTour.jsx";
 
 export default function LayoutLandingPage() {
   return (
@@ -31,6 +32,9 @@ export default function LayoutLandingPage() {
 
         {/* Chương trình khuyến mại */}
         <PromotionalProgram/>
+
+        {/* Chương trình khuyến mại */}
+        <ExpireTour/>
 
         {/* Tour trong nước nổi bật */}
         <FeaturedTour/>
