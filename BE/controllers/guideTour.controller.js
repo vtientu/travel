@@ -52,7 +52,7 @@ exports.addGuideToTour = async (req, res) => {
 
     const travelTour = await TravelTour.findByPk(travel_tour_id);
     if (!travelTour) {
-      return res.status(404).json({ message: "TravelTour not found!" });
+      return res.status(404).json({ message: "DepartureSchedule not found!" });
     }
 
     const travelGuide = await TravelGuide.findByPk(travel_guide_id);
