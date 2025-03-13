@@ -329,10 +329,14 @@ export default function ModalAddTour({ onClose }) {
                     </label>
                   </div>
                   <div className="flex gap-4">
-                    <button className="border px-4 py-2 rounded-md">
+                    <button
+                      type="button"
+                      className="border px-4 py-2 rounded-md"
+                    >
                       Nhập danh sách hành trình
                     </button>
                     <button
+                      type="button"
                       className="bg-red-700 text-white px-4 py-2 rounded-md"
                       onClick={toggleModal}
                     >
@@ -378,6 +382,7 @@ export default function ModalAddTour({ onClose }) {
                                 </td>
                                 <td className="flex justify-end p-2 relative">
                                   <button
+                                    type="button"
                                     onClick={() => toggleDropdown(index)}
                                     className="relative"
                                   >
@@ -385,15 +390,15 @@ export default function ModalAddTour({ onClose }) {
                                   </button>
                                   {openDropdown === index && (
                                     <div className="absolute right-0 mt-2 w-48 bg-white shadow-md rounded-md z-10">
-                                      <button className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left whitespace-nowrap">
+                                      <button
+                                        type="button"
+                                        className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left whitespace-nowrap"
+                                      >
                                         <MdEdit className="mr-2 text-gray-700" />{" "}
                                         Cập nhật hành trình
                                       </button>
-                                      {/* <button className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left whitespace-nowrap">
-                                        <MdEdit className="mr-2 text-gray-700" />{" "}
-                                        Thêm hành trình
-                                      </button> */}
                                       <button
+                                        type="button"
                                         onClick={() =>
                                           handleDeleteTravelTour(index)
                                         }
