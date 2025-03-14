@@ -30,14 +30,14 @@ export default function FeaturedTour() {
         fetchData();
     }, []);
 
-    useEffect(() => {
-        if (activeTab === "Tất cả") {
-            setFilteredTours(tours.slice(0, 6));
-        } else {
-            const filtered = tours.filter((tour) => tour.endLocation.name_location === activeTab);
-            setFilteredTours(filtered.slice(0, 6));
-        }
-    }, [activeTab, tours]);
+    // useEffect(() => {
+    //     if (activeTab === "Tất cả") {
+    //         setFilteredTours(tours.slice(0, 6));
+    //     } else {
+    //         const filtered = tours.filter((tour) => tour.endLocation.name_location === activeTab);
+    //         setFilteredTours(filtered.slice(0, 6));
+    //     }
+    // }, [activeTab, tours]);
 
     return (
         <div className="bg-transparent py-10 px-5">

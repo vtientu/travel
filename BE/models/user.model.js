@@ -7,13 +7,37 @@ module.exports = (sequelize, Sequelize) => {
         autoIncrement: true,
         primaryKey: true,
       },
-      username: {
-        type: Sequelize.STRING,
+      role_id: {
+        type: Sequelize.INTEGER.UNSIGNED,
         allowNull: false,
+        defaultValue: 1,
+      },
+      email: {
+        type: Sequelize.STRING,
+        allowNull: true,
+        indexes: [
+          {
+            unique: true,
+            fields: ["email"] // Đảm bảo không tạo index trùng lặp
+          }
+        ],
+        validate: {
+          isEmail: true,
+        },
       },
       password: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true, // Google user không cần mật khẩu
+      },
+      googleId: {
+        type: Sequelize.STRING,
+        allowNull: true, // Chỉ dùng cho Google login
+        indexes: [
+          {
+            unique: true,
+            fields: ["googleId"] // Đảm bảo không tạo nhiều index trùng lặp
+          }
+        ]
       },
       avatar: {
         type: Sequelize.STRING,

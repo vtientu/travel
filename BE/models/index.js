@@ -16,7 +16,10 @@ sequelize
     .catch((error) => console.error("Unable to connect to the database:", error));
 
 // Import các model
-const User = require("./user.model")(sequelize, Sequelize);
+//Role
+const Role = require("./role.model.js")(sequelize, Sequelize);
+//User
+const User = require("./user.model.js")(sequelize, Sequelize);
 
 const Booking = require("./booking.model")(sequelize, Sequelize);
 //Restaurant
@@ -48,9 +51,7 @@ const NotificationType = require("./notificationType.model.js")(
     sequelize,
     Sequelize
 );
-//Role
-const Role = require("./role.model.js")(sequelize, Sequelize);
-const RoleService = require("./roleService.model.js")(sequelize, Sequelize);
+
 //Tour
 const Tour = require("./tour.model")(sequelize, Sequelize);
 const Passenger = require("./passenger.model")(sequelize, Sequelize);
@@ -186,13 +187,9 @@ GuideTour.belongsTo(TravelTour, {
 User.hasOne(TravelGuide, {foreignKey: "user_id"});
 TravelGuide.belongsTo(User, {foreignKey: "user_id"});
 
-//User/RoleService
-User.hasMany(RoleService, {foreignKey: "user_id"});
-RoleService.belongsTo(User, {foreignKey: "user_id"});
-
-//Role/RoleService
-Role.hasMany(RoleService, {foreignKey: "role_id"});
-RoleService.belongsTo(Role, {foreignKey: "role_id"});
+//Role/User
+Role.hasMany(User, {foreignKey: "role_id"});
+User.belongsTo(Role, {foreignKey: "role_id", as: "role"});
 
 //Customer/PostExperience
 Customer.hasMany(PostExperience, {foreignKey: "customer_id"});
@@ -247,7 +244,6 @@ db.Notification = Notification;
 db.NotificationType = NotificationType;
 
 db.Role = Role;
-db.RoleService = RoleService;
 
 db.Tour = Tour;
 db.TypeTour = TypeTour;

@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const AuthRouter = require("./auth.route");
 const TourRouter = require("./tour.route");
 const TypeTourRouter = require("./typeTour.route");
 const TravelTourRouter = require("./travel_tour.route");
@@ -22,6 +23,7 @@ const GuideTourRouter = require("./guideTour.route");
 const VoucherRouter = require("./voucher.route");
 const TourActivitiesRouter = require("./tourActivities.route");
 const TourServiceRouter = require("./tour_service.route");
+router.use("/auth", AuthRouter);
 router.use("/tour", TourRouter);
 router.use("/type-tour", TypeTourRouter);
 router.use("/location", LocationRouter);

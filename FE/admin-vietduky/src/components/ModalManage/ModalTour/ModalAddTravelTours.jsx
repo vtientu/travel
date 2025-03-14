@@ -56,8 +56,8 @@ export default function TestModal({ onClose, onAddTravelTour }) {
       price_tour: travelTourData.price_tour,
     };
 
-    onAddTravelTour(newTravelTour); // Thêm vào danh sách
-    onClose(); // Đóng modal
+    onAddTravelTour(newTravelTour);
+    // onClose();
   };
 
   return (
