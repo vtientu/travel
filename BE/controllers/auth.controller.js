@@ -1,84 +1,145 @@
-const { v4: uuidv4 } = require('uuid');
-const jwt = require('jsonwebtoken');
-const db = require("../models"); 
-const User = db.User;
-const bcrypt = require('bcryptjs');
-const { 
-    createTable,
-    checkRecordExists,
-    insertRecord,
-   } = require('../utils/sqlFunctions.js');
+const jwt = require("jsonwebtoken");
+const { User, Role } = require("../models");
+const bcrypt = require("bcryptjs");
+const dotenv = require("dotenv");
+dotenv.config();
 
 const generateAccessToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "1h" });
 };
 
 const register = async (req, res) => {
-    const { username, password } = req.body;
+  const { email, password } = req.body;
 
-    if (!username || !password) {
-        return res.status(400).json({ message: "Please provide both username and password" });
+  if (!email || !password) {
+    return res.status(400).json({ message: "Vui lòng nhập đầy đủ thông tin!" });
+  }
+
+  try {
+    const userExists = await User.findOne({ where: { email } });
+
+    if (userExists) {
+      return res.status(400).json({ message: "Người dùng đã tồn tại!" });
     }
 
-    try {
-        // Kiểm tra xem user đã tồn tại chưa
-        const userAlreadyExists = await User.findOne({ where: { username } });
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = await User.create({
+      email,
+      password: hashedPassword,
+      role_id: 1,
+    });
 
-        if (userAlreadyExists) {
-            return res.status(400).json({ message: "User already exists" });
-        }
-
-        // Mã hóa mật khẩu
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        // Tạo user mới trong database
-        const newUser = await User.create({
-            username,
-            password: hashedPassword,
-        });
-
-        return res.status(201).json({ message: "User created", user: newUser });
-    } catch (error) {
-        return res.status(500).json({ error: error.message });
-    }
+    return res.status(201).json({ message: "Tạo tài khoản thành công!", user: newUser });
+  } catch (error) {
+    return res.status(500).json({ message: "Xảy ra lỗi khi đăng ký, vui lòng thử lại sau !", error: error.message });
+  }
 };
 
 const login = async (req, res) => {
-    const { username, password } = req.body;
-    if (!username || !password) {
-        res.status(400).json({ message: 'Please provide both username and password' });
-        return;
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ message: "Vui lòng nhập tài khoản hoặc mật khẩu!" });
+  }
+
+  try {
+    const existingUser = await User.findOne({ where: { email } });
+
+    if (!existingUser) {
+      return res.status(401).json({ message: "Tài khoản hoặc mật khẩu không đúng!" });
     }
 
-    try {
-        const existingUser = await checkRecordExists('user', 'username', username);
+    const passwordMatch = await bcrypt.compare(password, existingUser.password);
 
-        if (existingUser) {
-            if (!existingUser.password) {
-                res.status(401).json({ message: 'Invalid credentials' });
-                return;
-            }
-
-            const passwordMatch = await bcrypt.compare(password, existingUser.password);
-
-            if (passwordMatch) {
-                res.status(200).json({
-                    id: existingUser.id,
-                    username: existingUser.username,
-                    access_token: generateAccessToken(existingUser.id),
-                });
-            } else {
-                res.status(401).json({ message: 'Invalid credentials' });
-            }
-        } else {
-            res.status(401).json({ message: 'Invalid credentials' });
-        }
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+    if (passwordMatch) {
+      return res.status(200).json({
+        id: existingUser.id,
+        email: existingUser.email,
+        role_id: existingUser.role_id,
+        access_token: generateAccessToken(existingUser.id),
+      });
+    } else {
+      return res.status(401).json({ message: "Tài khoản hoặc mật khẩu không đúng!" });
     }
-}
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+// Xử lý xác thực Google
+const googleAuth = async (accessToken, refreshToken, profile, done) => {
+  try {
+    let user = await User.findOne({ where: { googleId: profile.id } });
+
+    if (!user) {
+      user = await User.create({
+        email: profile.emails[0].value,
+        googleId: profile.id,
+        avatar: profile.photos[0].value,
+        role_id: 1,
+      });
+    }
+
+    return done(null, user);
+  } catch (error) {
+    return done(error, null);
+  }
+};
+
+const googleLogin = async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ message: "Authentication failed" });
+    }
+
+    const user = await User.findOne({ where: { id: req.user.id } });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const token = generateAccessToken(user.id);
+
+    return res.redirect(`${process.env.CLIENT_URL}/auth/google-success?token=${token}`);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+const getProfile = async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const token = authHeader.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const user = await User.findOne({
+      where: { id: decoded.id },
+      include: { model: Role, attributes: ["id", "name"] },
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.json({
+      id: user.id,
+      email: user.email,
+      avatar: user.avatar,
+      role_id: user.role_id,
+    });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
 
 module.exports = {
-    register,
-    login,
-}
+  register,
+  login,
+  googleAuth,
+  googleLogin,
+  getProfile,
+};
