@@ -10,6 +10,7 @@ import TourProgram from "../components/TourDetail/TourProgram.jsx";
 import ExperienceOnTour from "../components/TourDetail/ExperienceOnTour.jsx";
 import TourImage from "../components/TourDetail/TourImage.jsx";
 import TourInformation from "../components/TourDetail/TourInformation.jsx";
+import TourDescription from "../components/TourDetail/TourDescription.jsx";
 
 export default function DetailTourPage() {
     const [selectedDate, setSelectedDate] = useState("2025-02-28");
@@ -18,14 +19,7 @@ export default function DetailTourPage() {
         <div className="bg-white" style={{ backgroundImage: "url('/Image/Background.png')", backgroundSize: "cover", backgroundPosition: "center", width: "100%", minHeight: "100vh" }}>
             <Header />
             <div className="container mx-auto py-8 px-4">
-                {/* Breadcrumb */}
-                <nav className="text-lg text-gray-500 mb-4">
-                    Việt Du Ký / Du lịch Việt Du Ký / <span className="text-red-600 font-bold ">Tour Đà Nẵng 4N3Đ: HCM - Đà Nẵng - KDL Bà Nà - Sơn Trà - Hội An - Động Thiên Đường - Làng hương Thủy Xuân</span>
-                </nav>
-
-                {/* Tiêu đề Tour */}
-                <h1 className="text-4xl font-bold text-red-600 ">Tour Đà Nẵng 4N3Đ: HCM - Đà Nẵng - KDL Bà Nà - Sơn Trà - Hội An - Động Thiên Đường - Làng hương Thủy Xuân</h1>
-
+                    <TourDescription/>
                 {/* Thông tin Tour */}
                 <div className="grid grid-cols-9 gap-6 mt-6">
                     <div className=" col-span-6 ">

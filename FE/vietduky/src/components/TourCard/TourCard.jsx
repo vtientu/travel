@@ -82,7 +82,7 @@ export default function TourCard() {
                                 {/* Giá tour */}
                                 <div className="flex justify-between items-center">
                                     <span className="text-lg font-bold text-red-600">Giá từ: {tour.price_tour.toLocaleString()} VNĐ</span>
-                                    <button className="bg-red-600 text-white text-sm py-2 px-4 rounded hover:bg-red-700"  onClick={() => navigate("/detailTour")} >
+                                    <button className="bg-red-600 text-white text-sm py-2 px-4 rounded hover:bg-red-700"  onClick={() => navigate(`/tour/${tour.id}`)} >
                                         Xem chi tiết
                                     </button>
                                 </div>
