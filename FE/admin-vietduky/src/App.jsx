@@ -12,24 +12,40 @@ import ManagementRestaurant from "./page/Management/ManagementRestaurant.jsx";
 import ManagementVehicle from "./page/Management/ManagementVehicle.jsx";
 import ModalAddTour from "./components/ModalManage/ModalTour/ModalManageTravelTour.jsx";
 import ModalManageTravelTour from "./components/ModalManage/ModalTour/ModalManageTravelTour.jsx";
+import PrivateRoute from "./components/PrivateRouter.jsx";
+import Profile from "./components/Profile.jsx";
 
 function App() {
   return (
     <BrowserRouter>
-        <Routes>
-          <Route  path={"/login"} element={<LoginPage />} />
-          <Route path={"/register"} element={<RegisterPage />} />
-          {/*<Route path={'/forgot-password'}/>*/}
-          
-          <Route path={"/managementLocation"} element={<ManagementLocation/>}/>
-          <Route path={"/managementTour"} element={<ManagementTour/>}/>
-          <Route path={"/managementTravelTour"} element={<ManagementTravelTour/>}/>
-          <Route path={"/managementHotel"} element={<ManagementHotel/>}/>
-          <Route path={"/managementRestaurant"} element={<ManagementRestaurant/>}/>
-          <Route path={"/managementVehicle"} element={<ManagementVehicle/>}/>
+      <Routes>
+        <Route path={"/"} element={<LoginPage />} />
+        <Route path={"/register"} element={<RegisterPage />} />
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute>
+              <Profile />
+            </PrivateRoute>
+          }
+        />
+        {/*<Route path={'/forgot-password'}/>*/}
 
-          <Route path={"/modalL"} element={<ModalManageTravelTour/>}/>
-        </Routes>
+        <Route path={"/managementLocation"} element={<ManagementLocation />} />
+        <Route path={"/managementTour"} element={<ManagementTour />} />
+        <Route
+          path={"/managementTravelTour"}
+          element={<ManagementTravelTour />}
+        />
+        <Route path={"/managementHotel"} element={<ManagementHotel />} />
+        <Route
+          path={"/managementRestaurant"}
+          element={<ManagementRestaurant />}
+        />
+        <Route path={"/managementVehicle"} element={<ManagementVehicle />} />
+
+        <Route path={"/modalL"} element={<ModalManageTravelTour />} />
+      </Routes>
     </BrowserRouter>
   );
 }

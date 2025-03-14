@@ -1,13 +1,13 @@
 import axios from "axios";
 // import { StorageService } from "./storage";
+import { BASE_API } from "../environments/Environment";
 
-const BASE_URL = "http://localhost:3000/api";
 
 export default function restClient(options) {
     const { url, method = "GET", params, data, headers } = options;
 
     return axios({
-        url: `${BASE_URL}/${url}`,
+        url: `${BASE_API}/${url}`,
         method,
         params,
         data,

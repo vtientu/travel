@@ -1,8 +1,19 @@
+import { login } from "../../services/API/auth.api";
 import AuthProviders from "../AuthProviders/AuthProviders";
 import { useState } from "react";
 export default function LoginForm() {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  const handleLogin = async () => {
+    try {
+      const data = await login(username, password);
+      alert("Đăng nhập thành công!");
+      window.location.href = "/profile";
+    } catch (error) {
+      alert(error.message);
+    }
+  };
 
   return (
     <div className="  w-[400px]">
@@ -25,8 +36,8 @@ export default function LoginForm() {
           type="email"
           placeholder="Nhập địa chỉ Email"
           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
         />
       </div>
 
@@ -53,7 +64,10 @@ export default function LoginForm() {
       </div>
 
       {/* Login Button */}
-      <button className="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition">
+      <button
+        onClick={handleLogin}
+        className="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition"
+      >
         Đăng nhập
       </button>
 
