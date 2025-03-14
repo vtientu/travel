@@ -11,10 +11,13 @@ router.get("/profile", authController.getProfile);
 // Google login routes
 router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
 
-router.get("/google/callback", 
-    passport.authenticate("google", { failureRedirect: "/" }), 
-    authController.googleLogin
+router.get(
+    "/google/callback",
+    passport.authenticate("google", { failureRedirect: "/login" }),
+    (req, res) => {
+        console.log("User after Google login:", req.user); // 🔥 Debug
+        res.redirect(`http://localhost:5173/google-success?token=${req.user.token}`);
+    }
 );
-
 
 module.exports = router;

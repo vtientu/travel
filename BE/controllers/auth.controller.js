@@ -100,7 +100,10 @@ const googleLogin = async (req, res) => {
 
     const token = generateAccessToken(user.id);
 
-    return res.redirect(`${process.env.CLIENT_URL}/auth/google-success?token=${token}`);
+    return res.json({
+      message: "Google login successful",
+      token,
+    });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
@@ -118,7 +121,7 @@ const getProfile = async (req, res) => {
 
     const user = await User.findOne({
       where: { id: decoded.id },
-      include: { model: Role, attributes: ["id", "name"] },
+      include: { model: Role, as: "role", attributes: ["id", "role_name"] },
     });
 
     if (!user) {

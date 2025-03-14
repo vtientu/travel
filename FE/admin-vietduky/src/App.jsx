@@ -14,6 +14,7 @@ import ModalAddTour from "./components/ModalManage/ModalTour/ModalManageTravelTo
 import ModalManageTravelTour from "./components/ModalManage/ModalTour/ModalManageTravelTour.jsx";
 import PrivateRoute from "./components/PrivateRouter.jsx";
 import Profile from "./components/Profile.jsx";
+import Calendar from "./components/Calendar/Calendar.jsx";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route path={"/calendar"} element={<Calendar />} />
         {/*<Route path={'/forgot-password'}/>*/}
 
         <Route path={"/managementLocation"} element={<ManagementLocation />} />

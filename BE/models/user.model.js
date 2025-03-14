@@ -15,7 +15,12 @@ module.exports = (sequelize, Sequelize) => {
       email: {
         type: Sequelize.STRING,
         allowNull: true,
-        unique: true,
+        indexes: [
+          {
+            unique: true,
+            fields: ["email"] // Đảm bảo không tạo index trùng lặp
+          }
+        ],
         validate: {
           isEmail: true,
         },
@@ -27,7 +32,12 @@ module.exports = (sequelize, Sequelize) => {
       googleId: {
         type: Sequelize.STRING,
         allowNull: true, // Chỉ dùng cho Google login
-        unique: true,
+        indexes: [
+          {
+            unique: true,
+            fields: ["googleId"] // Đảm bảo không tạo nhiều index trùng lặp
+          }
+        ]
       },
       avatar: {
         type: Sequelize.STRING,

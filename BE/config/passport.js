@@ -28,10 +28,14 @@ passport.use(new GoogleStrategy(
   }
 ));
 
-passport.serializeUser((user, done) => done(null, user.id));
-passport.deserializeUser(async (id, done) => {
+passport.serializeUser((user, done) => {
+  done(null, { id: user.id, token: user.token });
+});
+
+passport.deserializeUser(async (userData, done) => {
   try {
-    const user = await User.findByPk(id);
+    const user = await User.findByPk(userData.id);
+    user.token = userData.token; // Gán lại token từ session
     done(null, user);
   } catch (error) {
     done(error, null);
