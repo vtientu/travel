@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { User, Role } = require("../models");
+const { User, Role, Customer } = require("../models");
 const bcrypt = require("bcryptjs");
 const dotenv = require("dotenv");
 dotenv.config();
@@ -75,16 +75,45 @@ const googleAuth = async (accessToken, refreshToken, profile, done) => {
       user = await User.create({
         email: profile.emails[0].value,
         googleId: profile.id,
-        avatar: profile.photos[0].value,
-        role_id: 1,
+        avatar: profile.photos?.[0]?.value || "",
+        role_id: 1, // Mặc định là customer
       });
+
+      try {
+        await Customer.create({
+          user_id: user.id,
+          first_name: profile.name?.givenName || "",
+          last_name: profile.name?.familyName || "",
+          number_phone: profile?.phoneNumber || "",
+        });
+      } catch (err) {
+        console.error("Lỗi khi tạo Customer:", err);
+      }
+    } else {
+      if (user.role_id === 1) {
+        const customerExists = await Customer.findOne({ where: { user_id: user.id } });
+        if (!customerExists) {
+          try {
+            await Customer.create({
+              user_id: user.id,
+              first_name: profile.name?.givenName || "",
+              last_name: profile.name?.familyName || "",
+              number_phone: profile?.phoneNumber || "",
+            });
+          } catch (err) {
+            console.error("Lỗi khi tạo Customer:", err);
+          }
+        }
+      }
     }
 
     return done(null, user);
   } catch (error) {
+    console.error("Lỗi trong googleAuth:", error);
     return done(error, null);
   }
 };
+
 
 const googleLogin = async (req, res) => {
   try {
@@ -100,10 +129,9 @@ const googleLogin = async (req, res) => {
 
     const token = generateAccessToken(user.id);
 
-    return res.json({
-      message: "Google login successful",
-      token,
-    });
+    return res.redirect(
+      `http://localhost:5173/auth/callback?token=${token}&id=${user.id}&email=${encodeURIComponent(user.email)}&avatar=${encodeURIComponent(user.avatar || '')}`
+    );
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }

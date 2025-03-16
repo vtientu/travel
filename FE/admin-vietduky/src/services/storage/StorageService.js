@@ -1,16 +1,31 @@
-const TOKEN_KEY = "access_token";
+export const StorageService = {
+  getToken: () => localStorage.getItem("access_token"),
+  setToken: (token) => localStorage.setItem("access_token", token),
+  removeToken: () => localStorage.removeItem("access_token"),
 
-// Lưu token vào localStorage
-export const saveToken = (token) => {
-  localStorage.setItem(TOKEN_KEY, token);
-};
+  getUser: () => {
+    const user = localStorage.getItem("user");
+    return user ? JSON.parse(user) : null;
+  },
+  setUser: (user) => localStorage.setItem("user", JSON.stringify(user)),
+  removeUser: () => localStorage.removeItem("user"),
 
-// Lấy token từ localStorage
-export const getToken = () => {
-  return localStorage.getItem(TOKEN_KEY);
-};
+  isExpired: () => {
+    const token = StorageService.getToken();
+    if (!token) return true;
 
-// Xóa token khi logout
-export const removeToken = () => {
-  localStorage.removeItem(TOKEN_KEY);
+    try {
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      return payload.exp < Math.floor(Date.now() / 1000);
+    } catch (error) {
+      return true;
+    }
+  },
+
+  signout: (navigate) => {
+    StorageService.removeToken();
+    StorageService.removeUser();
+    navigate("/");
+    window.location.reload();
+  },
 };

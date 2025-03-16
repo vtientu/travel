@@ -8,7 +8,7 @@ import {
   fetchServices,
   fetchTypeTours,
 } from "../../../services/service";
-import { createTour } from "../../../services/API/tour.api";
+import { createTour } from "../../../services/API/tour.service";
 import { formatDayDMY } from "../../../utils/dateUtil";
 import TestModal from "./ModalAddTravelTours";
 

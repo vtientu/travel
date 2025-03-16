@@ -2,7 +2,7 @@ import { useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { FaArrowRight } from "react-icons/fa";
-import { createTravelTour } from "../../services/API/travel_tour.api";
+import { createTravelTour } from "../../services/API/travel_tour.service";
 
 export default function ModalAddTravelTour({ tourId, onClose, onAddSuccess }) {
   const [loading, setLoading] = useState(false);

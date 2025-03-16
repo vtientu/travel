@@ -1,7 +1,11 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
+import { StorageService } from "../services/storage/StorageService";
 
-export default function PrivateRoute({ children }) {
-  const token = localStorage.getItem("access_token");
+const ProtectedRoute = () => {
+  const token = StorageService.getToken();
+  const isAuthenticated = token && !StorageService.isExpired();
 
-  return token ? children : <Navigate to="/" />;
-}
+  return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
+};
+
+export default ProtectedRoute;

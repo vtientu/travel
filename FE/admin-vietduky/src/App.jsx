@@ -15,6 +15,8 @@ import ModalManageTravelTour from "./components/ModalManage/ModalTour/ModalManag
 import PrivateRoute from "./components/PrivateRouter.jsx";
 import Profile from "./components/Profile.jsx";
 import Calendar from "./components/Calendar/Calendar.jsx";
+import GoogleAuthCallback from "./components/GoogleAuthCallBack.jsx";
+import ProtectedRoute from "./components/PrivateRouter.jsx";
 
 function App() {
   return (
@@ -22,14 +24,10 @@ function App() {
       <Routes>
         <Route path={"/"} element={<LoginPage />} />
         <Route path={"/register"} element={<RegisterPage />} />
-        <Route
-          path="/profile"
-          element={
-            <PrivateRoute>
-              <Profile />
-            </PrivateRoute>
-          }
-        />
+        <Route path="/auth/callback" element={<GoogleAuthCallback />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/profile" element={<Profile />} />
+        </Route>
         <Route path={"/calendar"} element={<Calendar />} />
         {/*<Route path={'/forgot-password'}/>*/}
 

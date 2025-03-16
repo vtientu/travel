@@ -1,5 +1,4 @@
 import restClient from "../restClient";
-// import { StorageService } from "./storage";
 
 export function getTravelTour(page = 1, limit = 10) {
   return restClient({

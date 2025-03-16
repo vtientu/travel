@@ -1,9 +1,9 @@
 // services.js
-import { getService } from "../services/API/service.api";
-import { getLocations, createLocation } from "../services/API/location.api";
-import { getTravelTour } from "../services/API/travel_tour.api";
-import { getTours, createTour } from "../services/API/tour.api";
-import { getTypeTours } from "./API/type_tour";
+import { getService } from "./API/service.service";
+import { getLocations, createLocation } from "./API/location.service";
+import { getTravelTour } from "./API/travel_tour.service";
+import { getTours, createTour } from "./API/tour.service";
+import { getTypeTours } from "./API/type_tour.service";
 import { use } from "react";
 
 export const fetchLocations = async () => {

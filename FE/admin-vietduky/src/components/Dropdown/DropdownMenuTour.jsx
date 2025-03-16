@@ -2,7 +2,7 @@ import { useState } from "react";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { MdEdit, MdDelete } from "react-icons/md";
 import { PiMapPinLineBold } from "react-icons/pi"; // Icon hành trình
-import { deleteTour } from "../../services/API/tour.api";
+import { deleteTour } from "../../services/API/tour.service";
 
 export default function DropdownMenu({ tour, onDelete, onManageTravelTour }) {
   const [isOpen, setIsOpen] = useState(false);

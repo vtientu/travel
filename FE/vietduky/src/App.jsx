@@ -1,6 +1,7 @@
 import "./App.css";
 import PaymentForm from "./components/CreditCard/CreditCardForm.jsx";
-import GoogleSuccess from "./components/GoogleSucces";
+import GoogleAuthCallback from "./components/GoogleSucces";
+import ProtectedRoute from "./components/PrivateRouter";
 import LayoutLandingPage from "./layouts/LayoutLandingPage.jsx";
 import PersonalAIPage from "./layouts/PersonalAIPage.jsx";
 import BookingComplete from "./page/Booking/BookingComplete.jsx";
@@ -20,8 +21,10 @@ function App() {
       <Routes>
         <Route path={"/"} element={<LayoutLandingPage />} />
         <Route path={"/login"} element={<LoginPage />} />
-        <Route path="/auth/google-success" element={<GoogleSuccess />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/auth/callback" element={<GoogleAuthCallback />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path="/profile" element={<Profile />} />
+        </Route>
         <Route path={"/register"} element={<RegisterPage />} />
         {/*<Route path={'/forgot-password'}/>*/}
         <Route path={"/personalAI"} element={<PersonalAIPage />} />

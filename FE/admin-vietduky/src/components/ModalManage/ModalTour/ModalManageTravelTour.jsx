@@ -1,13 +1,10 @@
 import { HiOutlineDotsHorizontal, HiOutlineInbox } from "react-icons/hi";
 import { formatDayDMY } from "../../../utils/dateUtil";
 import { MdDelete, MdEdit } from "react-icons/md";
-import {
-  getTravelTourByTourId,
-  deleteTravelTour,
-} from "../../../services/API/travel_tour.api";
 import { useEffect, useState } from "react";
 import { LuSearch } from "react-icons/lu";
 import ModalAddTravelTour from "../ModalAddTravelTour";
+import { deleteTravelTour, getTravelTourByTourId } from "../../../services/API/travel_tour.service";
 
 export default function ModalManageTravelTour({ tourId, onClose }) {
   const [isModalOpen, setIsModalOpen] = useState(false);

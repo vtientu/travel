@@ -1,6 +1,6 @@
-import { StorageService } from "@/services/storage/StorageService";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { StorageService } from "../services/storage/StorageService";
 
 const GoogleAuthCallback = () => {
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ const GoogleAuthCallback = () => {
       StorageService.setToken(token);
       StorageService.setUser(user);
       setTimeout(() => {
-        navigate("/");
+        navigate("/managementTour");
       }, 100);
     } else {
       navigate("/login");

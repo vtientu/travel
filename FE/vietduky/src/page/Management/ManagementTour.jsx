@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getTours } from "../../services/API/tour.api";
+import { getTours } from "../../services/API/tour.service";
 import Layout from "../../layouts/LayoutManagement";
 import ModalAddTour from "../../components/ModalManage/ModalTour/ModalAddTour";
 import { LuSearch } from "react-icons/lu";

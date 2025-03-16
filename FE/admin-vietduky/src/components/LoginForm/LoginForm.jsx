@@ -1,19 +1,20 @@
-import { login } from "../../services/API/auth.api";
+
+// import { login } from "../../services/API/auth.service";
 import AuthProviders from "../AuthProviders/AuthProviders";
 import { useState } from "react";
 export default function LoginForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = async () => {
-    try {
-      const data = await login(username, password);
-      alert("Đăng nhập thành công!");
-      window.location.href = "/profile";
-    } catch (error) {
-      alert(error.message);
-    }
-  };
+  // const handleLogin = async () => {
+  //   try {
+  //     const data = await login(username, password);
+  //     alert("Đăng nhập thành công!");
+  //     window.location.href = "/profile";
+  //   } catch (error) {
+  //     alert(error.message);
+  //   }
+  // };
 
   return (
     <div className="  w-[400px]">
@@ -65,7 +66,7 @@ export default function LoginForm() {
 
       {/* Login Button */}
       <button
-        onClick={handleLogin}
+        // onClick={handleLogin}
         className="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition"
       >
         Đăng nhập

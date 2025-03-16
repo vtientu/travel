@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { getTours } from "../../services/API/tour.api";
+import React, { use, useEffect, useState } from "react";
 import Layout from "../../layouts/LayoutManagement";
 import ModalAddTour from "../../components/ModalManage/ModalTour/ModalAddTour";
 import { LuSearch } from "react-icons/lu";
 import DropdownMenu from "../../components/Dropdown/DropdownMenuTour";
 import ModalManageTravelTour from "../../components/ModalManage/ModalTour/ModalManageTravelTour"; // Import modal quản lý hành trình
+import { getTours } from "../../services/API/tour.service";
 
 export default function ManagementTour() {
   const [tours, setTours] = useState([]);
@@ -35,16 +35,24 @@ export default function ManagementTour() {
   useEffect(() => {
     const fetchTours = async () => {
       try {
-        const data = await getTours();
-        setTours(Array.isArray(data) ? data : []);
+        const toursData = await getTours();
+        console.log("Dữ liệu từ API:", toursData);
+  
+        if (Array.isArray(toursData)) {
+          setTours(toursData);
+        } else {
+          console.error("Dữ liệu API không đúng định dạng:", toursData);
+          setTours([]);
+        }
       } catch (error) {
         console.log("Lỗi khi lấy dữ liệu từ API", error);
         setTours([]);
       }
     };
-
+  
     fetchTours();
   }, []);
+  
 
   const handleDeleteTour = (id) => {
     setTours((prev) => prev.filter((tour) => tour.id !== id));

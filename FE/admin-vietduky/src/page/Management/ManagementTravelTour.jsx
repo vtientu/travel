@@ -1,14 +1,12 @@
 import { LuSearch } from "react-icons/lu";
 import Layout from "../../layouts/LayoutManagement";
 import { formatDate } from "../../utils/dateUtil";
-import {
-  getTravelTour,
-  deleteTravelTour,
-} from "../../services/API/travel_tour.api";
+
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { useEffect, useState } from "react";
 import ModalAddTravelTour from "../../components/ModalManage/ModalAddTravelTour";
 import { MdDelete, MdEdit } from "react-icons/md";
+import { deleteTravelTour, getTravelTour } from "../../services/API/travel_tour.service";
 
 export default function ManagementTravelTour() {
   const [isModalOpen, setIsModalOpen] = useState(false);

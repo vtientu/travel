@@ -13,11 +13,8 @@ router.get("/google", passport.authenticate("google", { scope: ["profile", "emai
 
 router.get(
     "/google/callback",
-    passport.authenticate("google", { failureRedirect: "/login" }),
-    (req, res) => {
-        console.log("User after Google login:", req.user); // 🔥 Debug
-        res.redirect(`http://localhost:5173/google-success?token=${req.user.token}`);
-    }
-);
+    passport.authenticate("google", { session: false }),
+    authController.googleLogin
+  );
 
 module.exports = router;
