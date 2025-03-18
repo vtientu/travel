@@ -12,6 +12,7 @@ import DetailTourPage from "./page/DetailTourPage.jsx";
 import ListTour from "./page/ListTourPage.jsx";
 import LoginPage from "./page/LoginPage.jsx";
 import Profile from "./page/Profile";
+import ProfileCustomer from "./page/ProfileCustomer";
 import RegisterPage from "./page/RegisterPage.jsx";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
@@ -25,6 +26,7 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<Profile />} />
         </Route>
+        <Route path={"/profileCus"} element={<ProfileCustomer />} />
         <Route path={"/register"} element={<RegisterPage />} />
         {/*<Route path={'/forgot-password'}/>*/}
         <Route path={"/personalAI"} element={<PersonalAIPage />} />

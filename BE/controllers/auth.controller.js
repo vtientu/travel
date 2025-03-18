@@ -76,101 +76,106 @@ const googleAuth = async (accessToken, refreshToken, profile, done) => {
         email: profile.emails[0].value,
         googleId: profile.id,
         avatar: profile.photos?.[0]?.value || "",
+        displayName: profile.displayName,
+        givenName: profile.name?.givenName || "",
+        familyName: profile.name?.familyName || "",
         role_id: 1, // Mặc định là customer
       });
 
-      try {
+      // Kiểm tra xem Customer đã tồn tại chưa
+      let customer = await Customer.findOne({ where: { user_id: user.id } });
+
+      if (!customer) {
         await Customer.create({
           user_id: user.id,
           first_name: profile.name?.givenName || "",
           last_name: profile.name?.familyName || "",
           number_phone: profile?.phoneNumber || "",
         });
-      } catch (err) {
-        console.error("Lỗi khi tạo Customer:", err);
-      }
-    } else {
-      if (user.role_id === 1) {
-        const customerExists = await Customer.findOne({ where: { user_id: user.id } });
-        if (!customerExists) {
-          try {
-            await Customer.create({
-              user_id: user.id,
-              first_name: profile.name?.givenName || "",
-              last_name: profile.name?.familyName || "",
-              number_phone: profile?.phoneNumber || "",
-            });
-          } catch (err) {
-            console.error("Lỗi khi tạo Customer:", err);
-          }
-        }
+      } else {
+        // Cập nhật lại thông tin Customer nếu có thay đổi
+        await customer.update({
+          first_name: profile.name?.givenName || customer.first_name,
+          last_name: profile.name?.familyName || customer.last_name,
+        });
       }
     }
 
-    return done(null, user);
-  } catch (error) {
-    console.error("Lỗi trong googleAuth:", error);
-    return done(error, null);
-  }
-};
+      return done(null, user);
+    } catch (error) {
+      console.error("Lỗi trong googleAuth:", error);
+      return done(error, null);
+    }
+  };
 
 
-const googleLogin = async (req, res) => {
-  try {
-    if (!req.user) {
-      return res.status(401).json({ message: "Authentication failed" });
+  const googleLogin = async (req, res) => {
+    try {
+      if (!req.user) {
+        return res.status(401).json({ message: "Authentication failed" });
+      }
+
+      const user = await User.findOne({ where: { id: req.user.id } });
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      let customer = await Customer.findOne({ where: { user_id: user.id } });
+
+    if (!customer) {
+      customer = await Customer.create({
+        user_id: user.id,
+        first_name: req.user.displayName || "",
+        last_name: req.user.family_name || "",
+        number_phone: "",
+      });
     }
 
-    const user = await User.findOne({ where: { id: req.user.id } });
+      const token = generateAccessToken(user.id);
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.redirect(
+        `http://localhost:5173/auth/callback?token=${token}&id=${user.id}&email=${encodeURIComponent(user.email)}&avatar=${encodeURIComponent(user.avatar || '')}`
+      );
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
     }
+  };
 
-    const token = generateAccessToken(user.id);
+  const getProfile = async (req, res) => {
+    try {
+      const authHeader = req.headers.authorization;
+      if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
 
-    return res.redirect(
-      `http://localhost:5173/auth/callback?token=${token}&id=${user.id}&email=${encodeURIComponent(user.email)}&avatar=${encodeURIComponent(user.avatar || '')}`
-    );
-  } catch (error) {
-    return res.status(500).json({ error: error.message });
-  }
-};
+      const token = authHeader.split(" ")[1];
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-const getProfile = async (req, res) => {
-  try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return res.status(401).json({ message: "Unauthorized" });
+      const user = await User.findOne({
+        where: { id: decoded.id },
+        include: { model: Role, as: "role", attributes: ["id", "role_name"] },
+      });
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      return res.json({
+        id: user.id,
+        email: user.email,
+        avatar: user.avatar,
+        role_id: user.role_id,
+      });
+    } catch (error) {
+      return res.status(500).json({ error: error.message });
     }
+  };
 
-    const token = authHeader.split(" ")[1];
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    const user = await User.findOne({
-      where: { id: decoded.id },
-      include: { model: Role, as: "role", attributes: ["id", "role_name"] },
-    });
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    return res.json({
-      id: user.id,
-      email: user.email,
-      avatar: user.avatar,
-      role_id: user.role_id,
-    });
-  } catch (error) {
-    return res.status(500).json({ error: error.message });
-  }
-};
-
-module.exports = {
-  register,
-  login,
-  googleAuth,
-  googleLogin,
-  getProfile,
-};
+  module.exports = {
+    register,
+    login,
+    googleAuth,
+    googleLogin,
+    getProfile,
+  };

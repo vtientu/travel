@@ -25,6 +25,10 @@ module.exports = (sequelize, Sequelize) => {
           isEmail: true,
         },
       },
+      displayName: { 
+        type: Sequelize.STRING, 
+        allowNull: true 
+      },
       password: {
         type: Sequelize.STRING,
         allowNull: true, // Google user không cần mật khẩu
