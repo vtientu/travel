@@ -8,56 +8,55 @@ module.exports = (sequelize, Sequelize) => {
         primaryKey: true,
       },
       type_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER.UNSIGNED,
         allowNull: true,
       },
       topic_id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.INTEGER.UNSIGNED,
         allowNull: true,
       },
       code_tour: {
         type: Sequelize.STRING,
         allowNull: true,
-        unique: true,
       },
       name_tour: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: false,
       },
       price_tour: {
-        type: Sequelize.INTEGER,
-        allowNull: true,
+        type: Sequelize.DECIMAL(10, 2),
+        allowNull: false,
       },
       day_number: {
         type: Sequelize.INTEGER,
-        allowNull: true,
+        allowNull: false,
       },
       rating_tour: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.FLOAT,
         allowNull: true,
       },
       max_people: {
         type: Sequelize.INTEGER,
-        allowNull: true,
+        allowNull: false,
       },
       activity_description: {
         type: Sequelize.TEXT,
-        allowNull: true,
+        allowNull: false,
       },
       image: {
         type: Sequelize.STRING,
-        allowNull: true,
+        allowNull: false,
       },
       start_location: {
-        type: Sequelize.STRING,
-        allowNull: true,
+        type: Sequelize.INTEGER.UNSIGNED,
+        allowNull: false,
       },
       end_location: {
-        type: Sequelize.STRING,
-        allowNull: true,
+        type: Sequelize.INTEGER.UNSIGNED,
+        allowNull: false,
       },
       available_month: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         allowNull: true,
       },
     },
