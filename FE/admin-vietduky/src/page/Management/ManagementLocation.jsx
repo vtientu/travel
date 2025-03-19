@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Layout from "../../layouts/LayoutManagement";
 import { getLocations, deleteLocation } from "../../services/API/location.service";
 import { LuSearch } from "react-icons/lu";
@@ -9,8 +9,7 @@ import { MdEdit, MdDelete } from "react-icons/md";
 export default function ManagementLocation() {
   const [locations, setLocations] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [openDropdown, setOpenDropdown] = useState(null); // ID của vị trí đang mở menu
-
+  const [openDropdown, setOpenDropdown] = useState(null);
   // Toggle dropdown
   const toggleDropdown = (id) => {
     setOpenDropdown(openDropdown === id ? null : id);

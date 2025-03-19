@@ -5,8 +5,8 @@ import { Heart } from "lucide-react";
 export default function VacationTour() {
     const [tours, setTours] = useState([]);
     const [filteredTours, setFilteredTours] = useState([]);
-    const [activeTab, setActiveTab] = useState("Tất cả");
-    const [cities, setCities] = useState([]);
+    const [activeTab] = useState("Tất cả");
+    const [setCities] = useState([]);
     const navigate = useNavigate();
 
     // useEffect(() => {
