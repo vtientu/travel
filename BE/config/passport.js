@@ -14,11 +14,19 @@ passport.use(new GoogleStrategy(
 
       if (!user) {
         user = await User.create({
+          googleId: profile.id,
           email: profile.emails[0].value,
+          displayName: profile.displayName,
+          givenName: profile.name?.givenName || null,
+          familyName: profile.name?.familyName || null,
           avatar: profile.photos[0]?.value || null,
           password: null,
           role_id: 1,
         });
+      } else {
+        user.googleId = profile.id;
+        user.displayName = profile.displayName;
+        await user.save();
       }
 
       return done(null, user);

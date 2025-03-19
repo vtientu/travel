@@ -1,4 +1,5 @@
 const db = require("../models");
+const bcrypt = require("bcryptjs");
 const Customer = db.Customer;
 const User = db.User;
 
@@ -123,5 +124,67 @@ exports.updateCustomer = async (req, res) => {
       message: "Error updating customer!",
       error: error.message,
     });
+  }
+};
+
+// Lấy thông tin Customer theo User ID
+exports.getCustomerProfile = async (req, res) => {
+  try {
+    const userId = req.user.id; // Lấy user_id từ token
+
+    // Tìm user và bao gồm thông tin Customer (nếu có)
+    const user = await User.findOne({
+      where: { id: userId },
+      attributes: ["id", "email", "password", "displayName", "avatar"], // Chọn các trường cần thiết từ bảng User
+      include: [
+        {
+          model: Customer,
+          attributes: ["id", "first_name", "last_name", "number_phone"], // Các trường của Customer
+        },
+      ],
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.json(user); // Trả về toàn bộ thông tin User + Customer
+  } catch (error) {
+    console.error("Lỗi khi lấy profile:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// Chỉnh sửa thông tin Customer theo User ID
+exports.updateCustomerProfile = async (req, res) => {
+  try {
+    const userId = req.user.id; // Lấy user_id từ token
+    const { password, number_phone } = req.body; // Dữ liệu từ client
+
+    // Kiểm tra user tồn tại
+    const user = await User.findOne({ where: { id: userId }, include: Customer });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Cập nhật mật khẩu (nếu có)
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      user.password = hashedPassword;
+    }
+
+    // Cập nhật số điện thoại (nếu có customer)
+    if (user.Customer) {
+      user.Customer.number_phone = number_phone || user.Customer.number_phone;
+      await user.Customer.save();
+    }
+
+    // Lưu thông tin user
+    await user.save();
+
+    return res.json({ message: "Profile updated successfully" });
+  } catch (error) {
+    console.error("Lỗi khi cập nhật profile:", error);
+    return res.status(500).json({ error: "Internal server error" });
   }
 };

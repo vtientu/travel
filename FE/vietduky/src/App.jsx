@@ -10,9 +10,8 @@ import BookingTour from "./page/Booking/BookingInformation.jsx";
 import DealsPage from "./page/DealsPage.jsx";
 import DetailTourPage from "./page/DetailTourPage.jsx";
 import ListTour from "./page/ListTourPage.jsx";
-import LoginPage from "./page/LoginPage.jsx";
 import Profile from "./page/Profile";
-import RegisterPage from "./page/RegisterPage.jsx";
+import ProfileCustomer from "./page/ProfileCustomer";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -20,12 +19,11 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path={"/"} element={<LayoutLandingPage />} />
-        <Route path={"/login"} element={<LoginPage />} />
         <Route path="/auth/callback" element={<GoogleAuthCallback />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/profile" element={<Profile />} />
         </Route>
-        <Route path={"/register"} element={<RegisterPage />} />
+        <Route path={"/profileCus"} element={<ProfileCustomer />} />
         {/*<Route path={'/forgot-password'}/>*/}
         <Route path={"/personalAI"} element={<PersonalAIPage />} />
         <Route path={"/deals"} element={<DealsPage />} />

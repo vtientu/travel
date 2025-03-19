@@ -1,4 +1,4 @@
-import ModalLogin from "../LoginForm/ModalLogin";
+import ModalLogin from "../ModalLogin/ModalLogin";
 import { StorageService } from "@/services/storage/StorageService";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
