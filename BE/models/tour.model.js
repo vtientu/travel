@@ -9,7 +9,11 @@ module.exports = (sequelize, Sequelize) => {
       },
       type_id: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
+      },
+      topic_id: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
       },
       code_tour: {
         type: Sequelize.STRING,

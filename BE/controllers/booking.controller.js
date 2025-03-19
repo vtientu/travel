@@ -8,7 +8,7 @@ const Vehicle = db.Vehicle;
 const VehicleBooking = db.VehicleBooking;
 const TravelTour = db.TravelTour;
 const User = db.User;
-
+const Voucher = db.Voucher;
 //Lấy danh sách tất cả booking
 exports.getAllBookings = async (req, res) => {
   try {
@@ -140,11 +140,13 @@ exports.createBooking = async (req, res) => {
       number_newborn,
       total_cost,
       name,
-      phone,
+      phone,  
       email,
       address,
+      note,
+      voucher_id
     } = req.body;
-
+    
     // Kiểm tra các trường bắt buộc
     if (!user_id || !travel_tour_id || !name || !phone || !email) {
       return res.status(400).json({
@@ -171,7 +173,14 @@ exports.createBooking = async (req, res) => {
         message: "Tổng chi phí phải lớn hơn 0!",
       });
     }
-
+    if(voucher_id) {
+      const voucher = await Voucher.findByPk(voucher_id);
+      if(!voucher) {
+        return res.status(400).json({
+          message: "Mã voucher không tồn tại!",
+        });
+      }
+    }
     // Kiểm tra định dạng email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
@@ -217,6 +226,8 @@ exports.createBooking = async (req, res) => {
       email,
       address,
       status: 0,
+      note,
+      voucher_id
     });
 
     res.status(201).json({

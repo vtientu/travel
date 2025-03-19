@@ -71,6 +71,7 @@ const ProgramDiscount = require("./programDiscount.model.js")(
     sequelize,
     Sequelize
 );
+const Topic = require("./topic.model")(sequelize, Sequelize);
 const TourActivities = require("./tour_activities.model")(sequelize, Sequelize);
 const TourService = require("./tour_service.model")(sequelize, Sequelize);
 // Mối quan hệ (Associations)
@@ -129,6 +130,10 @@ Feedback.belongsTo(User, {foreignKey: "user_id"});
 //Tour/Feedback
 Tour.hasMany(Feedback, {foreignKey: "tour_id"});
 Feedback.belongsTo(Tour, {foreignKey: "tour_id", as: "tour"});
+
+//Tour/Topic
+Tour.belongsTo(Topic, {foreignKey: "topic_id", as: "topic"});
+Topic.hasMany(Tour, {foreignKey: "topic_id"});
 
 //Tour/TourService
 Tour.belongsToMany(Service, {
