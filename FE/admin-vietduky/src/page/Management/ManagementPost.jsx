@@ -14,7 +14,6 @@ export default function ManagementPost() {
             slug: "cham-thi-trac-nghiem",
             featured: true,
             status: "Hoạt động",
-            selected: true,
         },
         {
             id: 2,
@@ -23,28 +22,44 @@ export default function ManagementPost() {
             slug: "giai-phap-cham-thi",
             featured: true,
             status: "Khóa",
-            selected: true,
         },
     ]);
-    const [selectedPosts, setSelectedPosts] = useState(posts.map(() => false));
+    const [selectedPosts, setSelectedPosts] = useState([]);
     const [selectAll, setSelectAll] = useState(false);
+    const [showModal, setShowModal] = useState(false);
 
+    // Toggle select all
     const handleSelectAll = () => {
-        const newState = !selectAll;
-        setSelectAll(newState);
-        setSelectedPosts(posts.map(() => newState));
+        if (selectAll) {
+            setSelectedPosts([]);
+        } else {
+            setSelectedPosts(posts.map((post) => post.id));
+        }
+        setSelectAll(!selectAll);
     };
 
-    const handleSelectPost = (index) => {
-        const newSelectedPosts = [...selectedPosts];
-        newSelectedPosts[index] = !newSelectedPosts[index];
-        setSelectedPosts(newSelectedPosts);
-        setSelectAll(newSelectedPosts.every((selected) => selected));
+    // Toggle select individual post
+    const handleSelectPost = (postId) => {
+        const updatedSelectedPosts = selectedPosts.includes(postId)
+            ? selectedPosts.filter((id) => id !== postId)
+            : [...selectedPosts, postId];
+
+        setSelectedPosts(updatedSelectedPosts);
+        setSelectAll(updatedSelectedPosts.length === posts.length);
+    };
+
+    // Delete selected posts
+    const handleDeletePosts = () => {
+        if (selectedPosts.length === 0) return;
+        setPosts(posts.filter((post) => !selectedPosts.includes(post.id)));
+        setSelectedPosts([]);
+        setSelectAll(false);
     };
 
     return (
-        <Layout title="Quản lý Tài Khoản">
+        <Layout title="Quản lý Bài Viết">
             <div className="p-4 bg-white rounded-md">
+                {/* Search & Action Buttons */}
                 <div className="flex items-center gap-4 mb-4">
                     <div className="relative flex-1">
                         <LuSearch className="absolute left-3 top-3 text-gray-500" />
@@ -56,14 +71,26 @@ export default function ManagementPost() {
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
                     </div>
-                    <button className="bg-red-700 text-white px-4 py-2 rounded-md hover:bg-red-800 transition">
-                        Xóa bài viết
-                    </button>
-                    <button className="bg-red-700 text-white px-4 py-2 rounded-md" onClick={() => {}}>
+
+                    {/* Chỉ hiển thị nút Xóa bài viết khi có bài viết được chọn */}
+                    {selectedPosts.length > 0 && (
+                        <button
+                            className="bg-red-700 text-white px-4 py-2 rounded-md hover:bg-red-800 transition"
+                            onClick={handleDeletePosts}
+                        >
+                            Xóa bài viết
+                        </button>
+                    )}
+
+                    <button
+                        className="bg-red-700 text-white px-4 py-2 rounded-md"
+                        onClick={() => setShowModal(true)}
+                    >
                         Thêm bài viết
                     </button>
                 </div>
 
+                {/* Posts Table */}
                 <table className="w-full border-collapse">
                     <thead>
                     <tr className="text-left text-gray-700 border-b">
@@ -90,8 +117,8 @@ export default function ManagementPost() {
                             <td className="p-2">
                                 <input
                                     type="checkbox"
-                                    checked={selectedPosts[index]}
-                                    onChange={() => handleSelectPost(index)}
+                                    checked={selectedPosts.includes(post.id)}
+                                    onChange={() => handleSelectPost(post.id)}
                                     className="accent-red-700"
                                 />
                             </td>
@@ -122,6 +149,9 @@ export default function ManagementPost() {
                     </tbody>
                 </table>
             </div>
+
+            {/* Modal for Adding Post */}
+            {showModal && <ModalAddPost onClose={() => setShowModal(false)} />}
         </Layout>
     );
 }

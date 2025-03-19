@@ -1,54 +1,43 @@
 import { useEffect, useState } from "react";
 import Layout from "../../layouts/LayoutManagement";
 import { LuSearch } from "react-icons/lu";
-import { getTours } from "../../services/API/tour.service";
-import ModalAddVocher from "../../components/ModalManage/ModalAddVocher.jsx";
+import ModalAddVoucher from "../../components/ModalManage/ModalAddVocher.jsx";
 
 export default function ManagementDiscount() {
-    const [tours, setTours] = useState([]);
+    const [vouchers, setVouchers] = useState([]);
+    const [isAddVoucherModalOpen, setIsAddVoucherModalOpen] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
 
-    const [isAddTourModalOpen, setIsAddTourModalOpen] = useState(false); // Modal thêm Tour
-
-    // Mở/đóng modal thêm Tour
-    const toggleAddTourModal = () => {
-        setIsAddTourModalOpen(!isAddTourModalOpen);
+    // Hàm mở/đóng modal thêm voucher
+    const toggleAddVoucherModal = () => {
+        setIsAddVoucherModalOpen(!isAddVoucherModalOpen);
     };
 
-    // call API to get tours
+    // Gọi API để lấy danh sách voucher
     useEffect(() => {
-        const fetchTours = async () => {
+        const fetchVouchers = async () => {
             try {
-                const toursData = await getTours();
-                console.log("Dữ liệu từ API:", toursData);
+                const response = await fetch("http://localhost:3000/api/voucher/");
+                const data = await response.json();
+                console.log("Dữ liệu từ API:", data);
 
-                if (Array.isArray(toursData)) {
-                    setTours(toursData);
+                if (Array.isArray(data)) {
+                    setVouchers(data);
                 } else {
-                    console.error("Dữ liệu API không đúng định dạng:", toursData);
-                    setTours([]);
+                    console.error("Dữ liệu API không đúng định dạng:", data);
+                    setVouchers([]);
                 }
             } catch (error) {
-                console.log("Lỗi khi lấy dữ liệu từ API", error);
-                setTours([]);
+                console.error("Lỗi khi lấy dữ liệu từ API", error);
+                setVouchers([]);
             }
         };
 
-        fetchTours();
+        fetchVouchers();
     }, []);
 
-    const [searchTerm, setSearchTerm] = useState("");
-    const discounts = [
-        {
-            code: "HELLOSGCAVN", value: "500.000 VNĐ", percent: 30, amount: 30,
-            startDate: "13/03/2025", endDate: "13/04/2025", status: "Còn hạn"
-        },
-        {
-            code: "HELLOSGCAVN", value: "100.000 VNĐ", percent: 100, amount: 100,
-            startDate: "13/03/2025", endDate: "13/04/2025", status: "Hết hạn"
-        },
-    ];
     return (
-        <Layout title="Quản lý Tour">
+        <Layout title="Quản lý Mã Giảm Giá">
             <div className="p-4 bg-white rounded-md">
                 {/* Thanh tìm kiếm và nút hành động */}
                 <div className="flex items-center gap-4 mb-4">
@@ -56,16 +45,16 @@ export default function ManagementDiscount() {
                         <LuSearch className="absolute left-3 top-3 text-gray-500" />
                         <input
                             type="text"
-                            placeholder="Tìm kiếm bằng từ khóa"
+                            placeholder="Tìm kiếm mã giảm giá"
                             className="pl-10 pr-4 py-2 border rounded-md w-full"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
                     </div>
                     <button className="border border-red-600 text-red-600 px-4 py-2 rounded-md">
-                        Nhập d.sách mã giảm giá
+                        Nhập danh sách mã giảm giá
                     </button>
-                    <button className="bg-red-700 text-white px-4 py-2 rounded-md" onClick={toggleAddTourModal}>
+                    <button className="bg-red-700 text-white px-4 py-2 rounded-md" onClick={toggleAddVoucherModal}>
                         Thêm mã giảm giá
                     </button>
                 </div>
@@ -75,7 +64,6 @@ export default function ManagementDiscount() {
                     <thead>
                     <tr className="text-left text-gray-700">
                         <th className="p-2">Mã giảm giá</th>
-                        <th className="p-2">Giá trị giảm giá</th>
                         <th className="p-2">% giảm giá</th>
                         <th className="p-2">Số lượng</th>
                         <th className="p-2">Ngày bắt đầu</th>
@@ -85,25 +73,25 @@ export default function ManagementDiscount() {
                     </tr>
                     </thead>
                     <tbody>
-                    {discounts.map((discount, index) => (
-                        <tr key={index} className="border-t">
-                            <td className="p-2">{discount.code}</td>
-                            <td className="p-2">{discount.value}</td>
-                            <td className="p-2">{discount.percent}</td>
-                            <td className="p-2">{discount.amount}</td>
-                            <td className="p-2">{discount.startDate}</td>
-                            <td className="p-2">{discount.endDate}</td>
+                    {vouchers.map((voucher) => (
+                        <tr key={voucher.id} className="border-t">
+                            <td className="p-2">{voucher.voucher_code}</td>
+                            <td className="p-2">{voucher.discount_percentage}%</td>
+                            <td className="p-2">{voucher.quantity}</td>
+                            <td className="p-2">{new Date(voucher.start_date).toLocaleDateString("vi-VN")}</td>
+                            <td className="p-2">{new Date(voucher.end_date).toLocaleDateString("vi-VN")}</td>
                             <td className="p-2">
-                                <span className={discount.status === "Còn hạn" ? "text-green-600" : "text-red-600"}>
-                                    {discount.status}
-                                </span>
+                                    <span className={voucher.status === 1 ? "text-green-600" : "text-red-600"}>
+                                        {voucher.status === 1 ? "Còn hạn" : "Hết hạn"}
+                                    </span>
                             </td>
                             <td className="p-2 text-right">...</td>
                         </tr>
                     ))}
                     </tbody>
                 </table>
-                {isAddTourModalOpen && <ModalAddVocher onClose={toggleAddTourModal} />}
+
+                {isAddVoucherModalOpen && <ModalAddVoucher onClose={toggleAddVoucherModal} />}
             </div>
         </Layout>
     );

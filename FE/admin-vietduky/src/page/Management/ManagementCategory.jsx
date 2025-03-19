@@ -6,61 +6,87 @@ import ModalAddPost from "../../components/ModalManage/ModalNews/ModalAddPost.js
 
 export default function ManagementCategory() {
     const [searchTerm, setSearchTerm] = useState("");
-    const [posts, setPosts] = useState([
+    const [categories, setCategories] = useState([
         {
             id: 1,
             category: "Sự kiện",
-            title: "Chấm thi trắc nghiệm tự động",
             slug: "cham-thi-trac-nghiem",
-            featured: true,
             status: "Hoạt động",
-            selected: true,
         },
         {
             id: 2,
             category: "Công nghệ",
-            title: "Giải pháp chấm thi cho giáo dục",
             slug: "giai-phap-cham-thi",
-            featured: true,
             status: "Khóa",
-            selected: true,
         },
     ]);
-    const [selectedPosts, setSelectedPosts] = useState(posts.map(() => false));
+    const [selectedCategories, setSelectedCategories] = useState([]);
     const [selectAll, setSelectAll] = useState(false);
+    const [showModal, setShowModal] = useState(false);
 
+    // Chọn tất cả danh mục
     const handleSelectAll = () => {
-        const newState = !selectAll;
-        setSelectAll(newState);
-        setSelectedPosts(posts.map(() => newState));
+        if (selectAll) {
+            setSelectedCategories([]);
+        } else {
+            setSelectedCategories(categories.map((cat) => cat.id));
+        }
+        setSelectAll(!selectAll);
     };
 
-    const handleSelectPost = (index) => {
-        const newSelectedPosts = [...selectedPosts];
-        newSelectedPosts[index] = !newSelectedPosts[index];
-        setSelectedPosts(newSelectedPosts);
-        setSelectAll(newSelectedPosts.every((selected) => selected));
+    // Chọn một danh mục riêng lẻ
+    const handleSelectCategory = (categoryId) => {
+        const updatedSelected = selectedCategories.includes(categoryId)
+            ? selectedCategories.filter((id) => id !== categoryId)
+            : [...selectedCategories, categoryId];
+
+        setSelectedCategories(updatedSelected);
+        setSelectAll(updatedSelected.length === categories.length);
+    };
+
+    // Xóa danh mục đã chọn
+    const handleDeleteCategories = () => {
+        if (selectedCategories.length === 0) return;
+        setCategories(categories.filter((cat) => !selectedCategories.includes(cat.id)));
+        setSelectedCategories([]);
+        setSelectAll(false);
     };
 
     return (
-        <Layout title="Quản lý Tài Khoản">
+        <Layout title="Quản lý Danh Mục">
             <div className="p-4 bg-white rounded-md">
+                {/* Thanh tìm kiếm & nút hành động */}
                 <div className="flex items-center gap-4 mb-4">
                     <div className="relative flex-1">
                         <LuSearch className="absolute left-3 top-3 text-gray-500" />
                         <input
                             type="text"
-                            placeholder="Tìm kiếm bằng từ khóa"
+                            placeholder="Tìm kiếm danh mục"
                             className="pl-10 pr-4 py-2 border rounded-md w-80"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
                     </div>
-                    <button className="bg-red-700 text-white px-4 py-2 rounded-md" onClick={() => {}}>
-                        Thêm bài viết
+
+                    {/* Chỉ hiển thị nút Xóa khi có danh mục được chọn */}
+                    {selectedCategories.length > 0 && (
+                        <button
+                            className="bg-red-700 text-white px-4 py-2 rounded-md hover:bg-red-800 transition"
+                            onClick={handleDeleteCategories}
+                        >
+                            Xóa danh mục
+                        </button>
+                    )}
+
+                    <button
+                        className="bg-red-700 text-white px-4 py-2 rounded-md"
+                        onClick={() => setShowModal(true)}
+                    >
+                        Thêm danh mục
                     </button>
                 </div>
 
+                {/* Bảng danh mục */}
                 <table className="w-full border-collapse">
                     <thead>
                     <tr className="text-left text-gray-700 border-b">
@@ -80,22 +106,21 @@ export default function ManagementCategory() {
                     </tr>
                     </thead>
                     <tbody>
-                    {posts.map((post, index) => (
-                        <tr key={post.id} className="border-t">
+                    {categories.map((cat, index) => (
+                        <tr key={cat.id} className="border-t">
                             <td className="p-2">
                                 <input
                                     type="checkbox"
-                                    checked={selectedPosts[index]}
-                                    onChange={() => handleSelectPost(index)}
+                                    checked={selectedCategories.includes(cat.id)}
+                                    onChange={() => handleSelectCategory(cat.id)}
                                     className="accent-red-700"
                                 />
                             </td>
                             <td className="p-2">{index + 1}</td>
-                            <td className="p-2">{post.category}</td>
-                            <td className="p-2 truncate max-w-xs">{post.slug}</td>
-
-                            <td className={`p-2 ${post.status === "Hoạt động" ? "text-green-600" : "text-red-600"}`}>
-                                {post.status}
+                            <td className="p-2">{cat.category}</td>
+                            <td className="p-2 truncate max-w-xs">{cat.slug}</td>
+                            <td className={`p-2 ${cat.status === "Hoạt động" ? "text-green-600" : "text-red-600"}`}>
+                                {cat.status}
                             </td>
                             <td className="p-2 text-right flex gap-2 justify-end">
                                 <button className="text-gray-600 hover:text-blue-600">
@@ -110,6 +135,9 @@ export default function ManagementCategory() {
                     </tbody>
                 </table>
             </div>
+
+            {/* Modal Thêm danh mục */}
+            {showModal && <ModalAddPost onClose={() => setShowModal(false)} />}
         </Layout>
     );
 }

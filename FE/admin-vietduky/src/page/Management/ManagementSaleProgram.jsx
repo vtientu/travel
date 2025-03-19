@@ -1,70 +1,57 @@
 import { useEffect, useState } from "react";
 import Layout from "../../layouts/LayoutManagement";
 import { LuSearch } from "react-icons/lu";
-import { getTours } from "../../services/API/tour.service";
-import ModalAddVocher from "../../components/ModalManage/ModalAddVocher.jsx";
+import { FaEllipsisH } from "react-icons/fa";
 import ModalAddSaleProgram from "../../components/ModalManage/ModalAddSaleProgram.jsx";
-import {FaEllipsisH} from "react-icons/fa";
 
 export default function ManagementSaleProgram() {
-    const [tours, setTours] = useState([]);
+    const [discountPrograms, setDiscountPrograms] = useState([]);
+    const [isAddSaleProgramModalOpen, setIsAddSaleProgramModalOpen] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
 
-    const [isAddTourModalOpen, setIsAddTourModalOpen] = useState(false); // Modal thêm Tour
-
-    // Mở/đóng modal thêm Tour
-    const toggleAddTourModal = () => {
-        setIsAddTourModalOpen(!isAddTourModalOpen);
-    };
-
-    // call API to get tours
+    // Fetch discount programs from API
     useEffect(() => {
-        const fetchTours = async () => {
+        const fetchDiscountPrograms = async () => {
             try {
-                const toursData = await getTours();
-                console.log("Dữ liệu từ API:", toursData);
+                const response = await fetch("http://localhost:3000/api/program-discount");
+                const result = await response.json();
+                console.log("Dữ liệu từ API:", result); // Log để kiểm tra
 
-                if (Array.isArray(toursData)) {
-                    setTours(toursData);
+                if (result.data && Array.isArray(result.data)) {
+                    setDiscountPrograms(result.data); // ✅ Lấy dữ liệu từ `data`
                 } else {
-                    console.error("Dữ liệu API không đúng định dạng:", toursData);
-                    setTours([]);
+                    console.error("API không trả về dữ liệu đúng định dạng:", result);
+                    setDiscountPrograms([]);
                 }
             } catch (error) {
-                console.log("Lỗi khi lấy dữ liệu từ API", error);
-                setTours([]);
+                console.error("Lỗi khi gọi API:", error);
+                setDiscountPrograms([]);
             }
         };
 
-        fetchTours();
+        fetchDiscountPrograms();
     }, []);
 
-    const [searchTerm, setSearchTerm] = useState("");
-    const discountPrograms = [
-        {
-            name: "Giảm giá ABC",
-            value: "500.000 VNĐ",
-            percent: "10%",
-            startDate: "13/03/2025",
-            endDate: "13/04/2025",
-            status: "Còn hạn",
-            content: "Lorem Ipsum is simply dumm...",
-            statusClass: "text-green-500"
-        },
-        {
-            name: "Giảm giá DEF",
-            value: "100.000 VNĐ",
-            percent: "5%",
-            startDate: "13/03/2025",
-            endDate: "13/04/2025",
-            status: "Hết hạn",
-            content: "Lorem Ipsum is simply dumm...",
-            statusClass: "text-red-500"
-        }
-    ];
+    // Format date
+    const formatDate = (isoDate) => {
+        const date = new Date(isoDate);
+        return date.toLocaleDateString("vi-VN"); // Format as DD/MM/YYYY
+    };
+
+    // Convert status (0: Hết hạn, 1: Còn hạn)
+    const getStatus = (status) => {
+        return status === 1 ? { text: "Còn hạn", class: "text-green-500" } : { text: "Hết hạn", class: "text-red-500" };
+    };
+
+    // Filtered discount programs based on search term
+    const filteredPrograms = discountPrograms.filter((program) =>
+        program.discount_name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
     return (
-        <Layout title="Quản lý Tour">
+        <Layout title="Quản lý Chương trình Chiết khấu">
             <div className="p-4 bg-white rounded-md">
-                {/* Thanh tìm kiếm và nút hành động */}
+                {/* Search Bar & Actions */}
                 <div className="flex items-center gap-4 mb-4">
                     <div className="relative flex-1">
                         <LuSearch className="absolute left-3 top-3 text-gray-500" />
@@ -79,12 +66,15 @@ export default function ManagementSaleProgram() {
                     <button className="border border-red-600 text-red-600 px-4 py-2 rounded-md">
                         Nhập d.sách chiết khấu
                     </button>
-                    <button className="bg-red-700 text-white px-4 py-2 rounded-md" onClick={toggleAddTourModal}>
+                    <button
+                        className="bg-red-700 text-white px-4 py-2 rounded-md"
+                        onClick={() => setIsAddSaleProgramModalOpen(true)}
+                    >
                         Thêm chương trình chiết khấu
                     </button>
                 </div>
 
-                {/* Bảng danh sách mã giảm giá */}
+                {/* Discount Program List Table */}
                 <table className="w-full border-collapse">
                     <thead>
                     <tr className="border-b">
@@ -99,23 +89,36 @@ export default function ManagementSaleProgram() {
                     </tr>
                     </thead>
                     <tbody>
-                    {discountPrograms.map((program, index) => (
-                        <tr key={index} className="border-b">
-                            <td className="p-2">{program.name}</td>
-                            <td className="p-2">{program.value}</td>
-                            <td className="p-2">{program.percent}</td>
-                            <td className="p-2">{program.startDate}</td>
-                            <td className="p-2">{program.endDate}</td>
-                            <td className={`p-2 font-semibold ${program.statusClass}`}>{program.status}</td>
-                            <td className="p-2">{program.content}</td>
-                            <td className="p-2 text-center">
-                                <FaEllipsisH className="cursor-pointer text-gray-500" />
+                    {filteredPrograms.length > 0 ? (
+                        filteredPrograms.map((program) => {
+                            const statusInfo = getStatus(program.status);
+                            return (
+                                <tr key={program.id} className="border-b">
+                                    <td className="p-2">{program.discount_name}</td>
+                                    <td className="p-2">{program.discount_value.toLocaleString()} VNĐ</td>
+                                    <td className="p-2">{program.percent_discount}%</td>
+                                    <td className="p-2">{formatDate(program.start_date)}</td>
+                                    <td className="p-2">{formatDate(program.end_date)}</td>
+                                    <td className={`p-2 font-semibold ${statusInfo.class}`}>{statusInfo.text}</td>
+                                    <td className="p-2">{program.description}</td>
+                                    <td className="p-2 text-center">
+                                        <FaEllipsisH className="cursor-pointer text-gray-500" />
+                                    </td>
+                                </tr>
+                            );
+                        })
+                    ) : (
+                        <tr>
+                            <td colSpan="8" className="p-4 text-center text-gray-500">
+                                Không tìm thấy chương trình chiết khấu nào.
                             </td>
                         </tr>
-                    ))}
+                    )}
                     </tbody>
                 </table>
-                {isAddTourModalOpen && <ModalAddSaleProgram onClose={toggleAddTourModal} />}
+
+                {/* Modal */}
+                {isAddSaleProgramModalOpen && <ModalAddSaleProgram onClose={() => setIsAddSaleProgramModalOpen(false)} />}
             </div>
         </Layout>
     );
