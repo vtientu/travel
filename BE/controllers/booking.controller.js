@@ -145,6 +145,9 @@ exports.createBooking = async (req, res) => {
       address,
     } = req.body;
 
+    console.log(req.body);
+    
+
     // Kiểm tra các trường bắt buộc
     if (!user_id || !travel_tour_id || !name || !phone || !email) {
       return res.status(400).json({

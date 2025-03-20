@@ -1,7 +1,14 @@
 import React from "react";
 import TermsAndConditions from "./TermsAndConditions";
+import { useNavigate } from "react-router-dom";
 
 const TourBooking = () => {
+  const navigate = useNavigate();
+
+  const handleBooking = () => {
+    navigate("/bookingConfirm");
+  };
+
   return (
     <div className="flex flex-col items-end gap-4">
       {/* Box chứa thông tin tour */}
@@ -40,7 +47,7 @@ const TourBooking = () => {
         </div>
 
         {/* Nút đặt tour */}
-        <button className="w-full py-3 mt-4 bg-gray-300 text-gray-500 font-bold rounded-lg cursor-not-allowed">
+        <button onClick={handleBooking} className="w-full py-3 mt-4 bg-gray-300 text-gray-500 font-bold rounded-lg">
           Đặt tour
         </button>
 

@@ -16,8 +16,7 @@ router.get(
 );
 router.post(
   "/create",
-  authenticateUser,
-  authenticateAdmin,
+  // authenticateUser,
   BookingController.createBooking
 );
 router.put("/update/:id", authenticateStaff, BookingController.updateBooking);
