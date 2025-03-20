@@ -13,3 +13,9 @@ export const formatDayDMY = (dateString) => {
     year: "numeric",
   });
 };
+
+export const excelDateToJSDate = (serial) => {
+  const utc_days = Math.floor(serial - 25569);
+  const date_info = new Date(utc_days * 86400 * 1000);
+  return date_info.toISOString().split("T")[0]; // YYYY-MM-DD
+};

@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import { exportTemplate } from "@/utils/excelUtils";
+import * as XLSX from "xlsx";
+import { excelDateToJSDate, formatDate } from "@/utils/dateUtil";
 
 const PassengerInfoForm = ({ passengers }) => {
   const [passengerData, setPassengerData] = useState([]);
@@ -17,13 +20,19 @@ const PassengerInfoForm = ({ passengers }) => {
   }, {});
 
   useEffect(() => {
-    // Check if passengers is valid before updating
-    if (passengers && typeof passengers === "object") {
-      setPassengerData((prev) => {
-        const newPassengers = [];
-        Object.entries(passengers).forEach(([type, count]) => {
-          for (let i = 0; i < count; i++) {
+    setPassengerData((prev) => {
+      const newPassengers = [];
+
+      ["adult", "child", "infant"].forEach((type) => {
+        const count = passengers[type] || 0;
+        const existingPassengers = prev.filter((p) => p.type === type);
+
+        for (let i = 0; i < count; i++) {
+          if (existingPassengers[i]) {
+            newPassengers.push(existingPassengers[i]);
+          } else {
             newPassengers.push({
+              id: `${type}-${i}`,
               type,
               label:
                 type === "adult"
@@ -45,21 +54,51 @@ const PassengerInfoForm = ({ passengers }) => {
               note: "",
             });
           }
-        });
-        return newPassengers;
+        }
       });
-    }
+
+      return newPassengers;
+    });
   }, [passengers]);
 
-  const handleChangeInput = (index, field, value) => {
+  const handleChangeInput = (passengerId, field, value) => {
     setPassengerData((prev) =>
-      prev.map((p, i) => (i === index ? { ...p, [field]: value } : p))
+      prev.map((p) => (p.id === passengerId ? { ...p, [field]: value } : p))
     );
   };
 
   const handleAssistanceChange = (e) => {
     setAssistance(e.target.checked);
   };
+
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+  
+    const reader = new FileReader();
+    reader.readAsBinaryString(file);
+  
+    reader.onload = (e) => {
+      const workbook = XLSX.read(e.target.result, { type: "binary" });
+      const sheetName = workbook.SheetNames[0];
+      const sheet = workbook.Sheets[sheetName];
+      const data = XLSX.utils.sheet_to_json(sheet);
+  
+      const formattedData = data.map((row, index) => ({
+        id: `passenger-${index}`,
+        name: row["Họ tên"] || "",
+        phone: row["Số điện thoại"] || "",
+        gender: row["Giới tính"]?.toLowerCase() === "nữ" ? "female" : "male",
+        birthdate: row["Ngày sinh"] ? excelDateToJSDate(row["Ngày sinh"]) : "",
+        type: "adult",
+        singleRoom: false,
+        note: "",
+      }));
+  
+      setPassengerData(formattedData);
+    };
+  };
+  
 
   return (
     <div className="space-y-6">
@@ -83,17 +122,27 @@ const PassengerInfoForm = ({ passengers }) => {
       <div className="w-full flex flex-row justify-end gap-4">
         <button
           type="button"
+          onClick={exportTemplate}
           className="w-1/4 py-2 bg-[#f8f8f8] border border-[#A80F21] font-semibold text-[#A80F21] rounded-md"
         >
           Tải danh sách mẫu
         </button>
-        <button
-          type="button"
-          className="w-1/4 py-2 bg-[#A80F21] text-white rounded-md"
+
+        <input
+          type="file"
+          accept=".xlsx"
+          onChange={handleFileUpload}
+          className="hidden"
+          id="fileUpload"
+        />
+        <label
+          htmlFor="fileUpload"
+          className="w-1/4 py-2 bg-[#A80F21] text-white text-center rounded-md cursor-pointer"
         >
           Thêm danh sách khách hàng
-        </button>
+        </label>
       </div>
+
       {Object.entries(groupedPassengers).map(([type, group]) => (
         <div key={type} className="space-y-4">
           <h3 className="font-bold">
@@ -113,7 +162,7 @@ const PassengerInfoForm = ({ passengers }) => {
                     name="name"
                     value={passenger.name}
                     onChange={(e) =>
-                      handleChangeInput(index, "name", e.target.value)
+                      handleChangeInput(passenger.id, "name", e.target.value)
                     }
                     placeholder="Liên hệ"
                     className="w-full p-2 rounded-md text-sm outline-none"
@@ -129,7 +178,7 @@ const PassengerInfoForm = ({ passengers }) => {
                     name="phone"
                     value={passenger.phone}
                     onChange={(e) =>
-                      handleChangeInput(index, "phone", e.target.value)
+                      handleChangeInput(passenger.id, "phone", e.target.value)
                     }
                     placeholder="Số điện thoại"
                     className="w-full p-2 rounded-md text-sm outline-none"
@@ -144,7 +193,7 @@ const PassengerInfoForm = ({ passengers }) => {
                     name="gender"
                     value={passenger.gender}
                     onChange={(e) =>
-                      handleChangeInput(index, "gender", e.target.value)
+                      handleChangeInput(passenger.id, "gender", e.target.value)
                     }
                     className="w-full p-2 text-sm outline-none focus:border-black transition-all bg-transparent appearance-none pr-6 bg-no-repeat bg-right text-gray-400"
                     style={{ appearance: "none" }}
@@ -168,11 +217,15 @@ const PassengerInfoForm = ({ passengers }) => {
                   <input
                     type="text"
                     name="birthdate"
-                    value={passenger.birthdate}
+                    value={formatDate(passenger.birthdate)}
                     onFocus={(e) => (e.target.type = "date")}
                     onBlur={(e) => (e.target.type = "text")}
                     onChange={(e) =>
-                      handleChangeInput(index, "birthdate", e.target.value)
+                      handleChangeInput(
+                        passenger.id,
+                        "birthdate",
+                        e.target.value
+                      )
                     }
                     placeholder="Chọn ngày sinh"
                     className="w-full p-2 text-sm outline-none focus:border-black transition-all bg-transparent"
@@ -188,13 +241,17 @@ const PassengerInfoForm = ({ passengers }) => {
                       name="singleRoom"
                       checked={passenger.singleRoom}
                       onChange={(e) =>
-                        handleChangeInput(index, "singleRoom", e.target.checked)
+                        handleChangeInput(
+                          passenger.id,
+                          "singleRoom",
+                          e.target.checked
+                        )
                       }
                       className="hidden"
-                      id={`singleRoomToggle-${index}`}
+                      id={`singleRoomToggle-${passenger.id}`}
                     />
                     <label
-                      htmlFor={`singleRoomToggle-${index}`}
+                      htmlFor={`singleRoomToggle-${passenger.id}`}
                       className={`relative cursor-pointer w-10 h-5 rounded-full flex items-center transition-all ${
                         passenger.singleRoom ? "bg-red-500" : "bg-gray-300"
                       }`}

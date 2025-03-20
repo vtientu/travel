@@ -1,12 +1,50 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PassengerInfoForm from "./PassengerInfoForm";
+import { StorageService } from "@/services/storage/StorageService";
 
 const ContactForm = () => {
+  const user = StorageService.getUser();
+
   const [passengers, setPassengers] = useState({
     adult: 0,
     child: 0,
     infant: 0,
   });
+  const [formData, setFormData] = useState({
+    user_id: user?.id || "",
+    travel_tour_id: "",
+    number_adult: passengers.adult,
+    number_children: passengers.child,
+    number_newborn: passengers.infant,
+    total_cost: "",
+    name: user?.name || "",
+    phone: user?.phone || "",
+    email: user?.email || "",
+    address: user?.address || "",
+    voucher_id: "",
+    note: "",
+  });
+
+  // Cập nhật số lượng hành khách vào formData
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      number_adult: passengers.adult,
+      number_children: passengers.child,
+      number_newborn: passengers.infant,
+    }));
+  }, [passengers]);
+
+  console.log(formData);
+  
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   const handlePassengerChange = (type, increment) => {
     setPassengers((prev) => ({
@@ -33,6 +71,9 @@ const ContactForm = () => {
           </label>
           <input
             type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleInputChange}
             placeholder="Liên hệ"
             className="w-full py-2 rounded outline-none"
             required
@@ -44,6 +85,9 @@ const ContactForm = () => {
           </label>
           <input
             type="text"
+            name="phone"
+            value={formData.phone}
+            onChange={handleInputChange}
             placeholder="Nhập số điện thoại"
             className="w-full py-2 rounded outline-none"
             required
@@ -55,6 +99,9 @@ const ContactForm = () => {
           </label>
           <input
             type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleInputChange}
             placeholder="Nhập email"
             className="w-full py-2 rounded outline-none"
             required
@@ -64,6 +111,9 @@ const ContactForm = () => {
           <label className="block font-bold">Địa chỉ</label>
           <input
             type="text"
+            name="address"
+            value={formData.address}
+            onChange={handleInputChange}
             placeholder="Nhập địa chỉ"
             className="w-full py-2 rounded outline-none"
           />

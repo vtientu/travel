@@ -2,17 +2,17 @@ const express = require("express");
 const router = express.Router();
 const BookingController = require("../controllers/booking.controller");
 const {
-    authenticateUser,
-    authenticateAdmin,
-    authenticateStaff,
+  authenticateUser,
+  authenticateAdmin,
+  authenticateStaff,
 } = require("../middleware/authMiddleware");
 
 router.get("/", authenticateAdmin, BookingController.getAllBookings);
 router.get(
-    "/:id",
-    authenticateUser,
-    authenticateAdmin,
-    BookingController.getBookingById
+  "/:id",
+  authenticateUser,
+  authenticateAdmin,
+  BookingController.getBookingById
 );
 // router.post(
 //   "/create",
@@ -21,14 +21,16 @@ router.get(
 //   BookingController.createBooking
 // );
 router.post(
-    "/create", BookingController.createBooking
+  "/create",
+  authenticateUser,
+  BookingController.createBooking
 );
 router.put("/update/:id", authenticateStaff, BookingController.updateBooking);
 router.delete(
-    "/cancel/:id",
-    authenticateUser,
-    authenticateAdmin,
-    BookingController.deleteBooking
+  "/cancel/:id",
+  authenticateUser,
+  authenticateAdmin,
+  BookingController.deleteBooking
 );
 
 module.exports = router;
