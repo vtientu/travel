@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
-import { exportTemplate } from "@/utils/excelUtils";
-import * as XLSX from "xlsx";
 import { excelDateToJSDate, formatDate } from "@/utils/dateUtil";
+import { exportTemplate } from "@/utils/excelUtils";
+import { useEffect, useState } from "react";
+import * as XLSX from "xlsx";
 
-const PassengerInfoForm = ({ passengers }) => {
+const PassengerInfoForm = ({ passengers, onPassengerDataChange }) => {
   const [passengerData, setPassengerData] = useState([]);
   const [assistance, setAssistance] = useState(false);
 
@@ -22,24 +22,20 @@ const PassengerInfoForm = ({ passengers }) => {
   useEffect(() => {
     setPassengerData((prev) => {
       const newPassengers = [];
-
+  
       ["adult", "child", "infant"].forEach((type) => {
         const count = passengers[type] || 0;
         const existingPassengers = prev.filter((p) => p.type === type);
-
+  
         for (let i = 0; i < count; i++) {
           if (existingPassengers[i]) {
             newPassengers.push(existingPassengers[i]);
           } else {
             newPassengers.push({
-              id: `${type}-${i}`,
+              id: `${type}-${i}-${Date.now()}`,
               type,
               label:
-                type === "adult"
-                  ? "Người lớn"
-                  : type === "child"
-                  ? "Trẻ em"
-                  : "Em bé",
+                type === "adult" ? "Người lớn" : type === "child" ? "Trẻ em" : "Em bé",
               desc:
                 type === "adult"
                   ? "Từ 12 trở lên"
@@ -51,53 +47,92 @@ const PassengerInfoForm = ({ passengers }) => {
               gender: "",
               birthdate: "",
               singleRoom: false,
-              note: "",
             });
           }
         }
       });
-
+  
+      onPassengerDataChange(newPassengers); // Gửi dữ liệu lên ContactForm
       return newPassengers;
     });
   }, [passengers]);
 
-  const handleChangeInput = (passengerId, field, value) => {
-    setPassengerData((prev) =>
-      prev.map((p) => (p.id === passengerId ? { ...p, [field]: value } : p))
-    );
-  };
+  useEffect(() => {
+    onPassengerDataChange(passengers);    
+  }, [passengers]);
 
+  const handleChangeInput = (passengerId, field, value) => {
+    setPassengerData((prev) => {
+      const updatedPassengers = prev.map((p) =>
+        p.id === passengerId ? { ...p, [field]: value } : p
+      );
+  
+      onPassengerDataChange(updatedPassengers); // Gửi dữ liệu mới lên ContactForm
+      return updatedPassengers;
+    });
+  };
+  
   const handleAssistanceChange = (e) => {
     setAssistance(e.target.checked);
+  };
+
+  const calculateAge = (birthdate) => {
+    const birth = new Date(birthdate);
+    const today = new Date();
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birth.getDate())
+    ) {
+      age--;
+    }
+    return age;
   };
 
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
     if (!file) return;
-  
+
     const reader = new FileReader();
     reader.readAsBinaryString(file);
-  
+
     reader.onload = (e) => {
       const workbook = XLSX.read(e.target.result, { type: "binary" });
       const sheetName = workbook.SheetNames[0];
       const sheet = workbook.Sheets[sheetName];
       const data = XLSX.utils.sheet_to_json(sheet);
-  
-      const formattedData = data.map((row, index) => ({
-        id: `passenger-${index}`,
-        name: row["Họ tên"] || "",
-        phone: row["Số điện thoại"] || "",
-        gender: row["Giới tính"]?.toLowerCase() === "nữ" ? "female" : "male",
-        birthdate: row["Ngày sinh"] ? excelDateToJSDate(row["Ngày sinh"]) : "",
-        type: "adult",
-        singleRoom: false,
-        note: "",
-      }));
-  
-      setPassengerData(formattedData);
+
+      const formattedData = data.map((row, index) => {
+        const birthdate = row["Ngày sinh"]
+          ? excelDateToJSDate(row["Ngày sinh"])
+          : "";
+        const age = birthdate ? calculateAge(birthdate) : null;
+
+        let type = "adult"; // Mặc định là người lớn
+        if (age !== null) {
+          if (age < 5) type = "infant";
+          else if (age < 12) type = "child";
+        }
+
+        return {
+          id: `passenger-${Date.now()}-${index}`, // Đảm bảo id là duy nhất
+          name: row["Họ tên"] || "",
+          phone: row["Số điện thoại"] || "",
+          gender: row["Giới tính"]?.toLowerCase() === "nữ" ? "false" : "true",
+          birthdate,
+          age,
+          type,
+          singleRoom: false,
+        };
+      });
+
+      setPassengerData((prev) => [...prev, ...formattedData]);
+      console.log("Dữ liệu sau khi tải lên:", formattedData);
     };
   };
+
+  console.log("Dữ liệu hành khách:", passengerData);
   
 
   return (
@@ -201,10 +236,10 @@ const PassengerInfoForm = ({ passengers }) => {
                     <option value="" disabled hidden>
                       Chọn giới tính
                     </option>
-                    <option value="male" className="text-black">
+                    <option value="true" className="text-black">
                       Nam
                     </option>
-                    <option value="female" className="text-black">
+                    <option value="false" className="text-black">
                       Nữ
                     </option>
                   </select>
@@ -217,7 +252,7 @@ const PassengerInfoForm = ({ passengers }) => {
                   <input
                     type="text"
                     name="birthdate"
-                    value={formatDate(passenger.birthdate)}
+                    value={passenger.birthdate}
                     onFocus={(e) => (e.target.type = "date")}
                     onBlur={(e) => (e.target.type = "text")}
                     onChange={(e) =>
@@ -280,20 +315,6 @@ const PassengerInfoForm = ({ passengers }) => {
         </div>
       ))}
 
-      <div className="border-b border-[#b1b1b1]" />
-      <div className="space-y-2">
-        <h3 className="text-xl font-bold">Ghi chú</h3>
-        <p className="text-base text-neutral-900">
-          Quý khách có ghi chú lưu ý gì, hãy nói với chúng tôi
-        </p>
-        <textarea
-          name="note"
-          value={passengerData.note}
-          onChange={handleChangeInput}
-          placeholder="Vui lòng nhập nội dung lời nhắn bằng tiếng Anh hoặc tiếng Việt"
-          className="p-4 w-full h-24 border rounded-md bg-[#f8f8f8]"
-        />
-      </div>
     </div>
   );
 };

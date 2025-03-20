@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
 import PassengerInfoForm from "./PassengerInfoForm";
 import { StorageService } from "@/services/storage/StorageService";
+import { useEffect, useState } from "react";
 
-const ContactForm = () => {
+const ContactForm = ({ onSubmit }) => {
   const user = StorageService.getUser();
 
   const [passengers, setPassengers] = useState({
@@ -10,33 +10,41 @@ const ContactForm = () => {
     child: 0,
     infant: 0,
   });
+
+  const [passengerData, setPassengerData] = useState([]);
+
   const [formData, setFormData] = useState({
     user_id: user?.id || "",
-    travel_tour_id: "",
+    travel_tour_id: "1",
     number_adult: passengers.adult,
     number_children: passengers.child,
     number_newborn: passengers.infant,
-    total_cost: "",
-    name: user?.name || "",
-    phone: user?.phone || "",
+    total_cost: "1500000",
+    name: user?.name || "Duong The Toan",
+    phone: user?.phone || "0866889029",
     email: user?.email || "",
-    address: user?.address || "",
-    voucher_id: "",
+    address: user?.address || "Tam Diep, Ninh Binh",
+    voucher_id: "3",
     note: "",
+    passengers: [],
   });
 
-  // Cập nhật số lượng hành khách vào formData
   useEffect(() => {
     setFormData((prev) => ({
       ...prev,
       number_adult: passengers.adult,
       number_children: passengers.child,
       number_newborn: passengers.infant,
+      passengers: passengerData,
     }));
-  }, [passengers]);
+  }, [passengers, passengerData]);
 
   console.log(formData);
-  
+
+  const handlePassengerDataChange = (data) => {
+    console.log("Received new passengerData:", data);
+    setPassengerData(data);
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -52,6 +60,13 @@ const ContactForm = () => {
       [type]: Math.max(0, prev[type] + increment),
     }));
   };
+
+  console.log(passengers);
+
+  const handleSubmit = () => {
+    onSubmit(formData);  // Gửi formData lên BookingTour
+  };
+  
 
   return (
     <div className="flex flex-col gap-4 p-4">
@@ -123,26 +138,55 @@ const ContactForm = () => {
       <div className="text-xl font-bold mb-4">Hành khách</div>
 
       <div className="grid grid-cols-2 gap-4">
-              {[
-                { label: "Người lớn", type: "adult", desc: "Từ 12 trở lên", min: 0 },
-                { label: "Trẻ em", type: "child", desc: "Từ 5 - 11 tuổi", min: 0 },
-                { label: "Em bé", type: "infant", desc: "Dưới 2 tuổi", min: 0 },
-              ].map(({ label, type, desc, min }) => (
-                <div key={type} className="flex items-center justify-between border rounded-lg p-4">
-                  <div className="flex flex-col">
-                    <span className="font-bold">{label}</span>
-                    <span className="text-xs text-gray-500">{desc}</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <button onClick={() => handlePassengerChange(type, -1)}>-</button>
-                    <span className="text-lg font-bold">{passengers[type]}</span>
-                    <button onClick={() => handlePassengerChange(type, 1)}>+</button>
-                  </div>
-                </div>
-              ))}
+        {[
+          { label: "Người lớn", type: "adult", desc: "Từ 12 trở lên", min: 0 },
+          { label: "Trẻ em", type: "child", desc: "Từ 5 - 11 tuổi", min: 0 },
+          { label: "Em bé", type: "infant", desc: "Dưới 2 tuổi", min: 0 },
+        ].map(({ label, type, desc, min }) => (
+          <div
+            key={type}
+            className="flex items-center justify-between border rounded-lg p-4"
+          >
+            <div className="flex flex-col">
+              <span className="font-bold">{label}</span>
+              <span className="text-xs text-gray-500">{desc}</span>
             </div>
-      
-            <PassengerInfoForm  passengers={passengers} />
+            <div className="flex items-center gap-3">
+              <button onClick={() => handlePassengerChange(type, -1)}>-</button>
+              <span className="text-lg font-bold">{passengers[type]}</span>
+              <button onClick={() => handlePassengerChange(type, 1)}>+</button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <PassengerInfoForm
+        passengers={passengers}
+        onPassengerDataChange={handlePassengerDataChange}
+      />
+      <div className="border-b border-[#b1b1b1]" />
+      <div className="space-y-2">
+        <h3 className="text-xl font-bold">Ghi chú</h3>
+        <p className="text-base text-neutral-900">
+          Quý khách có ghi chú lưu ý gì, hãy nói với chúng tôi
+        </p>
+        <textarea
+          name="note"
+          value={formData.note}
+          onChange={(e) =>
+            setFormData((prev) => ({ ...prev, note: e.target.value }))
+          }
+          placeholder="Vui lòng nhập nội dung lời nhắn bằng tiếng Anh hoặc tiếng Việt"
+          className="p-4 w-full h-24 border rounded-md bg-[#f8f8f8]"
+        ></textarea>
+      </div>
+
+      <div>
+      {/* Form nhập thông tin */}
+      <button onClick={handleSubmit} className="mt-4 bg-blue-500 text-white px-4 py-2 rounded">
+        Xác nhận thông tin
+      </button>
+    </div>
     </div>
   );
 };

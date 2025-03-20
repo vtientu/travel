@@ -1,12 +1,25 @@
 import React from "react";
 import TermsAndConditions from "./TermsAndConditions";
 import { useNavigate } from "react-router-dom";
+import { BookingService } from "@/services/API/booking.service";
 
-const TourBooking = () => {
+const TourBooking = ({ formData }) => {
   const navigate = useNavigate();
 
-  const handleBooking = () => {
-    navigate("/bookingConfirm");
+  const handleBooking = async () => {
+    if (!formData) {
+      alert("Vui lòng nhập đầy đủ thông tin trước khi đặt tour.");
+      return;
+    }
+
+    try {
+      const response = await BookingService.createBooking(formData);
+      console.log("Booking success:", response);
+      navigate("/bookingConfirm");
+    } catch (error) {
+      console.error("Booking failed:", error);
+      alert("Đặt tour thất bại. Vui lòng thử lại!");
+    }
   };
 
   return (

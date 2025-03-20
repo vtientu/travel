@@ -22,7 +22,7 @@ router.get(
 // );
 router.post(
   "/create",
-  authenticateUser,
+  // authenticateUser,
   BookingController.createBooking
 );
 router.put("/update/:id", authenticateStaff, BookingController.updateBooking);
