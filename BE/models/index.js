@@ -264,5 +264,6 @@ db.DiscountService = DiscountService;
 db.ProgramDiscount = ProgramDiscount;
 db.TourActivities = TourActivities;
 db.TourService = TourService;
+db.Topic = Topic;
 
 module.exports = db;

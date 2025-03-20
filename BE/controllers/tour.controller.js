@@ -7,6 +7,7 @@ const TravelTour = db.TravelTour;
 const TourActivities = db.TourActivities;
 const Service = db.Service;
 const TourService = db.TourService;
+const Topic = db.Topic;
 
 // Lấy danh sách tất cả Tour
 // exports.getAllTours = async (req, res) => {
@@ -85,7 +86,7 @@ exports.getTourById = async (req, res) => {
         message: "Không tìm thấy tour!"
       });
     }
-
+    
     // Format lại dữ liệu trả về
     const tourData = tour.get({ plain: true });
     const formattedTour = {
@@ -111,64 +112,90 @@ exports.getTourById = async (req, res) => {
 };
 exports.searchTour = async (req, res) => {
   try {
-    const { start, end, date, page = 1, limit = 10 } = req.query;
-    const locationId = req.params.locationId;
+    const { 
+      start, 
+      end, 
+      date, 
+      page = 1, 
+      limit = 10,
+      priceRange,  // Dưới 5 triệu, 5-10 triệu, 10-20 triệu, Trên 20 triệu
+      typeId,      // ID của loại tour (cao cấp, tiêu chuẩn, tiết kiệm, giá tốt)
+      topicId      // ID của chủ đề tour
+    } = req.query;
     
     let whereCondition = {};
     
-    // Nếu có locationId (từ params), tìm theo địa điểm
-    if (locationId) {
-      whereCondition.end_location = locationId;
-    }
-    // Nếu có start, end, date (từ query), tìm theo điều kiện search
-    else {
-      // Tìm location_id từ tên địa điểm nếu có
-      if (start) {
-        const startLocation = await Location.findOne({
-          where: db.sequelize.literal(
-            `LOWER(name_location) LIKE LOWER('%${start}%')`
-          ),
-        });
-        if (startLocation) {
-          whereCondition.start_location = startLocation.id;
-        }
-      }
-
-      if (end) {
-        const endLocation = await Location.findOne({
-          where: db.sequelize.literal(
-            `LOWER(name_location) LIKE LOWER('%${end}%')`
-          ),
-        });
-        if (endLocation) {
-          whereCondition.end_location = endLocation.id;
-        }
-      }
-
-      // Tìm các tour_id từ travel_tour theo ngày nếu có
-      if (date) {
-        const travelTours = await TravelTour.findAll({
-          where: db.sequelize.literal(`DATE(start_time) = '${date}'`),
-          attributes: ["tour_id"],
-          group: ["tour_id", "id"],
-        });
-
-        const tourIds = travelTours.map((tour) => tour.tour_id);
-
-        if (tourIds.length > 0) {
-          whereCondition.id = {
-            [Op.in]: tourIds
-          };
-        }
-      }
-
-      // Kiểm tra nếu không có điều kiện tìm kiếm nào
-      if (Object.keys(whereCondition).length === 0) {
-        return res.status(400).json({
-          message: "Vui lòng cung cấp ít nhất một điều kiện tìm kiếm (địa điểm hoặc ngày)!"
-        });
+    // Xử lý filter theo khoảng giá
+    if (priceRange) {
+      switch(priceRange) {
+        case 'under5m':
+          whereCondition.price_tour = { [Op.lt]: 5000000 };
+          break;
+        case '5mTo10m':
+          whereCondition.price_tour = { [Op.between]: [5000000, 10000000] };
+          break;
+        case '10mTo20m':
+          whereCondition.price_tour = { [Op.between]: [10000000, 20000000] };
+          break;
+        case 'over20m':
+          whereCondition.price_tour = { [Op.gt]: 20000000 };
+          break;
       }
     }
+
+    // Filter theo loại tour
+    if (typeId) {
+      whereCondition.type_id = typeId;
+    }
+
+    // Filter theo chủ đề
+    if (topicId) {
+      whereCondition.topic_id = topicId;
+    }
+
+
+    // Tìm location_id từ tên địa điểm nếu có
+    if (start) {
+      const startLocation = await Location.findOne({
+        where: db.sequelize.literal(
+          `LOWER(name_location) LIKE LOWER('%${start}%')`
+        ),
+      });
+      if (startLocation) {
+        whereCondition.start_location = startLocation.id;
+      }
+    }
+
+    if (end) {
+      const endLocation = await Location.findOne({
+        where: db.sequelize.literal(
+          `LOWER(name_location) LIKE LOWER('%${end}%')`
+        ),
+      });
+      if (endLocation) {
+        whereCondition.end_location = endLocation.id;
+      }
+    }
+
+    // Tìm các tour_id từ travel_tour theo ngày nếu có
+    if (date) {
+      const travelTours = await TravelTour.findAll({
+        where: db.sequelize.literal(`DATE(start_time) = '${date}'`),
+        attributes: ["tour_id"],
+        group: ["tour_id", "id"],
+      });
+
+      const tourIds = travelTours.map((tour) => tour.tour_id);
+
+      if (tourIds.length > 0) {
+        whereCondition.id = {
+          [Op.in]: tourIds
+        };
+      }
+    }
+
+    console.log("Query params:", req.query);
+    console.log("Where condition:", whereCondition);
 
     // Tính toán phân trang
     const offset = (page - 1) * limit;
@@ -180,6 +207,7 @@ exports.searchTour = async (req, res) => {
         { model: Location, as: "startLocation" },
         { model: Location, as: "endLocation" },
         { model: TypeTour, as: "typeTour" },
+        { model: Topic, as: "topic" },
         { 
           model: Service,
           as: 'Services',
