@@ -1,5 +1,5 @@
 const db = require("../models");
-const { Op } = require("sequelize");
+const { Op, Sequelize } = require("sequelize");
 const Tour = db.Tour;
 const Location = db.Location;
 const TypeTour = db.TypeTour;
@@ -27,7 +27,7 @@ exports.getAllTours = async (req, res) => {
         { model: Location, as: "startLocation" },
         { model: Location, as: "endLocation" },
         { model: TypeTour, as: "typeTour" },
-        { 
+        {
           model: Service,
           as: 'Services',
           through: { attributes: [] },
@@ -51,9 +51,9 @@ exports.getAllTours = async (req, res) => {
     });
   } catch (error) {
     console.error("Error:", error);
-    res.status(500).json({ 
+    res.status(500).json({
       message: "Lỗi khi lấy danh sách tour!",
-      error: error.message 
+      error: error.message
     });
   }
 };
@@ -67,8 +67,8 @@ exports.getTourById = async (req, res) => {
       include: [
         { model: Location, as: "startLocation" },
         { model: Location, as: "endLocation" },
-        { 
-          model: Service, 
+        {
+          model: Service,
           as: 'Services',
           through: { attributes: [] },
           attributes: ['id', 'name_service', 'description_service', 'price_service']
@@ -86,7 +86,7 @@ exports.getTourById = async (req, res) => {
         message: "Không tìm thấy tour!"
       });
     }
-    
+
     // Format lại dữ liệu trả về
     const tourData = tour.get({ plain: true });
     const formattedTour = {
@@ -112,22 +112,22 @@ exports.getTourById = async (req, res) => {
 };
 exports.searchTour = async (req, res) => {
   try {
-    const { 
-      start, 
-      end, 
-      date, 
-      page = 1, 
+    const {
+      start,
+      end,
+      date,
+      page = 1,
       limit = 10,
       priceRange,  // Dưới 5 triệu, 5-10 triệu, 10-20 triệu, Trên 20 triệu
       typeId,      // ID của loại tour (cao cấp, tiêu chuẩn, tiết kiệm, giá tốt)
       topicId      // ID của chủ đề tour
     } = req.query;
-    
+
     let whereCondition = {};
-    
+
     // Xử lý filter theo khoảng giá
     if (priceRange) {
-      switch(priceRange) {
+      switch (priceRange) {
         case 'under5m':
           whereCondition.price_tour = { [Op.lt]: 5000000 };
           break;
@@ -179,23 +179,36 @@ exports.searchTour = async (req, res) => {
 
     // Tìm các tour_id từ travel_tour theo ngày nếu có
     if (date) {
+      console.log("Searching for date:", date);
+
+      const searchDate = new Date(date).toISOString().split("T")[0];
+
       const travelTours = await TravelTour.findAll({
-        where: db.sequelize.literal(`DATE(start_time) = '${date}'`),
-        attributes: ["tour_id"],
-        group: ["tour_id", "id"],
+        where: Sequelize.where(
+          Sequelize.fn("DATE", Sequelize.col("start_time")),
+          searchDate
+        ),
+        attributes: ["tour_id", "start_time"],
+        raw: true,
       });
 
-      const tourIds = travelTours.map((tour) => tour.tour_id);
+      console.log("Found travel tours:", travelTours);
 
-      if (tourIds.length > 0) {
+      if (travelTours.length > 0) {
+        const tourIds = travelTours.map((tour) => tour.tour_id);
+        console.log("Tour IDs found:", tourIds);
+
         whereCondition.id = {
           [Op.in]: tourIds
+        };
+      } else {
+        console.log("No tours found for date:", date);
+        whereCondition.id = {
+          [Op.in]: [-1] // Một giá trị không tồn tại
         };
       }
     }
 
-    console.log("Query params:", req.query);
-    console.log("Where condition:", whereCondition);
 
     // Tính toán phân trang
     const offset = (page - 1) * limit;
@@ -208,12 +221,12 @@ exports.searchTour = async (req, res) => {
         { model: Location, as: "endLocation" },
         { model: TypeTour, as: "typeTour" },
         { model: Topic, as: "topic" },
-        { 
+        {
           model: Service,
           as: 'Services',
           through: { attributes: [] },
           attributes: ['id', 'name_service', 'description_service', 'price_service']
-        }
+        },
       ],
       limit: parseInt(limit),
       offset: parseInt(offset),
@@ -221,8 +234,8 @@ exports.searchTour = async (req, res) => {
     });
 
     if (!tours || tours.length === 0) {
-      return res.status(404).json({ 
-        message: "Không tìm thấy tour nào phù hợp!" 
+      return res.status(404).json({
+        message: "Không tìm thấy tour nào phù hợp!"
       });
     }
 
@@ -548,7 +561,7 @@ exports.getTourByLocationId = async (req, res) => {
       include: [
         { model: Location, as: "startLocation" },
         { model: Location, as: "endLocation" },
-        { 
+        {
           model: Service,
           as: 'Services',
           through: { attributes: [] },
@@ -558,10 +571,10 @@ exports.getTourByLocationId = async (req, res) => {
       limit,
       offset,
     });
-      
+
     if (!tours || tours.length === 0) {
-      return res.status(404).json({ 
-        message: "Không tìm thấy tour nào cho địa điểm này!" 
+      return res.status(404).json({
+        message: "Không tìm thấy tour nào cho địa điểm này!"
       });
     }
 

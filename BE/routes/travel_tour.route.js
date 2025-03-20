@@ -8,10 +8,11 @@ const {
 } = require("../middleware/authMiddleware");
 
 router.get("/", travelTourController.getAllTravelTours);
-router.get("/:id", authenticateUser, travelTourController.getTravelTourById);
+// router.get("/:id", authenticateUser, travelTourController.getTravelTourById);
+router.get("/:id", travelTourController.getTravelTourById);
 router.post(
   "/create",
-  authenticateAdmin,
+  // authentica teAdmin,
   travelTourController.createTravelTour
 );
 router.put(
@@ -26,8 +27,8 @@ router.delete(
 );
 router.get(
   "/tour/:id",
-  authenticateAdmin,
-  authenticateUser,
+  // authenticateAdmin,
+  // authenticateUser,
   travelTourController.getTravelTourByTourId
 );
 // router.post("/insert-sample", tourController.insertSampleData);

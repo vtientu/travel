@@ -12,11 +12,11 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: true,
       },
       start_time: {
-        type: Sequelize.DATE,
+        type: Sequelize.DATEONLY,
         allowNull: true,
       },
       end_time: {
-        type: Sequelize.DATE,
+        type: Sequelize.DATEONLY,
         allowNull: true,
       },
       price_tour: {
