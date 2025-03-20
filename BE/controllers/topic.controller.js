@@ -1,7 +1,7 @@
 const db = require("../models");
 const Topic = db.Topic;
 
-// Tạo topic mới
+// Tạo chủ đề mới
 exports.createTopic = async (req, res) => {
   try {
     const { name, description } = req.body;
@@ -33,7 +33,7 @@ exports.createTopic = async (req, res) => {
   }
 };
 
-// Lấy danh sách tất cả topic
+// Lấy danh sách tất cả chủ đề
 exports.getAllTopics = async (req, res) => {
   try {
     const topics = await Topic.findAll({
@@ -54,15 +54,13 @@ exports.getAllTopics = async (req, res) => {
   }
 };
 
-// Lấy thông tin topic theo ID
+// Lấy thông tin chủ đề theo ID
 exports.getTopicById = async (req, res) => {
   try {
     const topicId = req.params.id;
-    const topic = await Topic.findOne({
-      where: { id: topicId, active: true }
-    });
+    const topic = await Topic.findByPk(topicId);
 
-    if (!topic) {
+    if (!topic || !topic.active) {
       return res.status(404).json({
         message: "Không tìm thấy chủ đề!"
       });
@@ -82,14 +80,15 @@ exports.getTopicById = async (req, res) => {
   }
 };
 
-// Cập nhật thông tin topic
+// Cập nhật thông tin chủ đề
 exports.updateTopic = async (req, res) => {
   try {
     const topicId = req.params.id;
-    const { name, description, active } = req.body;
+    const { name, description } = req.body;
 
     const topic = await Topic.findByPk(topicId);
-    if (!topic) {
+
+    if (!topic || !topic.active) {
       return res.status(404).json({
         message: "Không tìm thấy chủ đề!"
       });
@@ -97,7 +96,6 @@ exports.updateTopic = async (req, res) => {
 
     if (name) topic.name = name;
     if (description !== undefined) topic.description = description;
-    if (active !== undefined) topic.active = active;
 
     await topic.save();
 
@@ -115,13 +113,13 @@ exports.updateTopic = async (req, res) => {
   }
 };
 
-// Xóa topic (soft delete)
+// Xóa chủ đề (soft delete)
 exports.deleteTopic = async (req, res) => {
   try {
     const topicId = req.params.id;
     const topic = await Topic.findByPk(topicId);
 
-    if (!topic) {
+    if (!topic || !topic.active) {
       return res.status(404).json({
         message: "Không tìm thấy chủ đề!"
       });
