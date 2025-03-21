@@ -2,9 +2,7 @@ import { useState } from "react";
 import TermsAndConditionsDoc from "./Terms&ConditionsDoc";
 import "../../styles/index.css";
 
-const TermsAndConditions = () => {
-  const [agreed, setAgreed] = useState(false);
-
+const TermsAndConditions = ({ agreed, setAgreed }) => {
   return (
     <div className="w-full flex flex-col gap-2.5">
       {/* <div className="text-xl font-bold text-neutral-900">

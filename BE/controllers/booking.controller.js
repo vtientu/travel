@@ -15,7 +15,7 @@ exports.getAllBookings = async (req, res) => {
   try {
     const bookings = await Booking.findAll({
       include: [
-        { model: User, attributes: ["id", "username", "avatar"] },
+        { model: User, attributes: ["id", "email", "avatar"] },
         {
           model: TravelTour,
           attributes: ["id", "tour_id", "start_time", "end_time", "price_tour"],
@@ -74,7 +74,7 @@ exports.getBookingById = async (req, res) => {
 
     const booking = await Booking.findByPk(bookingId, {
       include: [
-        { model: User, attributes: ["id", "username", "avatar"] },
+        { model: User, attributes: ["id", "email", "avatar"] },
         {
           model: TravelTour,
           attributes: ["id", "tour_id", "start_time", "end_time", "price_tour"],
@@ -151,16 +151,8 @@ exports.createBooking = async (req, res) => {
     console.log(req.body);
     
     // Parse passengers từ chuỗi JSON thành object JavaScript
-    let passengersArray = [];
-    try {
-      passengersArray = JSON.parse(passengers);
-    } catch (error) {
-      return res.status(400).json({
-        message: "Dữ liệu passengers không hợp lệ!",
-        error: error.message
-      });
-    }
-    
+    const passengersArray = Array.isArray(passengers) ? passengers : [];
+
     // Kiểm tra các trường bắt buộc
     if (!user_id || !travel_tour_id || !name || !phone || !email) {
       return res.status(400).json({

@@ -8,12 +8,6 @@ const {
 } = require("../middleware/authMiddleware");
 
 router.get("/", authenticateAdmin, customerController.getAllCustomers);
-router.get(
-  "/:id",
-  authenticateUser,
-  authenticateAdmin,
-  customerController.getCustomerById
-);
 router.get("/profile", authenticateUser, customerController.getCustomerProfile);
 router.put("/update-profile", authenticateUser, customerController.updateCustomerProfile);
 router.post("/create", authenticateAdmin, customerController.createCustomer);

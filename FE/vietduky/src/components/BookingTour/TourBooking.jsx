@@ -1,7 +1,36 @@
-import React from "react";
+import React, { useState } from "react";
 import TermsAndConditions from "./TermsAndConditions";
+import { useNavigate } from "react-router-dom";
+import { BookingService } from "@/services/API/booking.service";
 
-const TourBooking = () => {
+const TourBooking = ({ formData }) => {
+  const navigate = useNavigate();
+  const [agreed, setAgreed] = useState(false);
+
+  const handleBooking = async () => {
+    if (!formData) {
+      alert("Vui lòng nhập đầy đủ thông tin trước khi đặt tour.");
+      return;
+    }
+  
+    // console.log("Dữ liệu gửi đi:", formData); // Kiểm tra dữ liệu trước khi gửi
+  
+    if (!Array.isArray(formData.passengers)) {
+      alert("Danh sách hành khách không hợp lệ!");
+      return;
+    }
+  
+    try {
+      const response = await BookingService.createBooking(formData);
+      // console.log("Booking success:", response);
+      navigate("/bookingConfirm");
+    } catch (error) {
+      console.error("Booking failed:", error);
+      alert("Đặt tour thất bại. Vui lòng thử lại!");
+    }
+  };
+  
+  
   return (
     <div className="flex flex-col items-end gap-4">
       {/* Box chứa thông tin tour */}
@@ -40,13 +69,25 @@ const TourBooking = () => {
         </div>
 
         {/* Nút đặt tour */}
-        <button className="w-full py-3 mt-4 bg-gray-300 text-gray-500 font-bold rounded-lg cursor-not-allowed">
-          Đặt tour
-        </button>
+        {agreed ? (
+          <button
+            onClick={handleBooking}
+            className="w-full py-3 mt-4 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition"
+          >
+            Đặt tour
+          </button>
+        ) : (
+          <button
+            disabled
+            className="w-full py-3 mt-4 bg-gray-300 text-gray-500 font-bold rounded-lg cursor-not-allowed"
+          >
+            Đặt tour
+          </button>
+        )}
 
         {/* Điều khoản */}
         <div className="w-full mt-4">
-          <TermsAndConditions />
+          <TermsAndConditions agreed={agreed} setAgreed={setAgreed}/>
         </div>
       </div>
 

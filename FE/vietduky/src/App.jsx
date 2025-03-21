@@ -20,11 +20,9 @@ function App() {
       <Routes>
         <Route path={"/"} element={<LayoutLandingPage />} />
         <Route path="/auth/callback" element={<GoogleAuthCallback />} />
-        <Route element={<ProtectedRoute />}>
-          <Route path="/profile" element={<Profile />} />
+        <Route path="/account" element={<ProtectedRoute />}>
+          <Route path="profile" element={<ProfileCustomer />} />
         </Route>
-        <Route path={"/profileCus"} element={<ProfileCustomer />} />
-        {/*<Route path={'/forgot-password'}/>*/}
         <Route path={"/personalAI"} element={<PersonalAIPage />} />
         <Route path={"/deals"} element={<DealsPage />} />
         <Route path={"/listTour"} element={<ListTour />} />
