@@ -52,7 +52,7 @@ const PassengerInfoForm = ({ passengers, onPassengerDataChange }) => {
         }
       });
   
-      onPassengerDataChange(newPassengers); // Gửi dữ liệu lên ContactForm
+      onPassengerDataChange(newPassengers);
       return newPassengers;
     });
   }, [passengers]);
@@ -67,7 +67,7 @@ const PassengerInfoForm = ({ passengers, onPassengerDataChange }) => {
         p.id === passengerId ? { ...p, [field]: value } : p
       );
   
-      onPassengerDataChange(updatedPassengers); // Gửi dữ liệu mới lên ContactForm
+      onPassengerDataChange(updatedPassengers);
       return updatedPassengers;
     });
   };
@@ -128,11 +128,11 @@ const PassengerInfoForm = ({ passengers, onPassengerDataChange }) => {
       });
 
       setPassengerData((prev) => [...prev, ...formattedData]);
-      console.log("Dữ liệu sau khi tải lên:", formattedData);
+      // console.log("Dữ liệu sau khi tải lên:", formattedData);
     };
   };
 
-  console.log("Dữ liệu hành khách:", passengerData);
+  // console.log("Dữ liệu hành khách:", passengerData);
   
 
   return (

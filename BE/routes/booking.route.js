@@ -7,11 +7,10 @@ const {
   authenticateStaff,
 } = require("../middleware/authMiddleware");
 
-router.get("/", authenticateAdmin, BookingController.getAllBookings);
+router.get("/", BookingController.getAllBookings);
 router.get(
   "/:id",
   authenticateUser,
-  authenticateAdmin,
   BookingController.getBookingById
 );
 // router.post(
@@ -22,7 +21,7 @@ router.get(
 // );
 router.post(
   "/create",
-  // authenticateUser,
+  authenticateUser,
   BookingController.createBooking
 );
 router.put("/update/:id", authenticateStaff, BookingController.updateBooking);
