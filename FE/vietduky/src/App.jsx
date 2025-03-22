@@ -13,6 +13,7 @@ import ListTour from "./page/ListTourPage.jsx";
 import Profile from "./page/Profile";
 import ProfileCustomer from "./page/ProfileCustomer";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import TourBookingHistoryPage from "@/page/TourBookingHistoryPage.jsx";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
         <Route path={"/booking"} element={<BookingTour />} />
         <Route path={"/bookingConfirm"} element={<BookingConfirm />} />
         <Route path={"/bookingComplete"} element={<BookingComplete />} />
+        <Route path={"/tourBookingHistory"} element={<TourBookingHistoryPage />} />
 
         <Route path={"/credit"} element={<PaymentForm />} />
       </Routes>

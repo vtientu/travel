@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function TourCard() {
     const [tours, setTours] = useState([]);
@@ -12,19 +12,29 @@ export default function TourCard() {
     useEffect(() => {
         fetch("http://localhost:3000/api/tour/")
             .then(response => response.json())
-            .then(data => setTours(data))
+            .then(data => {
+                console.log("Fetched tours:", data); // Debug dữ liệu
+                setTours(Array.isArray(data) ? data : []);
+            })
             .catch(error => console.error("Error fetching tours data:", error));
     }, []);
 
     useEffect(() => {
         fetch("http://localhost:3000/api/travel-tour")
             .then(response => response.json())
-            .then(data => setTravelTours(data.travelTours))
+            .then(data => {
+                console.log("Fetched travel tours:", data);
+                setTravelTours(Array.isArray(data?.travelTours) ? data.travelTours : []);
+            })
             .catch(error => console.error("Error fetching travel tours data:", error));
     }, []);
 
-    if (tours.length === 0) {
-        return <div>Loading...</div>;
+    useEffect(() => {
+        console.log("Updated tours state:", tours);
+    }, [tours]); // Kiểm tra React có render lại không
+
+    if (!Array.isArray(tours) || tours.length === 0) {
+        return <div>Không có dữ liệu tour</div>;
     }
 
     const totalPages = Math.ceil(tours.length / itemsPerPage);
@@ -40,7 +50,6 @@ export default function TourCard() {
 
                     return (
                         <div key={tour.id} className="flex bg-white bg-opacity-40 mb-4 shadow-lg rounded-lg overflow-hidden border border-gray-200">
-                            {/* Hình ảnh Tour */}
                             <div className="w-1/3 relative">
                                 <img
                                     src={tour.image || "https://via.placeholder.com/300"}
@@ -52,22 +61,20 @@ export default function TourCard() {
                                 </span>
                             </div>
 
-                            {/* Nội dung Tour */}
-                            <div className="w-2/3 p-4 flex flex-col  justify-between">
-                                {/* Tiêu đề */}
+                            <div className="w-2/3 p-4 flex flex-col justify-between">
                                 <h3 className="text-lg font-semibold text-gray-900">
-                                    {tour.name_tour}
+                                    {tour?.name_tour || "N/A"}
                                 </h3>
 
-                                {/* Thông tin Tour */}
                                 <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 mb-2">
-                                    <p><strong>Mã tour:</strong> <span className="font-bold">{tour.id}</span></p>
-                                    <p><strong>Khởi hành:</strong> <span className="text-red-600 font-bold">{tour.startLocation.name_location}</span></p>
-                                    <p><strong>Thời gian:</strong> <span className="font-bold">{tour.day_number} ngày</span></p>
+                                    <p><strong>Mã tour:</strong> <span className="font-bold">{tour?.id || "N/A"}</span></p>
+                                    <p><strong>Khởi hành:</strong> <span className="text-red-600 font-bold">
+                                        {tour?.startLocation?.name_location || "Chưa cập nhật"}
+                                    </span></p>
+                                    <p><strong>Thời gian:</strong> <span className="font-bold">{tour?.day_number || "N/A"} ngày</span></p>
                                     <p><strong>Dịch vụ:</strong> <span className="text-red-600 font-bold">Khách sạn tiêu chuẩn</span></p>
                                 </div>
 
-                                {/* Ngày khởi hành */}
                                 <div className="flex items-center space-x-2 mb-4">
                                     <span className="text-sm font-semibold">Ngày khởi hành:</span>
                                     <div className="flex space-x-2 overflow-x-auto">
@@ -79,10 +86,12 @@ export default function TourCard() {
                                     </div>
                                 </div>
 
-                                {/* Giá tour */}
                                 <div className="flex justify-between items-center">
-                                    <span className="text-lg font-bold text-red-600">Giá từ: {tour.price_tour.toLocaleString()} VNĐ</span>
-                                    <button className="bg-red-600 text-white text-sm py-2 px-4 rounded hover:bg-red-700"  onClick={() => navigate(`/tour/${tour.id}`)} >
+                                    <span className="text-lg font-bold text-red-600">
+                                        Giá từ: {Number(tour?.price_tour || 0).toLocaleString()} VNĐ
+                                    </span>
+                                    <button className="bg-red-600 text-white text-sm py-2 px-4 rounded hover:bg-red-700"
+                                            onClick={() => navigate(`/tour/${tour.id}`)}>
                                         Xem chi tiết
                                     </button>
                                 </div>
@@ -90,25 +99,6 @@ export default function TourCard() {
                         </div>
                     );
                 })}
-            </div>
-
-            {/* Pagination */}
-            <div className="flex justify-center space-x-2 mt-6">
-                <button
-                    className={`px-4 py-2 border rounded ${currentPage === 1 ? "bg-gray-300 cursor-not-allowed" : "bg-red-600 text-white"}`}
-                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                    disabled={currentPage === 1}
-                >
-                    Trước
-                </button>
-                <span className="px-4 py-2">Trang {currentPage} / {totalPages}</span>
-                <button
-                    className={`px-4 py-2 border rounded ${currentPage === totalPages ? "bg-gray-300 cursor-not-allowed" : "bg-red-600 text-white"}`}
-                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                    disabled={currentPage === totalPages}
-                >
-                    Sau
-                </button>
             </div>
         </div>
     );
