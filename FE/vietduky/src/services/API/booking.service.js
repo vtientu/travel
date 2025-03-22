@@ -42,4 +42,13 @@ export const BookingService = {
             },
         });
     },
+    getLatestBooking: () => {
+        return restClient({
+            url: "booking/latest",
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${StorageService.getToken()}`,
+            },
+        });
+    },
 };

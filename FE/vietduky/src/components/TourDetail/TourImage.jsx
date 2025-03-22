@@ -1,18 +1,17 @@
+import { TourService } from "@/services/API/tour.service";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
 
-export default function TourImage() {
-    const { id } = useParams();
+export default function TourImage({ id }) {
     const [tourImage, setTourImage] = useState(null);
 
     useEffect(() => {
-        axios.get(`http://localhost:3000/api/tour/${id}`)
-            .then(response => {
+        TourService.getTour(id)
+            .then((response) => {
                 const tourData = response.data.data;
                 setTourImage(tourData.image);
             })
-            .catch(error => console.error("Lỗi lấy ảnh tour:", error));
+            .catch((error) => console.error("Error fetching tour data:", error));
     }, [id]);
 
     return (

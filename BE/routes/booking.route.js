@@ -31,5 +31,10 @@ router.delete(
   authenticateAdmin,
   BookingController.deleteBooking
 );
+router.get(
+  "/latest",
+  authenticateUser,
+  BookingController.getLatestBooking
+);
 
 module.exports = router;

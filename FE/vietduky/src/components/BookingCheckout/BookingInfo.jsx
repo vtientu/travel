@@ -1,6 +1,6 @@
 import React from 'react';
 
-const BookingInfo = () => {
+const BookingInfo = ({ bookingData }) => {
   return (
     <div className="p-6 bg-[#f8f8f8] rounded-lg border border-gray-300 shadow-md">
       <div className="text-[#d80027] text-lg font-bold">Chi tiết booking</div>
@@ -9,15 +9,15 @@ const BookingInfo = () => {
       <div className="space-y-4">
         <div className="flex justify-between">
           <div className="text-gray-900 font-bold">Mã đặt chỗ:</div>
-          <div className="text-[#e01600] font-bold">2502274I989Q</div>
+          <div className="text-[#e01600] font-bold">{bookingData?.bookingCode || "N/A"}</div>
         </div>
         <div className="flex justify-between">
           <div className="text-gray-900 font-bold">Ngày tạo:</div>
-          <div className="text-gray-900 font-bold">27/02/2025 22:50</div>
+          <div className="text-gray-900 font-bold">{bookingData?.createdAt || "N/A"}</div>
         </div>
         <div className="flex justify-between">
           <div className="text-gray-900 font-bold">Trị giá booking:</div>
-          <div className="text-gray-900 font-bold">2.630.000 ₫</div>
+          <div className="text-gray-900 font-bold">{bookingData?.totalPrice || "0 ₫"}</div>
         </div>
         <div className="flex justify-between">
           <div className="text-gray-900 font-bold">Hình thức thanh toán:</div>

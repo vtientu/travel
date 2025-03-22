@@ -1,13 +1,16 @@
+import { TourService } from "../../services/API/tour.service";
+import { TravelTourService } from "../../services/API/travel_tour.service";
 import { useEffect, useState } from "react";
 import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function TourCard() {
-    const [tours, setTours] = useState([]);
-    const [travelTours, setTravelTours] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 6;
-    const navigate = useNavigate();
+  const [tours, setTours] = useState([]);
+  const [travelTours, setTravelTours] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
+  const navigate = useNavigate();
 
     useEffect(() => {
         fetch("http://localhost:3000/api/tour/")
@@ -37,16 +40,23 @@ export default function TourCard() {
         return <div>Không có dữ liệu tour</div>;
     }
 
-    const totalPages = Math.ceil(tours.length / itemsPerPage);
-    const paginatedTours = tours.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const totalPages = Math.ceil(tours.length / itemsPerPage);
+  const paginatedTours = tours.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
-    return (
-        <div>
-            <div>
-                {paginatedTours.map((tour) => {
-                    const tourDates = travelTours
-                        .filter(travelTour => travelTour.tour_id === tour.id)
-                        .map(travelTour => new Date(travelTour.start_time).toLocaleDateString("vi-VN"));
+  return (
+    <div>
+      <div>
+        {paginatedTours.map((tour) => {
+          const tourDates = Array.isArray(travelTours)
+            ? travelTours
+                .filter((travelTour) => travelTour.tour_id === tour.id)
+                .map((travelTour) =>
+                  new Date(travelTour.start_time).toLocaleDateString("vi-VN")
+                )
+            : [];
 
                     return (
                         <div key={tour.id} className="flex bg-white bg-opacity-40 mb-4 shadow-lg rounded-lg overflow-hidden border border-gray-200">

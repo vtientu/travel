@@ -1,6 +1,7 @@
 import "./App.css";
+import Calendar from "./components/Calendar/Calendar";
 import PaymentForm from "./components/CreditCard/CreditCardForm.jsx";
-import GoogleAuthCallback from "./components/GoogleSucces";
+import GoogleAuthCallback from "./components/GoogleAuthCallback";
 import ProtectedRoute from "./components/PrivateRouter";
 import LayoutLandingPage from "./layouts/LayoutLandingPage.jsx";
 import PersonalAIPage from "./layouts/PersonalAIPage.jsx";
@@ -36,6 +37,8 @@ function App() {
         <Route path={"/tourBookingHistory"} element={<TourBookingHistoryPage />} />
 
         <Route path={"/credit"} element={<PaymentForm />} />
+
+        <Route path={"/calendar"} element={<Calendar />} />
       </Routes>
     </BrowserRouter>
   );
