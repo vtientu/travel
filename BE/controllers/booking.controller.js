@@ -343,3 +343,65 @@ exports.deleteBooking = async (req, res) => {
     });
   }
 };
+
+// Lấy booking mới nhất
+exports.getLatestBooking = async (req, res) => {
+  try {
+    const latestBooking = await Booking.findOne({
+      order: [["id", "DESC"]], // Sắp xếp giảm dần theo ID (mới nhất trước)
+      include: [
+        { model: User, attributes: ["id", "email", "avatar"] },
+        {
+          model: TravelTour,
+          attributes: ["id", "tour_id", "start_time", "end_time", "price_tour"],
+        },
+        {
+          model: RestaurantBooking,
+          include: [
+            {
+              model: Restaurant,
+              attributes: [
+                "id",
+                "name_restaurant",
+                "address_restaurant",
+                "phone_number",
+              ],
+            },
+          ],
+        },
+        {
+          model: HotelBooking,
+          include: [
+            {
+              model: Hotel,
+              attributes: ["id", "name_hotel", "address_hotel", "phone_number"],
+            },
+          ],
+        },
+        {
+          model: VehicleBooking,
+          include: [
+            {
+              model: Vehicle,
+              attributes: ["id", "name_vehicle", "plate_number"],
+            },
+          ],
+        },
+      ],
+    });
+
+    if (!latestBooking) {
+      return res.status(404).json({ message: "Không tìm thấy booking nào!" });
+    }
+
+    res.status(200).json({
+      message: "Lấy booking mới nhất thành công!",
+      data: latestBooking,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Lỗi khi lấy booking mới nhất!",
+      error: error.message,
+    });
+  }
+};

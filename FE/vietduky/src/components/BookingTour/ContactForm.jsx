@@ -64,7 +64,7 @@ const ContactForm = ({ onSubmit }) => {
     // console.log("Received new passengerData:", data);
 
     if (!Array.isArray(data)) {
-      console.error("Invalid passengerData format:", data);
+      // console.error("Invalid passengerData format:", data);
       setPassengerData([]);
       return;
     }

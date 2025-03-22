@@ -1,20 +1,18 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import { TourService } from "@/services/API/tour.service";
 import { ChevronDown } from "lucide-react";
 
-export default function TourProgram() {
-    const { id } = useParams();
+export default function TourProgram({id}) {
     const [activities, setActivities] = useState([]);
     const [openIndex, setOpenIndex] = useState(null);
 
     useEffect(() => {
-        axios.get(`http://localhost:3000/api/tour/${id}/activities`)
-            .then(response => {
+        TourService.getTour(id)
+            .then((response) => {
                 const tourActivities = response.data.data.activities || [];
-                setActivities(tourActivities);
-            })
-            .catch(error => console.error("Lỗi lấy thông tin lịch trình:", error));
+                setActivities(tourActivities);            })
+            .catch((error) => console.error("Error fetching tour data:", error));
     }, [id]);
 
     return (
