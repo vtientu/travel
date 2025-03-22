@@ -13,8 +13,8 @@ export default function TourCard() {
         fetch("http://localhost:3000/api/tour/")
             .then(response => response.json())
             .then(data => {
-                console.log("Fetched tours:", data); // Debug dữ liệu
-                setTours(Array.isArray(data) ? data : []);
+                console.log("Fetched tours:", data);
+                setTours(Array.isArray(data?.data) ? data.data : []);
             })
             .catch(error => console.error("Error fetching tours data:", error));
     }, []);

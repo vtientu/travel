@@ -9,35 +9,33 @@ export default function TopicTour() {
     const [setCities] = useState([]);
     const navigate = useNavigate();
 
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         try {
-    //             const [tourRes, locationRes] = await Promise.all([
-    //                 fetch("http://localhost:3000/api/tour").then((res) => res.json()),
-    //                 fetch("http://localhost:3000/api/location/").then((res) => res.json()),
-    //             ]);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const [tourRes, locationRes] = await Promise.all([
+                    fetch("http://localhost:3000/api/tour").then((res) => res.json()),
+                    fetch("http://localhost:3000/api/location/").then((res) => res.json()),
+                ]);
 
-    //             setTours(tourRes);
-    //             setFilteredTours(tourRes.slice(0, 6));
+                const toursData = Array.isArray(tourRes?.data) ? tourRes.data : [];
+                const locationsData = Array.isArray(locationRes) ? locationRes : [];
 
-    //             const cityList = ["Tất cả", ...locationRes.map((location) => location.name_location)];
-    //             setCities(cityList);
-    //         } catch (error) {
-    //             console.error("Lỗi khi lấy dữ liệu:", error);
-    //         }
-    //     };
+                setTours(toursData);
+                setFilteredTours(toursData.slice(0, 6));
 
-    //     fetchData();
-    // }, []);
-
-    // useEffect(() => {
-    //     if (activeTab === "Tất cả") {
-    //         setFilteredTours(tours.slice(0, 6));
-    //     } else {
-    //         const filtered = tours.filter((tour) => tour.endLocation.name_location === activeTab);
-    //         setFilteredTours(filtered.slice(0, 6));
-    //     }
-    // }, [activeTab, tours]);
+                const cityList = [
+                    "Tất cả",
+                    ...locationsData
+                        .map((location) => location.name_location)
+                        .filter((name) => !!name)
+                ];
+                setCities(cityList);
+            } catch (error) {
+                console.error("Lỗi khi lấy dữ liệu:", error);
+            }
+        };
+        fetchData();
+    }, []);
 
     return (
         <div className="bg-transparent py-10 px-5">
