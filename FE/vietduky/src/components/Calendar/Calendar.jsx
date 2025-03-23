@@ -30,7 +30,10 @@ const Calendar = ({ id }) => {
           const formattedTourDates = travelTourData.reduce((acc, tour) => {
             if (tour.start_time) {
               const dateStr = dayjs(tour.start_time).format("YYYY-MM-DD");
-              acc[dateStr] = tour.price_tour;
+              acc[dateStr] = tour.price_tour.toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              });
             }
             return acc;
           }, {});
@@ -47,7 +50,7 @@ const Calendar = ({ id }) => {
 
   const startOfMonth = currentDate.startOf("month");
   const startDay = startOfMonth.day();
-  const totalDays = 42; // 6 hàng * 7 cột
+  const totalDays = 42;
 
   const days = Array.from({ length: totalDays }, (_, index) => {
     return startOfMonth.subtract(startDay, "day").add(index, "day");

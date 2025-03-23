@@ -9,35 +9,50 @@ export default function FeaturedTour() {
     const [cities, setCities] = useState([]);
     const navigate = useNavigate();
 
-    // useEffect(() => {
-    //     const fetchData = async () => {
-    //         try {
-    //             const [tourRes, locationRes] = await Promise.all([
-    //                 fetch("http://localhost:3000/api/tour").then((res) => res.json()),
-    //                 fetch("http://localhost:3000/api/location/").then((res) => res.json()),
-    //             ]);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const [tourRes, locationRes] = await Promise.all([
+                    fetch("http://localhost:3000/api/tour").then((res) => res.json()),
+                    fetch("http://localhost:3000/api/location/").then((res) => res.json()),
+                ]);
 
-    //             setTours(tourRes);
-    //             setFilteredTours(tourRes.slice(0, 6));
+                const toursData = Array.isArray(tourRes?.data) ? tourRes.data : [];
 
-    //             const cityList = ["Tất cả", ...locationRes.map((location) => location.name_location)];
-    //             setCities(cityList);
-    //         } catch (error) {
-    //             console.error("Lỗi khi lấy dữ liệu:", error);
-    //         }
-    //     };
+                // ✅ Vì locationRes là mảng trực tiếp
+                const locationsData = Array.isArray(locationRes) ? locationRes : [];
 
-    //     fetchData();
-    // }, []);
+                setTours(toursData);
+                setFilteredTours(toursData.slice(0, 6));
 
-    // useEffect(() => {
-    //     if (activeTab === "Tất cả") {
-    //         setFilteredTours(tours.slice(0, 6));
-    //     } else {
-    //         const filtered = tours.filter((tour) => tour.endLocation.name_location === activeTab);
-    //         setFilteredTours(filtered.slice(0, 6));
-    //     }
-    // }, [activeTab, tours]);
+                const cityList = [
+                    "Tất cả",
+                    ...locationsData
+                        .map((location) => location.name_location)
+                        .filter((name) => !!name)
+                ];
+                setCities(cityList);
+
+                console.log("Danh sách thành phố:", cityList);
+            } catch (error) {
+                console.error("Lỗi khi lấy dữ liệu:", error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    useEffect(() => {
+        if (activeTab === "Tất cả") {
+            setFilteredTours(tours.slice(0, 6));
+        } else {
+            const filtered = tours.filter(
+                (tour) =>
+                    tour.endLocation?.name_location?.toLowerCase() === activeTab.toLowerCase()
+            );
+            setFilteredTours(filtered.slice(0, 6));
+        }
+    }, [activeTab, tours]);
 
     return (
         <div className="bg-transparent py-10 px-5">
@@ -45,12 +60,14 @@ export default function FeaturedTour() {
                 <h2 className="text-2xl font-bold text-gray-800">Tour trong nước nổi bật</h2>
 
                 <div className="flex justify-between items-center border-b pb-2">
-                    <div className="flex space-x-6">
+                    <div className="flex space-x-6 overflow-x-auto">
                         {cities.map((city) => (
                             <button
                                 key={city}
-                                className={`px-4 py-2 text-sm font-medium ${
-                                    activeTab === city ? "text-red-700 border-b-2 border-red-700" : "text-gray-500"
+                                className={`px-4 py-2 text-sm font-medium whitespace-nowrap ${
+                                    activeTab === city
+                                        ? "text-red-700 border-b-2 border-red-700"
+                                        : "text-gray-500"
                                 }`}
                                 onClick={() => setActiveTab(city)}
                             >
@@ -73,22 +90,25 @@ export default function FeaturedTour() {
                                     alt={tour.name_tour}
                                     className="w-full h-48 object-cover rounded-xl"
                                 />
-                                <button className="absolute top-2 left-2 bg-transparent  rounded-full p-2  backdrop-blur-md">
+                                <button className="absolute top-2 left-2 bg-transparent rounded-full p-2 backdrop-blur-md">
                                     <Heart className="text-gray-600" size={18} />
                                 </button>
                             </div>
 
                             <div className="p-4">
                                 <h3 className="text-lg font-semibold text-gray-800">{tour.name_tour}</h3>
-                                <p className="text-sm text-gray-600">📍 {tour.endLocation.name_location}</p>
+                                <p className="text-sm text-gray-600">
+                                    📍 {tour.endLocation?.name_location || "Chưa cập nhật"}
+                                </p>
                                 <p className="text-gray-400 text-xs">{tour.activity_description}</p>
                                 <p className="text-red-600 font-bold text-lg">
-                                    VND: {tour.price_tour.toLocaleString()}
+                                    VND: {Number(tour.price_tour || 0).toLocaleString()}
                                 </p>
                             </div>
                         </div>
                     ))}
                 </div>
+
                 {/* Nút xem thêm */}
                 <div className="text-center mt-6">
                     <button

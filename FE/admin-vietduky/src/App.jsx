@@ -20,6 +20,7 @@ import ManagementUserRole from "./page/Management/ManagementUser/ManagementUserR
 import ManagementPost from "./page/Management/ManagementPost.jsx";
 import ManagementTourGuide from "./page/Management/ManagementUser/ManagementTourGuide.jsx";
 import ManagementCategory from "./page/Management/ManagementCategory.jsx";
+import GoogleAuthCallback from "./components/GoogleAuthCallBack.jsx";
 
 function App() {
   return (
@@ -27,29 +28,38 @@ function App() {
       <Routes>
         <Route path={"/"} element={<LoginPage />} />
         <Route path={"/register"} element={<RegisterPage />} />
-        <Route
-          path="/profile"
-          element={
-            <PrivateRoute>
-              <Profile />
-            </PrivateRoute>
-          }
-        />
+        <Route path="/auth/callback" element={<GoogleAuthCallback />} />
+        <Route path={"/account"} element={<PrivateRoute />}>
+          <Route path="profile" element={<Profile />} />
+        </Route>
+
         <Route path={"/calendar"} element={<Calendar />} />
         {/*<Route path={'/forgot-password'}/>*/}
 
         <Route path={"/managementLocation"} element={<ManagementLocation />} />
         <Route path={"/managementTour"} element={<ManagementTour />} />
-        <Route path={"/managementTravelTour"} element={<ManagementTravelTour />}/>
+        <Route
+          path={"/managementTravelTour"}
+          element={<ManagementTravelTour />}
+        />
         <Route path={"/managementHotel"} element={<ManagementHotel />} />
-        <Route path={"/managementRestaurant"} element={<ManagementRestaurant />}/>
+        <Route
+          path={"/managementRestaurant"}
+          element={<ManagementRestaurant />}
+        />
         <Route path={"/managementVehicle"} element={<ManagementVehicle />} />
         <Route path={"/managementTheme"} element={<ManagementTheme />} />
         <Route path={"/managementDiscount"} element={<ManagementDiscount />} />
-        <Route path={"/managementSaleProgram"} element={<ManagementSaleProgram />} />
+        <Route
+          path={"/managementSaleProgram"}
+          element={<ManagementSaleProgram />}
+        />
         <Route path={"/managementService"} element={<ManagementService />} />
         <Route path={"/managementUserRole"} element={<ManagementUserRole />} />
-        <Route path={"/managementTourGuide"} element={<ManagementTourGuide />} />
+        <Route
+          path={"/managementTourGuide"}
+          element={<ManagementTourGuide />}
+        />
         <Route path={"/managementPost"} element={<ManagementPost />} />
         <Route path={"/managementCategory"} element={<ManagementCategory />} />
 
