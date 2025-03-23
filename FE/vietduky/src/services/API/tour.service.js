@@ -1,52 +1,47 @@
 import restClient from "../restClient";
-// import { StorageService } from "./storage";
+import { StorageService } from "../storage/StorageService";
 
-export function getTours(page = 1, limit = 10) {
-  return restClient({
-    url: "tour",
-    method: "GET",
-    params: { page, limit },
-  })
-    .then(response => {
-      //   console.log("Dữ liệu API trả về:", response.data); 
-      return response.data;
-    })
-    .catch(error => {
-      console.error("Lỗi API:", error);
-      throw error;
-    });
-}
-
-export function createTour(data) {
-  return restClient({
-    url: "tour/create",
-    method: "POST",
-    data,
-    headers: {
-      "Content-Type": "multipart/form-data",
+export const TourService = {
+    getTours: () => {
+        return restClient({
+            url: "tour",
+            method: "GET",
+        });
     },
-  })
-    .then(response => {
-      //   console.log("Dữ liệu API trả về:", response.data); 
-      return response.data;
-    })
-    .catch(error => {
-      console.error("Lỗi API:", error);
-      throw error;
-    });
-}
-
-export function deleteTour(id) {
-  return restClient({
-    url: `tour/delete/${id}`,
-    method: "DELETE",
-  })
-    .then(response => {
-      //   console.log("Dữ liệu API trả về:", response.data); 
-      return response.data;
-    })
-    .catch(error => {
-      console.error("Lỗi API:", error);
-      throw error;
-    });
-  }
+    getTour: (id) => {
+        return restClient({
+            url: `tour/${id}`,
+            method: "GET",
+        });
+    },
+    createTour: (data) => {
+        return restClient({
+            url: "tour/create",
+            method: "POST",
+            data,
+            headers: {
+                Authorization: `Bearer ${StorageService.getToken()}`,
+                "Content-Type": "application/json",
+            },
+        });
+    },
+    updateTour: (data) => {
+        return restClient({
+            url: "tour",
+            method: "PUT",
+            data,
+            headers: {
+                Authorization: `Bearer ${StorageService.getToken()}`,
+            },
+        });
+    },
+    deleteTour: (id) => {
+        return restClient({
+            url: `tour/${id}`,
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${StorageService.getToken()}`,
+            },
+        });
+    },
+};

@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import { TourService } from "@/services/API/tour.service";
 
-export default function ExperienceOnTour() {
+export default function ExperienceOnTour({ id }) {
 
-    const { id } = useParams();
     const [tour, setTour] = useState(null);
+    
     useEffect(() => {
-        axios.get(`http://localhost:3000/api/tour/${id}`)
-            .then(response => {
-                const tourData = response.data.data;
-                setTour(tourData);
-            })
-            .catch(error => console.error("Lỗi lấy thông tin tour:", error));
-    }, [id]);
+        TourService.getTour(id)
+          .then((response) => {
+            setTour(response.data.data);
+          })
+          .catch((error) => console.error("Error fetching tour data:", error));
+      }, [id]);
+    
     if (!tour) return <p>Đang tải dữ liệu...</p>;
     return (
         <div className="col-span-2 bg-white shadow-lg bg-opacity-20 p-4 rounded-lg mt-4 border border-gray-300">

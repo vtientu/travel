@@ -1,25 +1,27 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import { TourService } from "@/services/API/tour.service";
+import { ServiceService } from "@/services/API/service.service";
 
-export default function TourInformation() {
-    const { id } = useParams();
+export default function TourInformation( {id} ) {
     const [tour, setTour] = useState(null);
     const [serviceName, setServiceName] = useState("");
 
     useEffect(() => {
-        axios.get(`http://localhost:3000/api/tour/${id}`)
-            .then(response => {
+        TourService.getTour(id)
+            .then((response) => {
                 const tourData = response.data.data;
                 setTour(tourData);
 
-                if (tourData.service_id) {
-                    axios.get(`http://localhost:3000/api/service/${tourData.service_id}`)
-                        .then(res => setServiceName(res.data.data.name_service))
-                        .catch(error => console.error("Lỗi lấy dịch vụ:", error));
+                if (tourData?.service_id) {
+                    ServiceService.getService(tourData.service_id)
+                        .then((response) => {
+                            setServiceName(response.data.data.name_service);
+                        })
+                        .catch((error) => console.error("Lỗi lấy dịch vụ: ", error));
                 }
             })
-            .catch(error => console.error("Lỗi lấy tour:", error));
+            .catch((error) => console.error("Error fetching tour data:", error));
     }, [id]);
 
     if (!tour) return <p>Đang tải dữ liệu...</p>;
