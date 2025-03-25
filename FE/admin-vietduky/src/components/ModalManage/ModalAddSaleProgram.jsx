@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import {FaArrowRight} from "react-icons/fa";
 import TextEditor from "../../lib/TextEditor.jsx";
 import {fetchLocations, fetchServices, fetchTypeTours} from "../../services/service.js";
-import {TourService} from "../../services/API/tour.service.js";
+import {createTour} from "../../services/API/tour.service.js";
 
 export default function ModalAddSaleProgram({ onClose }) {
     const [locations, setLocations] = useState([]);
@@ -72,7 +72,7 @@ export default function ModalAddSaleProgram({ onClose }) {
                 console.log(`${key}: ${value}`);
             }
 
-            const response = await TourService.createTour(formData);
+            const response = await createTour(formData);
             if (response) {
                 alert("Tạo Tour mới thành công");
                 setTourData({
