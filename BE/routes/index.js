@@ -24,6 +24,9 @@ const VoucherRouter = require("./voucher.route");
 const TourActivitiesRouter = require("./tourActivities.route");
 const TourServiceRouter = require("./tour_service.route");
 const TopicRouter = require("./topic.route");
+const ArticleRouter = require("./article.route");
+const DirectoryRouter = require("./directory.route");
+
 router.use("/auth", AuthRouter);
 router.use("/tour", TourRouter);
 router.use("/type-tour", TypeTourRouter);
@@ -48,4 +51,6 @@ router.use("/voucher", VoucherRouter);
 router.use("/tour-activities", TourActivitiesRouter);
 router.use("/tour-service", TourServiceRouter);
 router.use("/topic", TopicRouter);
+router.use("/article", ArticleRouter);
+router.use("/directory", DirectoryRouter);
 module.exports = router;

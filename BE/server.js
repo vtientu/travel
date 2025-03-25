@@ -15,12 +15,14 @@ const port = process.env.PORT || 5000;
 // Cấu hình multer để xử lý form-data
 const upload = multer();
 
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: true,
-  cookie: { secure: false },
-}));
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false },
+  })
+);
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -28,7 +30,7 @@ app.use(passport.session());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(upload.none()); // Thêm middleware để xử lý form-data không có file
+// app.use(upload.none()); // Thêm middleware để xử lý form-data không có file
 
 app.use("/api", routes);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
