@@ -8,10 +8,11 @@ const {
   authenticateStaff,
 } = require("../middleware/authMiddleware");
 
-router.get("/", authenticateAdmin, userController.getAllUsers);
-router.get("/:id", authenticateAdmin, userController.getUserById);
+router.get("/", authenticateUser, authenticateAdmin, userController.getAllUsers);
+router.get("/:id", authenticateUser, authenticateAdmin, userController.getUserById);
 router.post(
   "/create",
+  authenticateUser,
   authenticateAdmin,
   uploadAvatar.single("avatar"),
   userController.addNewUser
@@ -28,12 +29,13 @@ router.put(
   authenticateUser,
   userController.changePassword
 );
-router.put("/status/:id", authenticateAdmin, userController.changeStatus);
+router.put("/status/:id", authenticateUser, authenticateAdmin, userController.changeStatus);
 router.get(
   "/status-filter/:status",
+  authenticateUser,
   authenticateAdmin,
   userController.filterByStatus
 );
-router.post("/assign-role", authenticateAdmin, userController.assignRole);
+router.post("/assign-role", authenticateUser, authenticateAdmin, userController.assignRole);
 
 module.exports = router;

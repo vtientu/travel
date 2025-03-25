@@ -9,6 +9,7 @@ const {
 // Route để tạo tour service mới
 router.post(
   "/create",
+  authenticateUser,
   authenticateAdmin,
   tourServiceController.createTourService
 );
