@@ -26,6 +26,8 @@ const uploadLocation = multer({ storage: createStorage("locations") });
 const uploadTourActivities = multer({
   storage: createStorage("tour_activities"),
 });
+const uploadAlbumPost = multer({ storage: createStorage("album_posts") });
+
 module.exports = {
   cloudinary,
   uploadAvatar,
@@ -33,4 +35,5 @@ module.exports = {
   uploadVoucher,
   uploadLocation,
   uploadTourActivities,
+  uploadAlbumPost,
 };
