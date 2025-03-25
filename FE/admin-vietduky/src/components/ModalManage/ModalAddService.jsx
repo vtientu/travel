@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {fetchLocations, fetchServices, fetchTypeTours} from "../../services/service.js";
-import { TourService } from "../../services/API/tour.service.js";
+import {createTour} from "../../services/API/tour.service.js";
 
 export default function ModalAddService({ onClose }) {
     const [setLocations] = useState([]);
@@ -60,7 +60,7 @@ export default function ModalAddService({ onClose }) {
                 console.log(`${key}: ${value}`);
             }
 
-            const response = await TourService.createTour(formData);
+            const response = await createTour(formData);
             if (response) {
                 alert("Tạo Tour mới thành công");
                 setTourData({

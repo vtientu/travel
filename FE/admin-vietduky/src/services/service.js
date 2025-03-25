@@ -2,7 +2,7 @@
 import { getService } from "../services/API/service.service";
 import { getLocations, createLocation } from "../services/API/location.service";
 import { getTravelTour } from "../services/API/travel_tour.service";
-import { TourService } from "../services/API/tour.service";
+import { getTours, createTour } from "../services/API/tour.service";
 import { getTypeTours } from "./API/type_tour.service";
 
 export const fetchLocations = async () => {
@@ -37,7 +37,7 @@ export const fetchTravelTours = async () => {
 
 export const fetchTours = async () => {
   try {
-    const response = await TourService.getTours();
+    const response = await getTours();
     return Array.isArray(response?.data) ? response.data : [];
   } catch (error) {
     console.error("Lỗi khi lấy dữ liệu từ API", error);

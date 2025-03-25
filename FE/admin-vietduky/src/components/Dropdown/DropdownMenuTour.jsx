@@ -2,7 +2,7 @@ import { useState } from "react";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { MdEdit, MdDelete } from "react-icons/md";
 import { PiMapPinLineBold } from "react-icons/pi"; // Icon hành trình
-import { TourService } from "../../services/API/tour.service";
+import { deleteTour } from "../../services/API/tour.service";
 
 export default function DropdownMenu({ tour, onDelete, onManageTravelTour }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,7 +22,7 @@ export default function DropdownMenu({ tour, onDelete, onManageTravelTour }) {
 
   const handleDelete = async (id) => {
     try {
-      await TourService.deleteTour(id);
+      await deleteTour(id);
       onDelete(id);
       alert("Xóa tour thành công");
     } catch (error) {

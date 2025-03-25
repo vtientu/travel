@@ -30,7 +30,10 @@ const Calendar = ({ id }) => {
           const formattedTourDates = travelTourData.reduce((acc, tour) => {
             if (tour.start_time) {
               const dateStr = dayjs(tour.start_time).format("YYYY-MM-DD");
-              acc[dateStr] = tour.price_tour.toLocaleString("vi-VN");
+              acc[dateStr] = tour.price_tour.toLocaleString("vi-VN", {
+                style: "currency",
+                currency: "VND",
+              });
             }
             return acc;
           }, {});
@@ -216,7 +219,7 @@ const Calendar = ({ id }) => {
         {/* Button */}
         {viewMode === "calendar" && (
           <button className="bg-orange-500 text-white font-bold w-full mt-4 py-4 rounded hover:bg-orange-600">
-            Đặt Tour
+            Đặt Tour ({selectedDates.length} ngày)
           </button>
         )}
       </div>
