@@ -15,19 +15,19 @@ router.get(
 );
 router.post(
   "/create",
-  authenticateStaff,
+  authenticateUser,
   authenticateAdmin,
   discountServiceController.createDiscountService
 );
 router.put(
   "/update/:id",
-  authenticateStaff,
+  authenticateUser,
   authenticateAdmin,
   discountServiceController.updateDiscountService
 );
 router.delete(
   "/delete/:id",
-  authenticateStaff,
+  authenticateUser,
   authenticateAdmin,
   discountServiceController.deleteDiscountService
 );
