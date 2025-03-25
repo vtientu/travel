@@ -9,12 +9,12 @@ const {
 
 router.get("/", serviceController.getAllServices);
 router.get("/:id", authenticateUser, serviceController.getServiceById);
-router.post("/create", authenticateUser, authenticateAdmin, serviceController.createService);
+router.post("/create", authenticateAdmin, serviceController.createService);
 router.delete(
   "/delete/:id",
   authenticateAdmin,
   serviceController.deleteService
 );
-router.put("/update/:id", authenticateUser, authenticateAdmin, serviceController.updateService);
+router.put("/update/:id", authenticateAdmin, serviceController.updateService);
 
 module.exports = router;

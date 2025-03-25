@@ -24,7 +24,7 @@ router.post(
   authenticateUser,
   BookingController.createBooking
 );
-router.put("/update/:id", authenticateUser, authenticateStaff, BookingController.updateBooking);
+router.put("/update/:id", authenticateStaff, BookingController.updateBooking);
 router.delete(
   "/cancel/:id",
   authenticateUser,

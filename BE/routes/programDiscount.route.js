@@ -11,20 +11,20 @@ router.get("/", programDiscountController.getAllProgramDiscounts);
 router.get("/:id", programDiscountController.getProgramDiscountById);
 router.post(
   "/create",
-  authenticateUser,
   authenticateAdmin,
+  authenticateStaff,
   programDiscountController.createProgramDiscount
 );
 router.put(
   "/update/:id",
-  authenticateUser,
   authenticateAdmin,
+  authenticateStaff,
   programDiscountController.updateProgramDiscount
 );
 router.delete(
   "/delete/:id",
-  authenticateUser,
   authenticateAdmin,
+  authenticateStaff,
   programDiscountController.deleteProgramDiscount
 );
 

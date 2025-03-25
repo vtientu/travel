@@ -8,10 +8,9 @@ const {
 } = require("../middleware/authMiddleware");
 
 router.get("/:id", GuideTourController.getGuideTours);
-router.post("/create", authenticateUser, authenticateAdmin, GuideTourController.addGuideToTour);
+router.post("/create", authenticateAdmin, GuideTourController.addGuideToTour);
 router.delete(
   "/delete/:id",
-  authenticateUser,
   authenticateAdmin,
   GuideTourController.removeGuideFromTour
 );

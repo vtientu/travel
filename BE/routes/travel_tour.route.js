@@ -12,19 +12,16 @@ router.get("/", travelTourController.getAllTravelTours);
 router.get("/:id", travelTourController.getTravelTourById);
 router.post(
   "/create",
-  authenticateUser,
-  authenticateAdmin,
+  // authentica teAdmin,
   travelTourController.createTravelTour
 );
 router.put(
   "/update/:id",
-  authenticateUser,
   authenticateAdmin,
   travelTourController.updateTravelTour
 );
 router.delete(
   "/delete/:id",
-  authenticateUser,
   authenticateAdmin,
   travelTourController.deleteTravelTour
 );

@@ -9,11 +9,10 @@ const {
 
 router.get("/:userId", authenticateUser, feedbackController.getFeedbackByUser);
 router.post("/create", authenticateUser, feedbackController.createFeedback);
-router.put("/update/:id",
-  authenticateUser, authenticateAdmin, feedbackController.updateFeedback);
+router.put("/update/:id", authenticateAdmin, feedbackController.updateFeedback);
 router.delete(
   "/delete/:id",
-  authenticateUser, authenticateAdmin,
+  authenticateAdmin,
   feedbackController.deleteFeedback
 );
 

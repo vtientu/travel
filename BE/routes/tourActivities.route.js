@@ -10,8 +10,8 @@ const {
 
 router.post(
   "/create",
-  authenticateUser,
   authenticateAdmin,
+  authenticateStaff,
   uploadTourActivities.single("image"),
   tourActivitiesController.createTourActivities
 );
