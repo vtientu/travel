@@ -20,6 +20,7 @@ router.post(
 );
 router.delete(
   "/delete/:id",
+  authenticateUser,
   authenticateAdmin,
   notificationController.deleteNotification
 );

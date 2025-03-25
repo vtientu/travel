@@ -8,7 +8,7 @@ import {
   fetchServices,
   fetchTypeTours,
 } from "../../../services/service";
-import { createTour } from "../../../services/API/tour.service";
+import { TourService } from "../../../services/API/tour.service";
 import { formatDayDMY } from "../../../utils/dateUtil";
 import TestModal from "./ModalAddTravelTours";
 
@@ -98,7 +98,7 @@ export default function ModalAddTour({ onClose }) {
         console.log(`${key}: ${value}`);
       }
 
-      const response = await createTour(formData);
+      const response = await TourService.createTour(formData);
       if (response) {
         alert("Tạo Tour mới thành công");
         setTourData({

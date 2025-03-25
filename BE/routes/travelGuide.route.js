@@ -15,16 +15,19 @@ router.get(
 );
 router.post(
   "/create",
+  authenticateUser,
   authenticateAdmin,
   travelGuideController.createTravelGuide
 );
 router.put(
   "/update/:id",
+  authenticateUser,
   authenticateAdmin,
   travelGuideController.updateTravelGuide
 );
 router.delete(
   "/delete/:id",
+  authenticateUser,
   authenticateAdmin,
   travelGuideController.deleteTravelGuide
 );
