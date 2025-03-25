@@ -50,7 +50,7 @@ const Calendar = ({ id }) => {
 
   const startOfMonth = currentDate.startOf("month");
   const startDay = startOfMonth.day();
-  const totalDays = 42; // 6 hàng * 7 cột
+  const totalDays = 42;
 
   const days = Array.from({ length: totalDays }, (_, index) => {
     return startOfMonth.subtract(startDay, "day").add(index, "day");
