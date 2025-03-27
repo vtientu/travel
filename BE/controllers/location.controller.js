@@ -36,15 +36,16 @@ exports.getLocationById = async (req, res) => {
 //Tạo một Location mới
 exports.createLocation = async (req, res) => {
   try {
-    const { name } = req.body;
-    const imageUrl = req.file ? req.file.path : null;
-    if (!name || !imageUrl) {
+    const { name_location } = req.body;
+    const imageUrl = req.file?.path || req.file?.url;
+    console.log("FILE UPLOADED:", req.file);
+    if (!name_location) {
       return res.status(400).json({
         message: "Name and image are required!",
       });
     }
     const newLocation = {
-      name_location: name,
+      name_location,
       image: imageUrl,
     };
     const location = await Location.create(newLocation);

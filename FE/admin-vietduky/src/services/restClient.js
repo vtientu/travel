@@ -8,7 +8,13 @@ export default function restClient(options) {
 
   const token = StorageService.getToken();
   if (token) {
-    headers.Authorization = `Bearer ${token}`; // Thêm token vào header
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  // Nếu là FormData thì để axios tự set content-type
+  const isFormData = data instanceof FormData;
+  if (isFormData) {
+    delete headers["Content-Type"]; // Xoá nếu có
   }
 
   return axios({
@@ -17,11 +23,10 @@ export default function restClient(options) {
     params,
     data,
     headers,
-  })
-    .catch((err) => {
-      if (StorageService.isExpired()) {
-        StorageService.signout();
-      }
-      return Promise.reject(err);
-    });
+  }).catch((err) => {
+    if (StorageService.isExpired()) {
+      StorageService.signout();
+    }
+    return Promise.reject(err);
+  });
 }

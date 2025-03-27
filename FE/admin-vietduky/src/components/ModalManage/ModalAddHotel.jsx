@@ -5,9 +5,15 @@ export default function ModalAddHotel({ onClose }) {
   const [locationHotel, setLocationHotel] = useState("");
   const [hotline, setHotline] = useState("");
 
+  const handleWrapperClick = () => {
+    onClose();
+  };
+  const handleModalClick = (event) => {
+    event.stopPropagation();
+  };
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white rounded-md shadow-lg w-1/4 p-6">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={handleWrapperClick}>
+      <div className="bg-white rounded-md shadow-lg w-1/4 p-6" onClick={handleModalClick}>
         <form>
           <div className="relative pb-3">
             {/* Tiêu đề và mô tả */}

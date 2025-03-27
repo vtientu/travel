@@ -33,6 +33,22 @@ export function createLocation(data) {
     });
   }
 
+export function updateLocation(id, data) {
+    return restClient({
+        url: `location/update/${id}`,
+        method: "PUT",
+        data,
+        headers: {
+            "Content-Type": "multipart/form-data", // để server xử lý file và form
+        },
+    })
+        .then(response => response.data)
+        .catch(error => {
+            console.error("Lỗi API:", error);
+            throw error;
+        });
+}
+
 export function deleteLocation(id) {
   return restClient({
     url: `location/delete/${id}`,

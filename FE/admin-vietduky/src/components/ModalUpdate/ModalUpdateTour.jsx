@@ -1,4 +1,5 @@
-import TextEditor from "../../../lib/TextEditor.jsx";
+import TextEditor from "../../lib/TextEditor";
+import { FaArrowRight } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { HiOutlineDotsHorizontal, HiOutlineInbox } from "react-icons/hi";
@@ -6,11 +7,13 @@ import {
     fetchLocations,
     fetchServices,
     fetchTypeTours,
-} from "../../../services/service.js";
-import { createTour } from "../../../services/API/tour.service.js";
-import { formatDayDMY } from "../../../utils/dateUtil.jsx";
+} from "../../services/service";
+import { createTour } from "../../services/API/tour.service";
+import { formatDayDMY } from "../../utils/dateUtil";
+import TestModal from "../ModalManage/ModalTour/ModalAddTravelTours.jsx";
 
-export default function ModalAddPost({ onClose }) {
+export default function ModalUpdateTour({ onClose }) {
+    const [travelTours, setTravelTours] = useState([]);
     const [locations, setLocations] = useState([]);
     const [services, setServices] = useState([]);
     const [typeTours, setTypeTours] = useState([]);
@@ -30,7 +33,6 @@ export default function ModalAddPost({ onClose }) {
         image: null,
         travel_tours: [],
     });
-    const [isActive, setIsActive] = useState(false);
 
     const [openDropdown, setOpenDropdown] = useState(null); // ID của Địa điểm đang mở menu
 
@@ -127,7 +129,6 @@ export default function ModalAddPost({ onClose }) {
     useEffect(() => {
         console.log("Updated travel tour:", tourData.travel_tours);
     }, [tourData.travel_tours]);
-
     const handleWrapperClick = () => {
         onClose();
     };
@@ -141,32 +142,32 @@ export default function ModalAddPost({ onClose }) {
                     <div className="flex gap-6">
                         {/* Cột trái */}
                         <div className="w-2/5">
-                            <h2 className="text-lg font-semibold">Thêm bài viết</h2>
+                            <h2 className="text-lg font-semibold">Thêm Tour du lịch</h2>
                             <h6 className="text-sm mb-4 text-SmokyGray">
-                                Quản trị viên thêm bài viết mới
+                                Quản trị viên thêm Tour du lịch mới
                             </h6>
 
                             {/* Mã Tour */}
                             <label className="block mb-2 font-medium before:content-['*'] before:text-red-500 before:mr-1">
-                                Tên bài viết
+                                Mã Tour
                             </label>
                             <input
                                 type="text"
                                 name="name_tour"
                                 className="w-full p-2 border rounded mb-4"
-                                placeholder="Nhập tên bài viết"
+                                placeholder="Mã Tour"
                                 disabled
                             />
 
                             {/* Tên Tour */}
                             <label className="block mb-2 font-medium before:content-['*'] before:text-red-500 before:mr-1">
-                                Đường dẫn
+                                Tên Tour
                             </label>
                             <input
                                 type="text"
                                 name="name_tour"
                                 className="w-full p-2 border rounded mb-4"
-                                placeholder="Nhập đường dẫn"
+                                placeholder="Nhập tên tour"
                                 value={tourData.name_tour}
                                 onChange={handleChange}
                                 required
@@ -175,18 +176,44 @@ export default function ModalAddPost({ onClose }) {
                             <div className="flex items-center gap-4">
                                 {/* Điểm khởi hành */}
                                 <div>
-                                    <label className="block mb-2 font-medium before:text-red-500 before:mr-1">
-                                        Danh mục
+                                    <label className="block mb-2 font-medium before:content-['*'] before:text-red-500 before:mr-1">
+                                        Điểm khởi hành
                                     </label>
                                     <select
                                         name="start_location"
-                                        className="w-[550px] p-2 border rounded text-gray-500"
+                                        className="w-[250px] p-2 border rounded text-gray-500"
                                         value={tourData.start_location}
                                         onChange={handleChange}
                                         required
                                     >
                                         <option value="" disabled>
-                                            Chọn danh mục
+                                            Chọn điểm khởi hành
+                                        </option>
+                                        {locations.map((location) => (
+                                            <option key={location.id} value={location.id}>
+                                                {location.name_location}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                {/* Mũi tên */}
+                                <FaArrowRight className="text-gray-400 text-lg" />
+
+                                {/* Điểm đến */}
+                                <div>
+                                    <label className="block mb-2 font-medium before:content-['*'] before:text-red-500 before:mr-1">
+                                        Điểm đến
+                                    </label>
+                                    <select
+                                        name="end_location"
+                                        className="w-[250px] p-2 border rounded text-gray-500"
+                                        value={tourData.end_location}
+                                        onChange={handleChange}
+                                        required
+                                    >
+                                        <option value="" disabled>
+                                            Chọn điểm đến
                                         </option>
                                         {locations.map((location) => (
                                             <option key={location.id} value={location.id}>
@@ -295,37 +322,6 @@ export default function ModalAddPost({ onClose }) {
                                 onChange={handleFileChange}
                                 required
                             />
-                            <div className="mt-4 flex items-center gap-2">
-                                <button
-                                    className={`w-10 h-5 flex items-center bg-gray-300 rounded-full p-1 transition ${
-                                        isActive ? "bg-red-700" : "bg-gray-300"
-                                    }`}
-                                    onClick={() => setIsActive(!isActive)}
-                                >
-                                    <div
-                                        className={`w-4 h-4 bg-white rounded-full shadow-md transform transition ${
-                                            isActive ? "translate-x-5" : ""
-                                        }`}
-                                    ></div>
-                                </button>
-                                <span className="text-gray-700">Bài viết nổi bật</span>
-                            </div>
-
-                            <div className="mt-4 flex items-center gap-2">
-                                <button
-                                    className={`w-10 h-5 flex items-center bg-gray-300 rounded-full p-1 transition ${
-                                        isActive ? "bg-red-700" : "bg-gray-300"
-                                    }`}
-                                    onClick={() => setIsActive(!isActive)}
-                                >
-                                    <div
-                                        className={`w-4 h-4 bg-white rounded-full shadow-md transform transition ${
-                                            isActive ? "translate-x-5" : ""
-                                        }`}
-                                    ></div>
-                                </button>
-                                <span className="text-gray-700">Kích hoạt</span>
-                            </div>
                         </div>
 
                         {/* Cột phải */}

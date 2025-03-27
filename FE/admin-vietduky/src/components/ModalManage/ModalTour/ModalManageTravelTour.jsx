@@ -54,10 +54,15 @@ export default function ModalManageTravelTour({ tourId, onClose }) {
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
-
+  const handleWrapperClick = () => {
+    onClose();
+  };
+  const handleModalClick = (event) => {
+    event.stopPropagation();
+  };
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-3/4 h-3/4 overflow-auto">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={handleWrapperClick}>
+      <div className="bg-white p-6 rounded-lg shadow-lg w-3/4 h-3/4 overflow-auto" onClick={handleModalClick}>
         <div className="flex justify-between items-center border-b pb-3 mb-3">
           <h2 className="text-lg font-semibold">Lịch khởi hành</h2>
           <button onClick={onClose} className="text-gray-500">

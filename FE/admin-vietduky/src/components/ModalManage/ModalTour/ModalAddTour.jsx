@@ -129,10 +129,15 @@ export default function ModalAddTour({ onClose }) {
   useEffect(() => {
     console.log("Updated travel tour:", tourData.travel_tours);
   }, [tourData.travel_tours]);
-
+  const handleWrapperClick = () => {
+    onClose();
+  };
+  const handleModalClick = (event) => {
+    event.stopPropagation();
+  };
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-3/4">
+    <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center" onClick={handleWrapperClick}>
+      <div className="bg-white p-6 rounded-lg shadow-lg w-3/4" onClick={handleModalClick}>
         <form onSubmit={handleSubmit}>
           <div className="flex gap-6">
             {/* Cột trái */}
