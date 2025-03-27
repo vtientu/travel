@@ -1,7 +1,6 @@
 import TextEditor from "../../../lib/TextEditor";
 import { FaArrowRight } from "react-icons/fa";
 import { useEffect, useState } from "react";
-import { MdDelete, MdEdit } from "react-icons/md";
 import { HiOutlineDotsHorizontal, HiOutlineInbox } from "react-icons/hi";
 import {
   fetchLocations,
@@ -9,9 +8,8 @@ import {
   fetchTypeTours,
 } from "../../../services/service";
 import { createTour } from "../../../services/API/tour.service";
-import { formatDayDMY } from "../../../utils/dateUtil";
-import TestModal from "./ModalAddTravelTours";
 import ModalConfirmTravelTour from "../ModalConfirm/ModalConfirmTravelTour.jsx";
+import ModalAddProgram from "../ModalAddProgram.jsx";
 
 export default function ModalAddTour({ onClose, onCreateSuccess }) {
   const [travelTours, setTravelTours] = useState([]);
@@ -358,22 +356,16 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
                 <div className="flex justify-between items-center mb-4">
                   <div>
                     <label className="font-medium">
-                      Lịch khởi hành & giá Tour
+                      Chương trình Tour
                     </label>
                   </div>
                   <div className="flex gap-4">
                     <button
                       type="button"
-                      className="border px-4 py-2 rounded-md"
-                    >
-                      Nhập danh sách hành trình
-                    </button>
-                    <button
-                      type="button"
                       className="bg-red-700 text-white px-4 py-2 rounded-md"
                       onClick={toggleModal}
                     >
-                      Thêm hành trình
+                      Thêm chương trình
                     </button>
                   </div>
                 </div>
@@ -383,101 +375,29 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
                     <table className="w-full border-collapse border rounded-lg shadow-md bg-white">
                       <thead>
                         <tr className="text-SmokyGray">
-                          <th className="p-2 text-left">Ngày khởi hành</th>
-                          <th className="p-2">Ngày về</th>
-                          <th className="p-2">Tình trạng chỗ</th>
-                          <th className="p-2">Giá</th>
-                          <th className="p-2"></th>
+                          <th className="p-2 ">Tiêu đề</th>
+                          <th className="p-2">Mô tả</th>
+                          <th className="p-2">Mô tả chi tiết</th>
                         </tr>
                       </thead>
-                      {tourData.travel_tours.length > 0 ? (
                         <tbody>
-                          {tourData.travel_tours.length > 0 ? (
-                            tourData.travel_tours.map((travelTour, index) => (
-                              <tr
-                                key={index}
-                                className={`border-t text-center ${
-                                  index % 2 === 0 ? "bg-white" : "bg-[#e4e4e7]"
-                                }`}
-                              >
-                                <td className="p-2 text-left">
-                                  {formatDayDMY(travelTour.start_time)}
-                                </td>
-                                <td className="p-2">
-                                  {formatDayDMY(travelTour.end_time)}
-                                </td>
-                                <td className="p-2">{travelTour.max_people}</td>
-                                <td className="p-2 text-RedPrice">
-                                  {travelTour.price_tour.toLocaleString(
-                                    "vi-VN"
-                                  )}{" "}
-                                  VNĐ
-                                </td>
-                                <td className="flex justify-end p-2 relative">
-                                  <button
-                                    type="button"
-                                    onClick={() => toggleDropdown(index)}
-                                    className="relative"
-                                  >
-                                    <HiOutlineDotsHorizontal className="text-xl cursor-pointer" />
-                                  </button>
-                                  {openDropdown === index && (
-                                    <div className="absolute right-0 mt-2 w-48 bg-white shadow-md rounded-md z-10">
-                                      <button
-                                        type="button"
-                                        className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left whitespace-nowrap"
-                                      >
-                                        <MdEdit className="mr-2 text-gray-700" />{" "}
-                                        Cập nhật hành trình
-                                      </button>
-                                      <button
-                                        type="button"
-                                        onClick={() =>
-                                          handleDeleteTravelTour(index)
-                                        }
-                                        className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left text-red-600 whitespace-nowrap"
-                                      >
-                                        <MdDelete className="mr-2" /> Xóa hành
-                                        trình
-                                      </button>
-                                    </div>
-                                  )}
-                                </td>
-                              </tr>
-                            ))
-                          ) : (
                             <tr>
                               <td colSpan="5" className="p-6 text-center">
-                                <div className="flex flex-col items-center">
+                                <div className="flex flex-col items-center h-[160px]">
                                   <div className="p-4 bg-gray-100 rounded-full mb-2">
                                     <HiOutlineInbox className="text-4xl text-gray-500" />
                                   </div>
-                                  <p className="text-gray-500 text-lg">
+                                  <p className="text-gray-500 text-md">
                                     Chưa có hành trình nào
                                   </p>
                                 </div>
                               </td>
                             </tr>
-                          )}
                         </tbody>
-                      ) : (
-                        <tr>
-                          <td colSpan="5" className="p-6 text-center">
-                            <div className="flex flex-col items-center">
-                              <div className="p-4 bg-gray-100 rounded-full mb-2">
-                                <HiOutlineInbox className="text-4xl text-gray-500" />
-                              </div>
-                              <p className="text-gray-500 text-lg">
-                                Chưa có hành trình nào
-                              </p>
-                            </div>
-                          </td>
-                        </tr>
-                      )}
                     </table>
                   </div>
                   {isModalOpen && (
-                    <TestModal
+                    <ModalAddProgram
                       onClose={toggleModal}
                       onAddTravelTour={handleAddTravelTour}
                     />

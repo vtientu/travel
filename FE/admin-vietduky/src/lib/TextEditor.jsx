@@ -52,7 +52,7 @@ const TextEditor = ({ value, onChange }) => {
       </div>
 
       {/* Quill Editor */}
-      <ReactQuill
+      <ReactQuill className="h-[80px]"
         ref={quillRef}
         value={value}
         onChange={onChange}
