@@ -57,13 +57,19 @@ export default function ModalAddTravelTour({ tourId, onClose, onAddSuccess }) {
       setLoading(false);
     }
   };
+  const handleWrapperClick = () => {
+    onClose();
+  };
 
+  const handleModalClick = (event) => {
+    event.stopPropagation();
+  };
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-[9999]">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-[500px] max-h-[90vh] overflow-auto relative">
+    <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-[9999]" onClick={handleWrapperClick}>
+      <div className="bg-white p-6 rounded-lg shadow-lg w-[500px] max-h-[90vh] overflow-auto relative" onClick={handleModalClick}>
         <form onSubmit={handleSubmit}>
-          <h2 className="text-lg font-semibold">Thêm Travel Tour</h2>
-          <h6 className="text-sm mb-4">Quản trị viên thêm Travel Tour trong Tour</h6>
+          <h2 className="text-lg font-semibold">Thêm lịch khởi hành</h2>
+          <h6 className="text-sm mb-4">Quản trị viên thêm lịch khởi hành vào Tour</h6>
 
           <div className="flex items-center gap-4 mt-4">
             <div>
@@ -135,7 +141,7 @@ export default function ModalAddTravelTour({ tourId, onClose, onAddSuccess }) {
               className="bg-red-700 text-white px-4 py-2 rounded"
               disabled={loading}
             >
-              {loading ? "Đang xử lý..." : "Tạo Tour mới"}
+              {loading ? "Đang xử lý..." : "Tạo"}
             </button>
           </div>
         </form>

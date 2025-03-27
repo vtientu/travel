@@ -7,7 +7,7 @@ import ModalAddLocation from "../../components/ModalManage/ModalAddLocation";
 import { MdEdit, MdDelete } from "react-icons/md";
 import { FaEye } from "react-icons/fa";
 import ModalUpdateLocation from "../../components/ModalUpdate/ModalUpdateLocation.jsx";
-import ModalDeleteLocation from "../../components/ModalManage/ModalConfirmDelete/ModalDeleteLocation.jsx";
+import ModalDeleteLocation from "../../components/ModalManage/ModalConfirm/ModalDeleteLocation.jsx";
 
 export default function ManagementLocation() {
   const [locations, setLocations] = useState([]);

@@ -64,8 +64,8 @@ export default function TestModal({ onClose, onAddTravelTour }) {
     <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-[9999]">
       <div className="bg-white p-6 rounded-lg shadow-lg w-[500px] max-h-[90vh] overflow-auto relative">
         <form onSubmit={handleSubmit}>
-          <h2 className="text-lg font-semibold">Thêm Travel Tour</h2>
-          <h6 className="text-sm mb-4">Quản trị viên thêm Travel Tour trong Tour</h6>
+          <h2 className="text-lg font-semibold">Thêm lịch khởi hành</h2>
+          <h6 className="text-sm mb-4">Quản trị viên thêm lịch khởi hành vào Tour</h6>
 
           <div className="flex items-center gap-4 mt-4">
             {/* Ngày khởi hành */}
@@ -117,7 +117,7 @@ export default function TestModal({ onClose, onAddTravelTour }) {
 
           {/* Giá tour */}
           <label className="block mt-4 mb-2 font-medium">
-            Giá Travel Tour <span className="text-red-500">*</span>
+            Giá lịch khởi hành <span className="text-red-500">*</span>
           </label>
           <input
             type="number"

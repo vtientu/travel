@@ -1,24 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { MdEdit, MdDelete } from "react-icons/md";
-import { PiMapPinLineBold } from "react-icons/pi"; // Icon hành trình
 import { deleteTour } from "../../services/API/tour.service";
+import { BsCalendar3 } from "react-icons/bs";
 
-export default function DropdownMenu({ tour, onDelete, onManageTravelTour }) {
-  const [isOpen, setIsOpen] = useState(false);
+export default function DropdownMenu({tour, onDelete, onManageTravelTour, onEdit, isOpen, setOpenDropdown,}) {
   const [isHovered, setIsHovered] = useState(false);
 
   // Đóng dropdown khi click bên ngoài
-  const handleClickOutside = (event) => {
-    if (!event.target.closest(".dropdown-container")) {
-      setIsOpen(false);
-    }
-  };
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest(".dropdown-container")) {
+        setOpenDropdown(null);
+      }
+    };
 
-  useState(() => {
     document.addEventListener("click", handleClickOutside);
     return () => document.removeEventListener("click", handleClickOutside);
-  }, []);
+  }, [setOpenDropdown]);
 
   const handleDelete = async (id) => {
     try {
@@ -29,10 +28,9 @@ export default function DropdownMenu({ tour, onDelete, onManageTravelTour }) {
       alert("Có lỗi xảy ra, vui lòng thử lại!");
       console.log("Lỗi khi xóa tour", error);
     } finally {
-      setIsOpen(false); // Đóng dropdown sau khi xóa
+      setOpenDropdown(null);
     }
   };
-
 
   return (
       <div
@@ -40,40 +38,26 @@ export default function DropdownMenu({ tour, onDelete, onManageTravelTour }) {
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
       >
-        <button onClick={() => setIsOpen(!isOpen)} className="p-2">
+        <button onClick={() => setOpenDropdown(isOpen ? null : tour.id)} className="p-2">
           <HiOutlineDotsHorizontal className="text-xl cursor-pointer" />
         </button>
-
-        {isHovered && (
-            <div className="absolute right-full flex gap-2 mr-2">
-              <button
-                  onClick={() => onManageTravelTour()}
-                  className="p-2 bg-gray-200 rounded-md hover:bg-gray-300"
-              >
-                <PiMapPinLineBold className="text-lg" />
-              </button>
-              <button
-                  onClick={() => onEdit(tour)}
-                  className="p-2 bg-gray-200 rounded-md hover:bg-gray-300"
-              >
-                <MdEdit className="text-lg" />
-              </button>
-            </div>
-        )}
 
         {isOpen && (
             <div className="absolute right-0 mt-2 w-48 bg-white shadow-md rounded-md z-10">
               <button
-                  onClick={() => onManageTravelTour()}
+                  onClick={() => {
+                    onManageTravelTour();
+                    setOpenDropdown(null);
+                  }}
                   className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left"
               >
-                <PiMapPinLineBold className="mr-2 text-gray-700" />
-                Quản lý hành trình
+                <BsCalendar3 className="mr-2 text-gray-700" />
+                Danh sách lịch khởi hành
               </button>
               <button
                   onClick={() => {
-                    onEdit(tour); // ✅ Gọi callback từ cha
-                    setIsOpen(false); // Đóng dropdown
+                    onEdit(tour);
+                    setOpenDropdown(null);
                   }}
                   className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left"
               >
