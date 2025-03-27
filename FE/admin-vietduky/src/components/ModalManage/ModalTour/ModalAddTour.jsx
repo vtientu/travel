@@ -33,7 +33,7 @@ export default function ModalAddTour({ onClose }) {
     image: null,
     travel_tours: [],
   });
-
+  const [previewImage, setPreviewImage] = useState(null);
   const [openDropdown, setOpenDropdown] = useState(null); // ID của Địa điểm đang mở menu
 
   useEffect(() => {
@@ -72,7 +72,11 @@ export default function ModalAddTour({ onClose }) {
 
   // Xử lý tải ảnh
   const handleFileChange = (e) => {
-    setTourData((prev) => ({ ...prev, image: e.target.files[0] }));
+    const file = e.target.files[0];
+    if (file) {
+      setTourData((prev) => ({ ...prev, image: file }));
+      setPreviewImage(URL.createObjectURL(file));
+    }
   };
 
   // Xử lý gửi dữ liệu lên API
@@ -322,6 +326,15 @@ export default function ModalAddTour({ onClose }) {
                 onChange={handleFileChange}
                 required
               />
+              {previewImage && (
+                  <div className="mt-2">
+                    <img
+                        src={previewImage}
+                        alt="Xem trước ảnh minh họa"
+                        className="h-40 w-full object-cover rounded shadow"
+                    />
+                  </div>
+              )}
             </div>
 
             {/* Cột phải */}
