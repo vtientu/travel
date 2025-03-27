@@ -11,13 +11,19 @@ import {
 import { createTour } from "../../../services/API/tour.service";
 import { formatDayDMY } from "../../../utils/dateUtil";
 import TestModal from "./ModalAddTravelTours";
+import ModalConfirmTravelTour from "../ModalConfirm/ModalConfirmTravelTour.jsx";
 
-export default function ModalAddTour({ onClose }) {
+export default function ModalAddTour({ onClose, onCreateSuccess }) {
   const [travelTours, setTravelTours] = useState([]);
   const [locations, setLocations] = useState([]);
   const [services, setServices] = useState([]);
   const [typeTours, setTypeTours] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
+  const [openDropdown, setOpenDropdown] = useState(null);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+  const [pendingTourData, setPendingTourData] = useState(null);
+
   const [tourData, setTourData] = useState({
     name_tour: "",
     price_tour: "",
@@ -33,8 +39,6 @@ export default function ModalAddTour({ onClose }) {
     image: null,
     travel_tours: [],
   });
-  const [previewImage, setPreviewImage] = useState(null);
-  const [openDropdown, setOpenDropdown] = useState(null); // ID của Địa điểm đang mở menu
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,7 +49,6 @@ export default function ModalAddTour({ onClose }) {
     fetchData();
   }, []);
 
-  // Xử lý khi thay đổi input
   const handleChange = (e) => {
     const { name, value } = e.target;
     setTourData((prev) => ({ ...prev, [name]: value }));
@@ -70,7 +73,6 @@ export default function ModalAddTour({ onClose }) {
     }));
   };
 
-  // Xử lý tải ảnh
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -79,8 +81,7 @@ export default function ModalAddTour({ onClose }) {
     }
   };
 
-  // Xử lý gửi dữ liệu lên API
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
 
     if (!tourData.activity_description.trim()) {
@@ -88,31 +89,34 @@ export default function ModalAddTour({ onClose }) {
       return;
     }
 
+    setPendingTourData(tourData);
+    setIsConfirmModalOpen(true);
+  };
+
+  const handleCreateTour = async (callback) => {
     try {
       const formData = new FormData();
-      Object.keys(tourData).forEach((key) => {
+      Object.keys(pendingTourData).forEach((key) => {
         if (key === "travel_tours") {
-          formData.append(key, JSON.stringify(tourData[key]));
-        } else if (tourData[key] !== null && tourData[key] !== undefined) {
-          formData.append(key, tourData[key]);
+          formData.append(key, JSON.stringify(pendingTourData[key]));
+        } else if (
+            pendingTourData[key] !== null &&
+            pendingTourData[key] !== undefined
+        ) {
+          formData.append(key, pendingTourData[key]);
         }
       });
 
-      for (let [key, value] of formData.entries()) {
-        console.log(`${key}: ${value}`);
-      }
-
       const response = await createTour(formData);
-      if (response) {
-        alert("Tạo Tour mới thành công");
-        setTourData({
-          ...tourData,
-          name_tour: "",
-          price_tour: "",
-          travel_tours: [],
-        });
+      console.log("API response:", response);
+
+      // ✅ Lấy tourId đúng chỗ
+      const tourId = response?.tour?.id;
+
+      if (tourId) {
+        callback?.(tourId);
       } else {
-        alert("Có lỗi xảy ra, vui lòng thử lại!");
+        alert("Tạo Tour thất bại!");
       }
     } catch (error) {
       alert(`Lỗi: ${JSON.stringify(error.response?.data)}`);
@@ -120,22 +124,33 @@ export default function ModalAddTour({ onClose }) {
     }
   };
 
-  // Toggle dropdown
+  const handleConfirm = () => {
+    setIsConfirmModalOpen(false);
+    handleCreateTour((id) => {
+      onCreateSuccess?.(id);
+    });
+  };
+
+  const handleCancel = () => {
+    setIsConfirmModalOpen(false);
+    handleCreateTour(() => {
+      alert("Tạo Tour thành công!");
+      onClose();
+    });
+  };
+
   const toggleDropdown = (id) => {
     setOpenDropdown(openDropdown === id ? null : id);
   };
 
-  // Toggle modal
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
   };
 
-  useEffect(() => {
-    console.log("Updated travel tour:", tourData.travel_tours);
-  }, [tourData.travel_tours]);
   const handleWrapperClick = () => {
     onClose();
   };
+
   const handleModalClick = (event) => {
     event.stopPropagation();
   };
@@ -484,21 +499,28 @@ export default function ModalAddTour({ onClose }) {
           {/* Button Actions */}
           <div className="flex justify-end gap-4 mt-4">
             <button
-              type="button"
-              className="bg-gray-300 px-4 py-2 rounded-md"
-              onClick={onClose}
+                type="button"
+                className="bg-gray-300 px-4 py-2 rounded-md"
+                onClick={onClose}
             >
               Hủy
             </button>
             <button
-              type="submit"
-              className="bg-red-700 text-white px-4 py-2 rounded-md"
+                type="submit"
+                className="bg-red-700 text-white px-4 py-2 rounded-md"
             >
               Tạo Tour mới
             </button>
           </div>
         </form>
       </div>
+      {isConfirmModalOpen && (
+          <ModalConfirmTravelTour
+              open={isConfirmModalOpen}
+              onCancel={handleCancel}
+              onConfirm={handleConfirm}
+          />
+      )}
     </div>
   );
 }
