@@ -146,7 +146,8 @@ exports.createBooking = async (req, res) => {
       address,
       note,
       voucher_id,
-      passengers
+      passengers,
+      booking_code
     } = req.body;
     console.log(req.body);
     
@@ -247,7 +248,8 @@ exports.createBooking = async (req, res) => {
       address,
       status: 0,
       note,
-      voucher_id
+      voucher_id,
+      booking_code: newBooking.id
     });
 
     // Xử lý danh sách passenger nếu có
