@@ -141,16 +141,16 @@ exports.createBooking = async (req, res) => {
       number_newborn,
       total_cost,
       name,
-      phone,  
+      phone,
       email,
       address,
       note,
       voucher_id,
       passengers,
-      booking_code
+      booking_code,
     } = req.body;
     console.log(req.body);
-    
+
     // Parse passengers từ chuỗi JSON thành object JavaScript
     const passengersArray = Array.isArray(passengers) ? passengers : [];
 
@@ -174,10 +174,8 @@ exports.createBooking = async (req, res) => {
       });
     }
 
-    if(passengers && passengers.length > 0  ) {
-      for(let i = 0; i < passengers.length; i++) {
-        
-      }
+    if (passengers && passengers.length > 0) {
+      for (let i = 0; i < passengers.length; i++) {}
     }
     // Kiểm tra tổng chi phí
     if (!total_cost || total_cost <= 0) {
@@ -185,19 +183,19 @@ exports.createBooking = async (req, res) => {
         message: "Tổng chi phí phải lớn hơn 0!",
       });
     }
-    if(voucher_id) {
+    if (voucher_id) {
       const voucher = await Voucher.findByPk(voucher_id);
-      if(!voucher) {
+      if (!voucher) {
         return res.status(400).json({
           message: "Mã voucher không tồn tại!",
         });
       }
-      if(voucher.status === 0 || voucher.quantity <= 0) {
+      if (voucher.status === 0 || voucher.quantity <= 0) {
         return res.status(400).json({
           message: "Mã voucher đã hết hạn!",
         });
       }
-      
+
       voucher.quantity -= 1;
       await voucher.save();
     }
@@ -249,28 +247,32 @@ exports.createBooking = async (req, res) => {
       status: 0,
       note,
       voucher_id,
-      booking_code: newBooking.id
     });
+    newBooking.booking_code = newBooking.id;
 
     // Xử lý danh sách passenger nếu có
-    if(passengersArray && passengersArray.length > 0) {
+    if (passengersArray && passengersArray.length > 0) {
       // Kiểm tra số lượng passenger có khớp với số lượng người đã đăng ký không
-      const totalPassengers = parseInt(number_adult) + parseInt(number_children) + parseInt(number_newborn);
-      if(passengersArray.length !== totalPassengers) {
+      const totalPassengers =
+        parseInt(number_adult) +
+        parseInt(number_children) +
+        parseInt(number_newborn);
+      if (passengersArray.length !== totalPassengers) {
         return res.status(400).json({
-          message: "Số lượng thông tin hành khách không khớp với số lượng người đã đăng ký!",
+          message:
+            "Số lượng thông tin hành khách không khớp với số lượng người đã đăng ký!",
         });
       }
 
       // Tạo danh sách passenger
-      const passengerPromises = passengersArray.map(passenger => {
+      const passengerPromises = passengersArray.map((passenger) => {
         return Passenger.create({
           name: passenger.name,
           birth_date: passenger.birth_date,
           gender: passenger.gender,
           phone_number: passenger.phone_number,
           booking_id: newBooking.id,
-          passport_number: passenger.passport_number
+          passport_number: passenger.passport_number,
         });
       });
 
@@ -280,7 +282,7 @@ exports.createBooking = async (req, res) => {
     res.status(201).json({
       message: "Đặt tour thành công!",
       data: newBooking,
-      passengers: passengersArray
+      passengers: passengersArray,
     });
   } catch (error) {
     console.error("Lỗi khi tạo booking:", error);
