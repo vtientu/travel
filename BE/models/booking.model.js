@@ -68,7 +68,19 @@ module.exports = (sequelize, Sequelize) => {
             note: {
                 type: Sequelize.TEXT,
                 allowNull: true,
-            }
+            },
+            created_at: {
+                type: Sequelize.DATE,
+                allowNull: true,
+            },
+            updated_at: {
+                type: Sequelize.DATE,
+                allowNull: true,
+            },
+            booking_code: {
+                type: Sequelize.STRING,
+                allowNull: true,
+            },
         },
         {
             tableName: "booking", // Đảm bảo tên bảng khớp với DB

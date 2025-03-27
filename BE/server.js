@@ -16,19 +16,19 @@ const port = process.env.PORT || 5000;
 const upload = multer();
 
 app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false },
-  })
+    session({
+        secret: process.env.SESSION_SECRET,
+        resave: false,
+        saveUninitialized: true,
+        cookie: {secure: false},
+    })
 );
 
 app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(cors());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 // app.use(upload.none()); // Thêm middleware để xử lý form-data không có file
 
@@ -36,14 +36,14 @@ app.use("/api", routes);
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.listen(port, () => {
-  console.log(`✅ Server is running on port ${port}`);
+    console.log(`✅ Server is running on port ${port}`);
 });
 
 (async () => {
-  try {
-    await db.sequelize.sync({ alter: true });
-    console.log("✅ Database synced successfully");
-  } catch (error) {
-    console.error("❌ Database sync error:", error);
-  }
+    try {
+        await db.sequelize.sync({alter: true});
+        console.log("✅ Database synced successfully");
+    } catch (error) {
+        console.error("❌ Database sync error:", error);
+    }
 })();

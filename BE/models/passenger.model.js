@@ -26,6 +26,10 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
+      passport_number: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
     },
     {
       tableName: "passenger",

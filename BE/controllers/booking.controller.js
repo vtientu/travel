@@ -267,7 +267,8 @@ exports.createBooking = async (req, res) => {
           birth_date: passenger.birth_date,
           gender: passenger.gender,
           phone_number: passenger.phone_number,
-          booking_id: newBooking.id
+          booking_id: newBooking.id,
+          passport_number: passenger.passport_number
         });
       });
 
