@@ -7,7 +7,7 @@ const ContactInfo = ({ bookingData }) => {
       <div className="grid grid-cols-2 gap-4 text-gray-900">
         <div>
           <p className="font-semibold">Họ tên</p>
-          <p className="text-gray-700">{bookingData?.customerName || "N/A"}</p>
+          <p className="text-gray-700">{bookingData?.name || "N/A"}</p>
         </div>
         <div>
           <p className="font-semibold">Email</p>

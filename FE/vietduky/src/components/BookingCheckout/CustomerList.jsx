@@ -1,8 +1,17 @@
-export default function CustomerList() {
-    return (
-      <div className="h-18 px-8 py-5 bg-[#f8f8f8] rounded-lg border border-gray-400 flex justify-between items-center">
+import { useState } from "react";
+
+export default function CustomerList({ passengerData }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [passengerList, setPassengerList] = useState(passengerData);
+
+  const toggleList = () => setIsExpanded(!isExpanded);
+
+  return (
+    <div className="border border-gray-400 rounded-lg overflow-hidden">
+      {/* Header */}
+      <div className="h-18 px-8 py-5 bg-[#f8f8f8] flex justify-between items-center cursor-pointer" onClick={toggleList}>
         <div className="text-[#a80f21] text-lg font-bold">DANH SÁCH KHÁCH HÀNG</div>
-        <div className="cursor-pointer">
+        <div className={`transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}>
           <svg
             width="24"
             height="24"
@@ -19,6 +28,57 @@ export default function CustomerList() {
           </svg>
         </div>
       </div>
-    );
-  }
-  
+
+      {/* Content (table) */}
+      {isExpanded && (
+        <div className="p-4">
+          <div className="flex justify-between mb-3">
+            <input
+              type="text"
+              placeholder="Tìm kiếm bằng từ khóa"
+              className="border rounded px-3 py-1 w-1/3"
+            />
+            <div className="space-x-2">
+              <button className="px-3 py-1 border border-red-500 text-red-600 rounded hover:bg-red-100">Xuất danh sách</button>
+              <button className="px-3 py-1 border border-red-500 text-red-600 rounded hover:bg-red-100">Đăng tải danh sách</button>
+              <button className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700">Thêm khách hàng</button>
+            </div>
+          </div>
+
+          <table className="w-full border border-gray-300">
+            <thead className="bg-gray-100 text-left">
+              <tr>
+                <th className="p-2 border">Họ tên</th>
+                <th className="p-2 border">Điện thoại</th>
+                <th className="p-2 border">Giới tính</th>
+                <th className="p-2 border">Ngày sinh</th>
+                <th className="p-2 border">Độ tuổi</th>
+                <th className="p-2 border">Phòng đơn</th>
+              </tr>
+            </thead>
+            <tbody>
+              {/* Mẫu dữ liệu demo */}
+              <tr>
+                <td className="p-2 border">Phạm Đức Mạnh</td>
+                <td className="p-2 border">0705897004</td>
+                <td className="p-2 border">Nam</td>
+                <td className="p-2 border">21/06/2002</td>
+                <td className="p-2 border">Người lớn</td>
+                <td className="p-2 border text-center"><input type="checkbox" /></td>
+              </tr>
+              <tr>
+                <td className="p-2 border">Dương Thế Toàn</td>
+                <td className="p-2 border">0123456789</td>
+                <td className="p-2 border">Nam</td>
+                <td className="p-2 border">21/06/2002</td>
+                <td className="p-2 border">Người lớn</td>
+                <td className="p-2 border text-center"><input type="checkbox" checked readOnly /></td>
+              </tr>
+              {/* Thêm các dòng khác nếu cần */}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}

@@ -2,6 +2,7 @@ import { excelDateToJSDate, formatDate } from "@/utils/dateUtil";
 import { exportTemplate } from "@/utils/excelUtils";
 import { useEffect, useState } from "react";
 import * as XLSX from "xlsx";
+import Icons from "../Icons/Icon";
 
 const PassengerInfoForm = ({ passengers, onPassengerDataChange }) => {
   const [passengerData, setPassengerData] = useState([]);
@@ -20,58 +21,63 @@ const PassengerInfoForm = ({ passengers, onPassengerDataChange }) => {
   }, {});
 
   useEffect(() => {
-    setPassengerData((prev) => {
-      const newPassengers = [];
-  
-      ["adult", "child", "infant"].forEach((type) => {
-        const count = passengers[type] || 0;
-        const existingPassengers = prev.filter((p) => p.type === type);
-  
-        for (let i = 0; i < count; i++) {
-          if (existingPassengers[i]) {
-            newPassengers.push(existingPassengers[i]);
-          } else {
-            newPassengers.push({
-              id: `${type}-${i}-${Date.now()}`,
-              type,
-              label:
-                type === "adult" ? "Người lớn" : type === "child" ? "Trẻ em" : "Em bé",
-              desc:
-                type === "adult"
-                  ? "Từ 12 trở lên"
-                  : type === "child"
-                  ? "Từ 5 - 11 tuổi"
-                  : "Dưới 2 tuổi",
-              name: "",
-              phone: "",
-              gender: "",
-              birthdate: "",
-              singleRoom: false,
-            });
-          }
+    const newPassengers = [];
+
+    ["adult", "child", "infant"].forEach((type) => {
+      const count = passengers[type] || 0;
+      const existingPassengers = passengerData.filter((p) => p.type === type);
+
+      for (let i = 0; i < count; i++) {
+        if (existingPassengers[i]) {
+          newPassengers.push(existingPassengers[i]);
+        } else {
+          newPassengers.push({
+            id: `${type}-${i}-${Date.now()}`,
+            type,
+            label:
+              type === "adult"
+                ? "Người lớn"
+                : type === "child"
+                ? "Trẻ em"
+                : "Em bé",
+            desc:
+              type === "adult"
+                ? "Từ 12 trở lên"
+                : type === "child"
+                ? "Từ 5 - 11 tuổi"
+                : "Dưới 2 tuổi",
+            name: "",
+            phone: "",
+            gender: "",
+            birthdate: "",
+            singleRoom: false,
+          });
         }
-      });
-  
-      onPassengerDataChange(newPassengers);
-      return newPassengers;
+      }
     });
+
+    // Chỉ cập nhật state nếu dữ liệu thay đổi
+    if (JSON.stringify(passengerData) !== JSON.stringify(newPassengers)) {
+      setPassengerData(newPassengers);
+      onPassengerDataChange(newPassengers);
+    }
   }, [passengers]);
 
   useEffect(() => {
-    onPassengerDataChange(passengers);    
-  }, [passengers]);
+    onPassengerDataChange(passengerData);
+  }, [passengerData]);
 
   const handleChangeInput = (passengerId, field, value) => {
     setPassengerData((prev) => {
       const updatedPassengers = prev.map((p) =>
         p.id === passengerId ? { ...p, [field]: value } : p
       );
-  
+
       onPassengerDataChange(updatedPassengers);
       return updatedPassengers;
     });
   };
-  
+
   const handleAssistanceChange = (e) => {
     setAssistance(e.target.checked);
   };
@@ -133,7 +139,6 @@ const PassengerInfoForm = ({ passengers, onPassengerDataChange }) => {
   };
 
   // console.log("Dữ liệu hành khách:", passengerData);
-  
 
   return (
     <div className="space-y-6">
@@ -158,8 +163,9 @@ const PassengerInfoForm = ({ passengers, onPassengerDataChange }) => {
         <button
           type="button"
           onClick={exportTemplate}
-          className="w-1/4 py-2 bg-[#f8f8f8] border border-[#A80F21] font-semibold text-[#A80F21] rounded-md"
+          className="w-1/4 py-2 bg-[#f8f8f8] border border-[#A80F21] font-semibold text-[#A80F21] rounded-md flex items-center justify-center gap-2"
         >
+          <img src={Icons.FileDown} alt="FileDown" className="w-4 h-4" />
           Tải danh sách mẫu
         </button>
 
@@ -267,54 +273,55 @@ const PassengerInfoForm = ({ passengers, onPassengerDataChange }) => {
                   />
                 </div>
 
-                <div className="flex flex-col gap-2">
-                  <label className="text-sm font-semibold">Phòng đơn</label>
+                {type === "adult" && (
+                  <div className="flex flex-col gap-2">
+                    <label className="text-sm font-semibold">Phòng đơn</label>
 
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
-                      name="singleRoom"
-                      checked={passenger.singleRoom}
-                      onChange={(e) =>
-                        handleChangeInput(
-                          passenger.id,
-                          "singleRoom",
-                          e.target.checked
-                        )
-                      }
-                      className="hidden"
-                      id={`singleRoomToggle-${passenger.id}`}
-                    />
-                    <label
-                      htmlFor={`singleRoomToggle-${passenger.id}`}
-                      className={`relative cursor-pointer w-10 h-5 rounded-full flex items-center transition-all ${
-                        passenger.singleRoom ? "bg-red-500" : "bg-gray-300"
-                      }`}
-                    >
-                      <span
-                        className={`absolute w-4 h-4 bg-white rounded-full transition-all ${
-                          passenger.singleRoom
-                            ? "translate-x-5"
-                            : "translate-x-0"
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="checkbox"
+                        name="singleRoom"
+                        checked={passenger.singleRoom}
+                        onChange={(e) =>
+                          handleChangeInput(
+                            passenger.id,
+                            "singleRoom",
+                            e.target.checked
+                          )
+                        }
+                        className="hidden"
+                        id={`singleRoomToggle-${passenger.id}`}
+                      />
+                      <label
+                        htmlFor={`singleRoomToggle-${passenger.id}`}
+                        className={`relative cursor-pointer w-10 h-5 rounded-full flex items-center transition-all ${
+                          passenger.singleRoom ? "bg-red-500" : "bg-gray-300"
                         }`}
-                      ></span>
-                    </label>
+                      >
+                        <span
+                          className={`absolute w-4 h-4 bg-white rounded-full transition-all ${
+                            passenger.singleRoom
+                              ? "translate-x-5"
+                              : "translate-x-0"
+                          }`}
+                        ></span>
+                      </label>
 
-                    <span
-                      className={`text-sm font-semibold ${
-                        passenger.singleRoom ? "text-red-500" : "text-black"
-                      }`}
-                    >
-                      240.000 ₫
-                    </span>
+                      <span
+                        className={`text-sm font-semibold ${
+                          passenger.singleRoom ? "text-red-500" : "text-black"
+                        }`}
+                      >
+                        240.000 ₫
+                      </span>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
           ))}
         </div>
       ))}
-
     </div>
   );
 };

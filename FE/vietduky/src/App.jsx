@@ -3,6 +3,7 @@ import Calendar from "./components/Calendar/Calendar";
 import PaymentForm from "./components/CreditCard/CreditCardForm.jsx";
 import GoogleAuthCallback from "./components/GoogleAuthCallback";
 import ProtectedRoute from "./components/PrivateRouter";
+import ScrollToTop from "./components/ScrollToTop/ScrollToTop";
 import LayoutLandingPage from "./layouts/LayoutLandingPage.jsx";
 import PersonalAIPage from "./layouts/PersonalAIPage.jsx";
 import BookingComplete from "./page/Booking/BookingComplete.jsx";
@@ -13,12 +14,13 @@ import DetailTourPage from "./page/DetailTourPage.jsx";
 import ListTour from "./page/ListTourPage.jsx";
 import Profile from "./page/Profile";
 import ProfileCustomer from "./page/ProfileCustomer";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
 import TourBookingHistoryPage from "@/page/TourBookingHistoryPage.jsx";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         <Route path={"/"} element={<LayoutLandingPage />} />
         <Route path="/auth/callback" element={<GoogleAuthCallback />} />
@@ -31,10 +33,13 @@ function App() {
         <Route path={"/detailTour"} element={<DetailTourPage />} />
         <Route path="/tour/:id" element={<DetailTourPage />} />
 
-        <Route path={"/booking"} element={<BookingTour />} />
+        <Route path={"/booking/:id"} element={<BookingTour />} />
         <Route path={"/bookingConfirm"} element={<BookingConfirm />} />
         <Route path={"/bookingComplete"} element={<BookingComplete />} />
-        <Route path={"/tourBookingHistory"} element={<TourBookingHistoryPage />} />
+        <Route
+          path={"/tourBookingHistory"}
+          element={<TourBookingHistoryPage />}
+        />
 
         <Route path={"/credit"} element={<PaymentForm />} />
 

@@ -8,10 +8,10 @@ export default function LayoutBookingTour({ children }) {
       <div>
         <Header />
       </div>
-      <div className="flex-grow max-w-4xl mx-auto bg-white p-6 rounded-lg">
+      <div className="sticky top-0 bg-white z-10 p-4 shadow">
         <BookingStep />
       </div>
-      <div className="flex-grow max-w-16xl mx-auto bg-white p-6 rounded-lg">
+      <div className="flex-grow max-w-16xl mx-20 bg-white p-6 rounded-lg">
         {children}
       </div>
       <div className="mt-4">

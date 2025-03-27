@@ -17,7 +17,10 @@ const BookingInfo = ({ bookingData }) => {
         </div>
         <div className="flex justify-between">
           <div className="text-gray-900 font-bold">Trị giá booking:</div>
-          <div className="text-gray-900 font-bold">{bookingData?.totalPrice || "0 ₫"}</div>
+          <div className="text-gray-900 font-bold">{bookingData?.total_cost.toLocaleString("vi-VN", {
+            style: "currency",
+            currency: "VND",
+          }) || "0 ₫"}</div>
         </div>
         <div className="flex justify-between">
           <div className="text-gray-900 font-bold">Hình thức thanh toán:</div>

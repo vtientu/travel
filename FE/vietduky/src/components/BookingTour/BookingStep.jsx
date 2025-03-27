@@ -1,11 +1,42 @@
+import Icons from "../Icons/Icon";
+import { useNavigate, useLocation } from "react-router-dom";
+
 const BookingHeader = () => {
+  const navigate = useNavigate(); // Khởi tạo useNavigate
+  const location = useLocation(); // Khởi tạo useLocation
+
+  const handleGoBack = () => {
+    navigate(-1); // Quay lại trang trước đó
+  };
+
+  // Xác định bước hiện tại dựa trên đường dẫn
+  const getCurrentStep = () => {
+    if (location.pathname.includes("bookingConfirm")) {
+      return 2; // Bước 2: Thanh toán
+    } else if (location.pathname.includes("bookingComplete")) {
+      return 3; // Bước 3: Hoàn tất
+    }
+    return 1; // Mặc định là Bước 1: Nhập thông tin
+  };
+
+  const currentStep = getCurrentStep();
+
   return (
-    <div className="w-full flex flex-col items-center py-4 bg-white ">
+    <div className="w-full flex flex-col items-center py bg-white ">
       {/* Header Title */}
       <div className="relative w-[90rem] h-[65px] gap-[1.5rem] flex items-center justify-between">
         {/* Nút Quay lại */}
-        <div className="flex items-center gap-2 cursor-pointer">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <div
+          className="flex items-center gap-2 cursor-pointer"
+          onClick={handleGoBack}
+        >
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
             <path
               fillRule="evenodd"
               clipRule="evenodd"
@@ -13,7 +44,9 @@ const BookingHeader = () => {
               fill="black"
             />
           </svg>
-          <span className="text-neutral-900 text-base font-normal font-['Be Vietnam Pro']">Quay lại</span>
+          <span className="text-neutral-900 text-base font-normal font-['Be Vietnam Pro']">
+            Quay lại
+          </span>
         </div>
 
         {/* Tiêu đề Đặt tour */}
@@ -26,30 +59,46 @@ const BookingHeader = () => {
       <div className="w-[58.125rem] h-[117px] p-[0.875rem] flex justify-between items-center mt-4">
         {/* Bước 1: Nhập thông tin */}
         <div className="flex flex-col items-center gap-[15px]">
-          <div className="w-8 h-8 rounded-full bg-[#a80f21] flex items-center justify-center text-white font-bold">1</div>
-          <div className="text-[#a80f21] text-base font-bold font-['Be Vietnam Pro']">Nhập thông tin</div>
+          <div className={`w-12 h-12 rounded-full ${currentStep >= 1 ? 'bg-[#a80f21]' : '#b1b1b1'} flex items-center justify-center text-white font-bold`}>
+            <img src={Icons.IconBooking1} className="w-8 h-8" />
+          </div>
+          <div className={`text-${currentStep >= 1 ? 'a80f21' : 'b1b1b1'} text-base font-bold font-['Be Vietnam Pro']`}>
+            Nhập thông tin
+          </div>
         </div>
 
         {/* Icon tiến trình */}
-        <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M4.68503 9.913H13.952V8.36399C13.952 7.62399 14.994 7.227 15.659 7.715L21.303 11.851C21.773 12.195 21.773 12.805 21.303 13.149L15.659 17.285C14.994 17.773 13.952 17.377 13.952 16.636V15.087H4.68503C4.11603 15.087 3.65503 14.701 3.65503 14.225V10.775C3.65503 10.299 4.11603 9.913 4.68503 9.913Z" fill="#B1B1B1"/>
-        </svg>
+        {currentStep >=2 ? (
+          <img src={Icons.StepBlack} alt="" />
+        ):(
+          <img src={Icons.StepGray} alt="" />
+        )}
 
         {/* Bước 2: Thanh toán */}
         <div className="flex flex-col items-center gap-[15px]">
-          <div className="w-8 h-8 rounded-full bg-[#b1b1b1] flex items-center justify-center text-white font-bold">2</div>
-          <div className="text-[#b1b1b1] text-base font-bold font-['Be Vietnam Pro']">Thanh toán</div>
+          <div className={`w-12 h-12 rounded-full ${currentStep >= 2 ? 'bg-[#a80f21]' : 'bg-[#b1b1b1]'} flex items-center justify-center text-white font-bold`}>
+            <img src={Icons.IconBooking2} className="w-8 h-8" />
+          </div>
+          <div className={`text-${currentStep >= 2 ? 'a80f21' : 'b1b1b1'} text-base font-bold font-['Be Vietnam Pro']`}>
+            Thanh toán
+          </div>
         </div>
 
         {/* Icon tiến trình */}
-        <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M4.11496 9.913H13.382V8.36399C13.382 7.62399 14.424 7.227 15.089 7.715L20.733 11.851C21.203 12.195 21.203 12.805 20.733 13.149L15.089 17.285C14.424 17.773 13.382 17.377 13.382 16.636V15.087H4.11496C3.54596 15.087 3.08496 14.701 3.08496 14.225V10.775C3.08496 10.299 3.54596 9.913 4.11496 9.913Z" fill="#B1B1B1"/>
-        </svg>
+        {currentStep >=3 ? (
+          <img src={Icons.StepBlack} alt="" />
+        ):(
+          <img src={Icons.StepGray} alt="" />
+        )}
 
         {/* Bước 3: Hoàn tất */}
         <div className="flex flex-col items-center gap-[15px]">
-          <div className="w-8 h-8 rounded-full bg-[#b1b1b1] flex items-center justify-center text-white font-bold">3</div>
-          <div className="text-[#b1b1b1] text-base font-bold font-['Be Vietnam Pro']">Hoàn tất</div>
+          <div className={`w-12 h-12 rounded-full ${currentStep === 3 ? 'bg-[#a80f21]' : 'bg-[#b1b1b1]'} flex items-center justify-center text-white font-bold`}>
+            <img src={Icons.IconBooking3} className="w-8 h-8" />
+          </div>
+          <div className={`text-${currentStep === 3 ? 'a80f21' : 'b1b1b1'} text-base font-bold font-['Be Vietnam Pro']`}>
+            Hoàn tất
+          </div>
         </div>
       </div>
     </div>

@@ -11,17 +11,17 @@ export default function BookingConfirm() {
   const [bookingData, setBookingData] = useState(null);
 
   useEffect(() => {
-    // Gọi API lấy booking mới nhất
-    BookingService.getLatestBooking()
-      .then((response) => {
-        if (response?.data) {
-          setBookingData(response.data);
-        }
-      })
-      .catch((error) => {
-        console.error("Lỗi khi lấy booking mới:", error);
-      });
+    const stored = localStorage.getItem("bookingResult");
+    if (stored) {
+      setBookingData(JSON.parse(stored));
+    }
   }, []);
+
+  if (!bookingData) return <div>Không có dữ liệu xác nhận!</div>;
+  
+  const data = bookingData.data?.data;
+  const passengerData = bookingData.data?.passengers;
+  console.log("Dữ liệu xác nhận:", passengerData);
 
   return (
     <LayoutBookingTour title="Xác nhận tour">
@@ -33,7 +33,7 @@ export default function BookingConfirm() {
             CustomerList
           ].map((Component, index) => (
             <div key={index} className="bg-gray-50 rounded-xl">
-              <Component bookingData={bookingData} />
+              <Component bookingData={data} passengerData={passengerData} />
             </div>
           ))}
         </div>

@@ -1,62 +1,21 @@
 import PassengerInfoForm from "./PassengerInfoForm";
+import { CustomerService } from "@/services/API/customer.service";
 import { StorageService } from "@/services/storage/StorageService";
 import { useEffect, useState } from "react";
-import { CustomerService } from "@/services/API/customer.service";
 
-const ContactForm = ({ onSubmit }) => {
-  const user = StorageService.getUser();
-  const [customers, setCustomers] = useState([]);
-  const [passengers, setPassengers] = useState({
-    adult: 0,
-    child: 0,
-    infant: 0,
-  });
+const ContactForm = ({ formData, setFormData, passengers, setPassengers, user, travelTourData }) => {
   const [passengerData, setPassengerData] = useState([]);
-  const [formData, setFormData] = useState({
-    user_id: user?.id || "",
-    travel_tour_id: "1",
-    number_adult: passengers.adult,
-    number_children: passengers.child,
-    number_newborn: passengers.infant,
-    total_cost: "1500000",
-    name: user?.name || "",
-    phone: user?.phone || "",
-    email: user?.email || "",
-    address: user?.address || "",
-    voucher_id: "3",
-    note: "",
-    passengers: [],
-  });
-
-  useEffect(() => {
-    if (user) {
-      CustomerService.getProfile()
-        .then((response) => {
-          if (response?.data) {
-            setFormData((prev) => ({
-              ...prev,
-              name: response.data.displayName || prev.name,
-              phone: response.data.Customer?.number_phone || prev.phone,
-              email: response.data.email || prev.email,
-              address: response.data.address || prev.address,
-            }));
-          }
-        })
-        .catch((error) => {
-          console.error("Lỗi khi lấy thông tin khách hàng:", error);
-        });
-    }
-  }, [user]);
 
   useEffect(() => {
     setFormData((prev) => ({
       ...prev,
+      travel_tour_id: travelTourData[0]?.id || "",
       number_adult: passengers.adult,
       number_children: passengers.child,
       number_newborn: passengers.infant,
       passengers: passengerData ?? [],
     }));
-  }, [passengers, passengerData]);
+  }, [passengers, passengerData, travelTourData]);
 
   // console.log(formData);
 
@@ -97,7 +56,7 @@ const ContactForm = ({ onSubmit }) => {
   // console.log(passengers);
 
   const handleSubmit = () => {
-    // console.log("Dữ liệu gửi lên backend:", formData);
+    console.log("Dữ liệu gửi lên backend:", formData);
     onSubmit(formData);
   };
 
@@ -215,15 +174,14 @@ const ContactForm = ({ onSubmit }) => {
         ></textarea>
       </div>
 
-      <div>
-        {/* Form nhập thông tin */}
+      {/* <div>
         <button
           onClick={handleSubmit}
           className="mt-4 bg-blue-500 text-white px-4 py-2 rounded"
         >
           Xác nhận thông tin
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };

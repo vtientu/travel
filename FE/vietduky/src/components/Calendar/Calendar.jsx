@@ -1,49 +1,65 @@
-import Icons from "../Icons/Icon";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import "dayjs/locale/vi";
 import { TourService } from "@/services/API/tour.service";
 import { TravelTourService } from "@/services/API/travel_tour.service";
+import { useNavigate } from "react-router-dom";
 
 dayjs.locale("vi");
 
 const Calendar = ({ id }) => {
+  const navigate = useNavigate();
   const [currentDate, setCurrentDate] = useState(dayjs());
   const [viewMode, setViewMode] = useState("calendar");
-  const [selectedDates, setSelectedDates] = useState([]);
+  const [tourDates, setTourDates] = useState({});
+  const [travelTourData, setTravelTourData] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(null);
 
-  const [tourDates, setTourDates] = useState([]);
+  useEffect(() => {
+    const fetchTravelTours = async () => {
+      try {
+        const response = await TravelTourService.getTravelTourByTourId(id);
+        setTravelTourData(response.data);
+      } catch (error) {
+        console.error("Error fetching travel tours:", error);
+      }
+    };
+
+    fetchTravelTours();
+  }, [id]);
 
   useEffect(() => {
     const fetchTourDates = async () => {
-        try {
-          const response = await TravelTourService.getTravelTourByTourId(id);
-          const travelTourData = response.data;
-      
-          if (!Array.isArray(travelTourData)) {
-            console.error("Dữ liệu travelTourData không hợp lệ:", travelTourData);
-            setTourDates({});
-            return;
-          }
-      
-          const formattedTourDates = travelTourData.reduce((acc, tour) => {
-            if (tour.start_time) {
-              const dateStr = dayjs(tour.start_time).format("YYYY-MM-DD");
-              acc[dateStr] = tour.price_tour.toLocaleString("vi-VN", {
-                style: "currency",
-                currency: "VND",
-              });
-            }
-            return acc;
-          }, {});
-      
-          setTourDates(formattedTourDates);
-        } catch (error) {
-          console.error("Error fetching travel tour data:", error);
+      const response = await TravelTourService.getTravelTourByTourId(id);
+      const tour = response.data;
+
+      try {
+        if (!Array.isArray(tour)) {
+          console.error("Dữ liệu tour không hợp lệ:", tour);
+          setTourDates({});
+          return;
         }
-      };
-      
+
+        const formattedTourDates = tour.reduce((acc, tour) => {
+          if (tour.start_time) {
+            const dateStr = dayjs(tour.start_time).format("YYYY-MM-DD");
+            acc[dateStr] = tour.price_tour.toLocaleString("vi-VN");
+          }
+          return acc;
+        }, {});
+
+        setTourDates(formattedTourDates);
+
+        // Tự động chọn ngày tour đầu tiên
+        const firstTourDate = Object.keys(formattedTourDates)[0];
+        if (firstTourDate) {
+          setSelectedDate(firstTourDate);
+        }
+      } catch (error) {
+        console.error("Error fetching travel tour data:", error);
+      }
+    };
 
     fetchTourDates();
   }, [id]);
@@ -56,19 +72,10 @@ const Calendar = ({ id }) => {
     return startOfMonth.subtract(startDay, "day").add(index, "day");
   });
 
-  const startYear = Math.floor(currentDate.year() / 16) * 16;
-  const years = Array.from({ length: 16 }, (_, i) => startYear + i);
-  const months = Array.from({ length: 12 }, (_, i) =>
-    dayjs().month(i).format("MMMM")
-  );
-
   const handlePrev = () => {
-    if (viewMode === "calendar")
-      setCurrentDate(currentDate.subtract(1, "month"));
-    else if (viewMode === "month")
-      setCurrentDate(currentDate.subtract(1, "year"));
-    else if (viewMode === "year")
-      setCurrentDate(currentDate.subtract(16, "year"));
+    if (viewMode === "calendar") setCurrentDate(currentDate.subtract(1, "month"));
+    else if (viewMode === "month") setCurrentDate(currentDate.subtract(1, "year"));
+    else if (viewMode === "year") setCurrentDate(currentDate.subtract(16, "year"));
   };
 
   const handleNext = () => {
@@ -78,11 +85,30 @@ const Calendar = ({ id }) => {
   };
 
   const toggleDateSelection = (dateStr) => {
-    setSelectedDates((prev) =>
-      prev.includes(dateStr)
-        ? prev.filter((date) => date !== dateStr)
-        : [...prev, dateStr]
+    // Chỉ cho phép chọn một ngày
+    if (selectedDate === dateStr) {
+      setSelectedDate(null); // Bỏ chọn nếu đã chọn ngày này
+    } else {
+      setSelectedDate(dateStr); // Chọn ngày mới
+    }
+  };
+
+  const handleBooking = async () => {
+    if (!selectedDate) {
+      alert("Vui lòng chọn ngày khởi hành trước khi đặt tour.");
+      return;
+    }
+
+    const selectedTours = travelTourData.filter((tour) =>
+      selectedDate === dayjs(tour.start_time).format("YYYY-MM-DD")
     );
+
+    if (selectedTours.length === 0) {
+      alert("Không tìm thấy tour nào phù hợp.");
+      return;
+    }
+
+    navigate("/booking/" + id, { state: { selectedTours, id } });
   };
 
   return (
@@ -145,26 +171,20 @@ const Calendar = ({ id }) => {
                 {days.map((date, i) => {
                   const dateStr = date.format("YYYY-MM-DD");
                   const isTourDate = tourDates[dateStr];
-                  const isSelected = selectedDates.includes(dateStr);
+                  const isSelected = selectedDate === dateStr;
                   const isCurrentMonth = date.month() === currentDate.month();
                   return (
                     <div
                       key={i}
                       className={`h-16 w-16 flex flex-col items-center justify-center rounded-md cursor-pointer transition duration-300 
-                        ${
-                          isTourDate ? "border border-red-500 text-red-500" : ""
-                        } 
+                        ${isTourDate ? "border border-red-500 text-red-500" : ""}
                         ${isSelected ? "bg-red-700 text-white" : "bg-white"}
                         ${!isCurrentMonth ? "text-gray-400" : "text-black"}`}
                       onClick={() => isTourDate && toggleDateSelection(dateStr)}
                     >
-                      <span className="text-sm font-semibold">
-                        {date.date()}
-                      </span>
+                      <span className="text-sm font-semibold">{date.date()}</span>
                       {isTourDate && (
-                        <span className="text-xs font-medium">
-                          {tourDates[dateStr]}
-                        </span>
+                        <span className="text-xs font-medium">{tourDates[dateStr]}</span>
                       )}
                     </div>
                   );
@@ -173,6 +193,7 @@ const Calendar = ({ id }) => {
             </div>
           )}
 
+          {/* Month and Year View */}
           {viewMode === "month" && (
             <div className="grid grid-cols-4 gap-2 mt-2">
               {months.map((month, index) => (
@@ -218,8 +239,8 @@ const Calendar = ({ id }) => {
 
         {/* Button */}
         {viewMode === "calendar" && (
-          <button className="bg-orange-500 text-white font-bold w-full mt-4 py-4 rounded hover:bg-orange-600">
-            Đặt Tour ({selectedDates.length} ngày)
+          <button onClick={handleBooking} className="bg-orange-500 text-white font-bold w-full mt-4 py-4 rounded hover:bg-orange-600">
+            Đặt Tour
           </button>
         )}
       </div>
