@@ -32,9 +32,9 @@ export const BookingService = {
         });
       },
       
-    updateBooking: (data) => {
+    updateBooking: (data, id) => {
         return restClient({
-            url: "booking",
+            url: `booking/${id}`,
             method: "PUT",
             data,
             headers: {
@@ -51,13 +51,5 @@ export const BookingService = {
             },
         });
     },
-    getLatestBooking: () => {
-        return restClient({
-            url: "booking/latest",
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${StorageService.getToken()}`,
-            },
-        });
-    },
+
 };

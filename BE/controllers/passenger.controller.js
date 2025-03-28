@@ -1,5 +1,6 @@
 const db = require("../models");
 const Passenger = db.Passenger;
+const Booking = db.Booking;
 
 // Tạo hành khách mới
 exports.createPassenger = async (req, res) => {
@@ -8,7 +9,7 @@ exports.createPassenger = async (req, res) => {
         if (!name || !birth_date || !gender || !phone_number || !passport_number || !booking_id) {
             return res.status(400).json({ message: "Missing required fields" });
         }
-        const existingBooking = await Booking.findByPk(booking_id);
+        const existingBooking = await db.Booking.findByPk(booking_id);
         if (!existingBooking) {
             return res.status(404).json({ message: "Booking not found" });
         }
