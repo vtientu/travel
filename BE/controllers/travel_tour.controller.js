@@ -4,6 +4,41 @@ const TravelTour = db.TravelTour;
 //Lấy tất cả dữ liệu trong bảng travel tour
 exports.getAllTravelTours = async (req, res) => {
   try {
+    const filter = req.params.filter;
+    // if (filter == 'about') {
+    //   const travelTours = await TravelTour.findAll({  
+    //     where: {
+    //       status: 1,
+    //       start_time: {
+    //         [Op.lt]: new Date()
+    //       }
+    //     }
+    //   });
+
+    // }
+    // if (filter == 'now') {
+    //   const travelTours = await TravelTour.findAll({    
+    //     where: {
+    //       status: 1,
+    //       start_time: {
+    //         [Op.lt]: new Date()
+    //       }
+    //     }
+    //   });
+    // }
+    // if (filter == 'finish') {
+    //   const travelTours = await TravelTour.findAll({
+    //     where: {
+    //       status: 2,
+    //       end_time: {
+    //         [Op.lt]: new Date()
+    //       }
+    //     }
+    //   });
+    // }
+    // else {
+    //   const travelTours = await TravelTour.findAll();
+    // }
     const travelTours = await TravelTour.findAll();
     res.json({ travelTours });
   } catch (error) {
@@ -67,6 +102,23 @@ exports.createTravelTour = async (req, res) => {
       price_tour,
       max_people,
     };
+    const Tour = await db.Tour.findByPk(tour_id);
+    if (!Tour) {
+      return res.status(404).json({ message: "Tour not found!" });
+    }
+    if (start_time < Date.now()) {
+      return res.status(400).json({ message: "Start time must be in the future!" });
+    }
+    if (end_time < start_time) {
+      return res.status(400).json({ message: "End time must be after start time!" });
+    }
+    if (price_tour < 0) {
+      return res.status(400).json({ message: "Price must be > 0!" });
+    }
+    if (max_people < 0) {
+      return res.status(400).json({ message: "People must be > 0!" });
+    }
+    
 
     const newTravelTour = await db.TravelTour.create(data);
     res.json({
