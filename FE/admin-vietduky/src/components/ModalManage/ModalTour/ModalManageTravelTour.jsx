@@ -130,11 +130,24 @@ export default function ModalManageTravelTour({ tourId, onClose }) {
                             <td className="p-2">{travelTour.max_people}</td>
                             <td className="p-2 text-RedPrice">{travelTour.price_tour.toLocaleString("vi-VN")} VNĐ</td>
                             <td className="flex justify-end p-2 relative">
-                              {/* dropdown actions */}
+                              <button onClick={() => toggleDropdown(index)} className="relative">
+                                <HiOutlineDotsHorizontal className="text-xl cursor-pointer" />
+                              </button>
+                              {openDropdown === index && (
+                                  <div className="absolute right-0 mt-2 w-48 bg-white shadow-md rounded-md z-10">
+                                    <button className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left whitespace-nowrap">
+                                      <MdEdit className="mr-2 text-gray-700" /> Cập nhật hành trình
+                                    </button>
+                                    <button onClick={() => handleDeleteTravelTour(index)} className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left text-red-600 whitespace-nowrap">
+                                      <MdDelete className="mr-2" /> Xóa hành trình
+                                    </button>
+                                  </div>
+                              )}
                             </td>
                           </tr>
                       );
-                    })}                    </tbody>
+                    })}
+                    </tbody>
                   </table>
                 </div>
             )}
