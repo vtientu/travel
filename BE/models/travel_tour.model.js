@@ -27,6 +27,10 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.INTEGER,
         allowNull: true,
       },
+      status: {
+        type: Sequelize.INTEGER, // 0: Chưa có người nhận, 1: Đã có người nhận, 2: Đã hoàn thành, 3: Đã hủy
+        allowNull: true,
+      },
     },
     {
       tableName: "travel_tour", // Tên bảng trong MySQL
