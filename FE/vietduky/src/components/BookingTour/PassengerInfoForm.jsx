@@ -7,6 +7,7 @@ import Icons from "../Icons/Icon";
 const PassengerInfoForm = ({ passengers, onPassengerDataChange }) => {
   const [passengerData, setPassengerData] = useState([]);
   const [assistance, setAssistance] = useState(false);
+  const [manualPassenger, setManualPassenger] = useState([false]);
 
   const groupedPassengers = passengerData.reduce((acc, passenger) => {
     if (!acc[passenger.type]) {
@@ -50,6 +51,7 @@ const PassengerInfoForm = ({ passengers, onPassengerDataChange }) => {
             phone: "",
             gender: "",
             birthdate: "",
+            passport: "",
             singleRoom: false,
           });
         }
@@ -99,46 +101,73 @@ const PassengerInfoForm = ({ passengers, onPassengerDataChange }) => {
   const handleFileUpload = (event) => {
     const file = event.target.files[0];
     if (!file) return;
-
+  
     const reader = new FileReader();
     reader.readAsBinaryString(file);
-
+  
     reader.onload = (e) => {
       const workbook = XLSX.read(e.target.result, { type: "binary" });
       const sheetName = workbook.SheetNames[0];
       const sheet = workbook.Sheets[sheetName];
       const data = XLSX.utils.sheet_to_json(sheet);
-
+  
       const formattedData = data.map((row, index) => {
         const birthdate = row["Ngày sinh"]
           ? excelDateToJSDate(row["Ngày sinh"])
           : "";
         const age = birthdate ? calculateAge(birthdate) : null;
-
+  
         let type = "adult"; // Mặc định là người lớn
         if (age !== null) {
           if (age < 5) type = "infant";
           else if (age < 12) type = "child";
         }
-
+  
         return {
-          id: `passenger-${Date.now()}-${index}`, // Đảm bảo id là duy nhất
+          id: `${type}-${index}-${Date.now()}`, // Đảm bảo id là duy nhất
           name: row["Họ tên"] || "",
           phone: row["Số điện thoại"] || "",
           gender: row["Giới tính"]?.toLowerCase() === "nữ" ? "false" : "true",
+          passport: row["CCCD/Hộ chiếu"] || "",
           birthdate,
           age,
           type,
+          label:
+            type === "adult"
+              ? "Người lớn"
+              : type === "child"
+              ? "Trẻ em"
+              : "Em bé",
+          desc:
+            type === "adult"
+              ? "Từ 12 trở lên"
+              : type === "child"
+              ? "Từ 5 - 11 tuổi"
+              : "Dưới 2 tuổi",
           singleRoom: false,
         };
       });
-
-      setPassengerData((prev) => [...prev, ...formattedData]);
-      // console.log("Dữ liệu sau khi tải lên:", formattedData);
+  
+      // Cập nhật passengerData
+      setPassengerData((prev) => {
+        const combinedPassengers = [...prev, ...formattedData];
+  
+        // Tính toán số lượng hành khách cho từng loại
+        const passengerCounts = {
+          adult: combinedPassengers.filter((p) => p.type === "adult").length,
+          child: combinedPassengers.filter((p) => p.type === "child").length,
+          infant: combinedPassengers.filter((p) => p.type === "infant").length,
+        };
+  
+        // Cập nhật state passengers
+        onPassengerDataChange(passengerCounts);
+  
+        return combinedPassengers;
+      });
     };
   };
 
-  // console.log("Dữ liệu hành khách:", passengerData);
+  console.log("Dữ liệu hành khách:", passengerData);
 
   return (
     <div className="space-y-6">
@@ -186,8 +215,8 @@ const PassengerInfoForm = ({ passengers, onPassengerDataChange }) => {
 
       {Object.entries(groupedPassengers).map(([type, group]) => (
         <div key={type} className="space-y-4">
-          <h3 className="font-bold">
-            <span className="font-bold">{group.label}</span>
+          <h3>
+            <span className="font-bold">{group.label}</span>{" "}
             <span>({group.desc})</span>
           </h3>
 
@@ -207,6 +236,7 @@ const PassengerInfoForm = ({ passengers, onPassengerDataChange }) => {
                     }
                     placeholder="Liên hệ"
                     className="w-full p-2 rounded-md text-sm outline-none"
+                    required
                   />
                 </div>
 
@@ -238,6 +268,7 @@ const PassengerInfoForm = ({ passengers, onPassengerDataChange }) => {
                     }
                     className="w-full p-2 text-sm outline-none focus:border-black transition-all bg-transparent appearance-none pr-6 bg-no-repeat bg-right text-gray-400"
                     style={{ appearance: "none" }}
+                    required
                   >
                     <option value="" disabled hidden>
                       Chọn giới tính
@@ -270,10 +301,28 @@ const PassengerInfoForm = ({ passengers, onPassengerDataChange }) => {
                     }
                     placeholder="Chọn ngày sinh"
                     className="w-full p-2 text-sm outline-none focus:border-black transition-all bg-transparent"
+                    required
                   />
                 </div>
 
-                {type === "adult" && (
+                <div className="border-gray-300">
+                  <label className="text-sm font-semibold block mb-1">
+                    CCCD/Passport
+                  </label>
+                  <input
+                    type="text"
+                    name="passport"
+                    value={passenger.passport}
+                    onChange={(e) =>
+                      handleChangeInput(passenger.id, "passport", e.target.value)
+                    }
+                    placeholder="CCCD/Passport"
+                    className="w-full p-2 rounded-md text-sm outline-none"
+                    required
+                  />
+                </div>
+
+                {/* {type === "adult" && (
                   <div className="flex flex-col gap-2">
                     <label className="text-sm font-semibold">Phòng đơn</label>
 
@@ -316,7 +365,7 @@ const PassengerInfoForm = ({ passengers, onPassengerDataChange }) => {
                       </span>
                     </div>
                   </div>
-                )}
+                )} */}
               </div>
             </div>
           ))}

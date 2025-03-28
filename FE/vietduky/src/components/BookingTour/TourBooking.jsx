@@ -77,7 +77,7 @@ const TourBooking = ({ formData, setFormData, tourId, travelTour }) => {
     }));
   }, [totalPrice]);
 
-  console.log("Dữ liệu booking:", formData);
+  // console.log("Dữ liệu booking:", formData);
 
   return (
     <div className="flex flex-col items-end gap-4">

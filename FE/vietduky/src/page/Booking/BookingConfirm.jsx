@@ -21,7 +21,7 @@ export default function BookingConfirm() {
   
   const data = bookingData.data?.data;
   const passengerData = bookingData.data?.passengers;
-  console.log("Dữ liệu xác nhận:", passengerData);
+  // console.log("Dữ liệu xác nhận:", passengerData);
 
   return (
     <LayoutBookingTour title="Xác nhận tour">
@@ -39,7 +39,7 @@ export default function BookingConfirm() {
         </div>
 
         <div className="w-1/3 bg-white rounded-xl">
-          <BookingConfirmation bookingData={bookingData} />
+          <BookingConfirmation bookingData={data} />
         </div>
       </div>
     </LayoutBookingTour>

@@ -22,7 +22,7 @@ const BookingHeader = () => {
   const currentStep = getCurrentStep();
 
   return (
-    <div className="w-full flex flex-col items-center py bg-white ">
+    <div className="w-full flex flex-col items-center bg-white ">
       {/* Header Title */}
       <div className="relative w-[90rem] h-[65px] gap-[1.5rem] flex items-center justify-between">
         {/* Nút Quay lại */}

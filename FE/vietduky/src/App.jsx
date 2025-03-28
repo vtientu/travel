@@ -1,6 +1,6 @@
 import "./App.css";
 import Calendar from "./components/Calendar/Calendar";
-import PaymentForm from "./components/CreditCard/CreditCardForm.jsx";
+import PaymentForm from "./components/Payment/CreditCardForm.jsx";
 import GoogleAuthCallback from "./components/GoogleAuthCallback";
 import ProtectedRoute from "./components/PrivateRouter";
 import ScrollToTop from "./components/ScrollToTop/ScrollToTop";

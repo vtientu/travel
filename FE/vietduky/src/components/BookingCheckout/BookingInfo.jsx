@@ -1,6 +1,14 @@
+import { formatDate } from '@/utils/dateUtil';
 import React from 'react';
 
 const BookingInfo = ({ bookingData }) => {
+  const getPaymentDeadline = (bookingDate) => {
+    const bookingDateObj = new Date(bookingDate);
+    const paymentDeadline = new Date(bookingDateObj);
+    paymentDeadline.setDate(bookingDateObj.getDate() + 15);
+    return paymentDeadline.toLocaleDateString("vi-VN");
+  };
+
   return (
     <div className="p-6 bg-[#f8f8f8] rounded-lg border border-gray-300 shadow-md">
       <div className="text-[#d80027] text-lg font-bold">Chi tiết booking</div>
@@ -9,11 +17,11 @@ const BookingInfo = ({ bookingData }) => {
       <div className="space-y-4">
         <div className="flex justify-between">
           <div className="text-gray-900 font-bold">Mã đặt chỗ:</div>
-          <div className="text-[#e01600] font-bold">{bookingData?.bookingCode || "N/A"}</div>
+          <div className="text-[#e01600] font-bold">{bookingData?.booking_code || "N/A"}</div>
         </div>
         <div className="flex justify-between">
           <div className="text-gray-900 font-bold">Ngày tạo:</div>
-          <div className="text-gray-900 font-bold">{bookingData?.createdAt || "N/A"}</div>
+          <div className="text-gray-900 font-bold">{formatDate(bookingData?.booking_date) || "N/A"}</div>
         </div>
         <div className="flex justify-between">
           <div className="text-gray-900 font-bold">Trị giá booking:</div>
@@ -38,7 +46,7 @@ const BookingInfo = ({ bookingData }) => {
           <div className="flex justify-between">
             <div className="text-gray-900 font-bold">Thời hạn thanh toán:</div>
             <div>
-              <span className="text-[#e01600] font-bold">27/02/2025 23:50</span>
+              <span className="text-[#e01600] font-bold">{getPaymentDeadline(bookingData?.booking_date)}</span>
               <span className="text-gray-900 font-bold"> -</span>
             </div>
           </div>

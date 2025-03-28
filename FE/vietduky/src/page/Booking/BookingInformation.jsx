@@ -35,7 +35,7 @@ export default function BookingTour() {
     });
     
   // console.log("BookingTour:", selectedTours, id);
-  console.log("Dữ liệu tour:", travelTourData);
+  // console.log("Dữ liệu tour:", travelTourData);
   
   console.log("Dữ liệu đặt tour:", formData);
   

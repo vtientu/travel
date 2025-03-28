@@ -21,6 +21,9 @@ import IconBook2 from "@/assets/icons/ic-bk-2.svg";
 import IconBook3 from "@/assets/icons/ic-bk-3.svg";
 import StepBlack from "@/assets/icons/step.svg";
 import StepGray from "@/assets/icons/step-gray.svg";
+import BankTransfer from "@/assets/icons/bank-transfer.svg";
+import CreditCard from "@/assets/icons/credit-card.svg";
+import QrCode from "@/assets/icons/qr-code.svg";
 
 const Icons = {
   Sidebar: barChartIcon,
@@ -46,6 +49,9 @@ const Icons = {
   IconBooking3: IconBook3,
   StepBlack: StepBlack,
   StepGray: StepGray,
+  BankTransfer: BankTransfer,
+  CreditCard: CreditCard,
+  QrCode: QrCode,
 };
 
 export default Icons;

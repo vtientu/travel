@@ -11,6 +11,15 @@ export const BookingService = {
             },
         });
     },
+    getBookingById: (id) => {
+        return restClient({
+            url: `booking/${id}`,
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${StorageService.getToken()}`,
+            },
+        });
+    },
     createBooking: (data) => {
         return restClient({
           url: "booking/create",

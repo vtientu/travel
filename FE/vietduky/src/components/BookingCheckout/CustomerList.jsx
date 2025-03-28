@@ -1,17 +1,41 @@
 import { useState } from "react";
 
-export default function CustomerList({ passengerData }) {
+export default function CustomerList({ passengerData, bookingData }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [passengerList, setPassengerList] = useState(passengerData);
 
   const toggleList = () => setIsExpanded(!isExpanded);
 
+  // Hàm tính tuổi
+  const calculateAge = (birthDate) => {
+    const birth = new Date(birthDate);
+    const today = new Date();
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birth.getDate())
+    ) {
+      age--;
+    }
+    return age;
+  };
+
   return (
     <div className="border border-gray-400 rounded-lg overflow-hidden">
       {/* Header */}
-      <div className="h-18 px-8 py-5 bg-[#f8f8f8] flex justify-between items-center cursor-pointer" onClick={toggleList}>
-        <div className="text-[#a80f21] text-lg font-bold">DANH SÁCH KHÁCH HÀNG</div>
-        <div className={`transition-transform duration-300 ${isExpanded ? "rotate-180" : ""}`}>
+      <div
+        className="h-18 px-8 py-5 bg-[#f8f8f8] flex justify-between items-center cursor-pointer"
+        onClick={toggleList}
+      >
+        <div className="text-[#a80f21] text-lg font-bold">
+          DANH SÁCH KHÁCH HÀNG
+        </div>
+        <div
+          className={`transition-transform duration-300 ${
+            isExpanded ? "rotate-180" : ""
+          }`}
+        >
           <svg
             width="24"
             height="24"
@@ -39,9 +63,15 @@ export default function CustomerList({ passengerData }) {
               className="border rounded px-3 py-1 w-1/3"
             />
             <div className="space-x-2">
-              <button className="px-3 py-1 border border-red-500 text-red-600 rounded hover:bg-red-100">Xuất danh sách</button>
-              <button className="px-3 py-1 border border-red-500 text-red-600 rounded hover:bg-red-100">Đăng tải danh sách</button>
-              <button className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700">Thêm khách hàng</button>
+              <button className="px-3 py-1 border border-red-500 text-red-600 rounded hover:bg-red-100">
+                Xuất danh sách
+              </button>
+              <button className="px-3 py-1 border border-red-500 text-red-600 rounded hover:bg-red-100">
+                Đăng tải danh sách
+              </button>
+              <button className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700">
+                Thêm khách hàng
+              </button>
             </div>
           </div>
 
@@ -57,24 +87,22 @@ export default function CustomerList({ passengerData }) {
               </tr>
             </thead>
             <tbody>
-              {/* Mẫu dữ liệu demo */}
-              <tr>
-                <td className="p-2 border">Phạm Đức Mạnh</td>
-                <td className="p-2 border">0705897004</td>
-                <td className="p-2 border">Nam</td>
-                <td className="p-2 border">21/06/2002</td>
-                <td className="p-2 border">Người lớn</td>
-                <td className="p-2 border text-center"><input type="checkbox" /></td>
-              </tr>
-              <tr>
-                <td className="p-2 border">Dương Thế Toàn</td>
-                <td className="p-2 border">0123456789</td>
-                <td className="p-2 border">Nam</td>
-                <td className="p-2 border">21/06/2002</td>
-                <td className="p-2 border">Người lớn</td>
-                <td className="p-2 border text-center"><input type="checkbox" checked readOnly /></td>
-              </tr>
-              {/* Thêm các dòng khác nếu cần */}
+              {passengerList.map((passenger, index) => (
+                <tr key={index}>
+                  <td className="p-2 border">{passenger.name}</td>
+                  <td className="p-2 border">{passenger.phone_number}</td>
+                  <td className="p-2 border">
+                    {passenger.gender === "true" ? "Nam" : "Nữ"}
+                  </td>
+                  <td className="p-2 border">{passenger.birth_date}</td>
+                  <td className="p-2 border">
+                    {calculateAge(passenger.birth_date)}
+                  </td>
+                  <td className="p-2 border text-center">
+                    <input type="checkbox" />
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

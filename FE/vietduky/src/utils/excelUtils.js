@@ -3,7 +3,7 @@ import { saveAs } from "file-saver";
 
 export const exportTemplate = () => {
   const worksheet = XLSX.utils.json_to_sheet([
-    { "Họ tên": "", "Số điện thoại": "", "Giới tính": "", "Ngày sinh": "" },
+    { "Họ tên": "", "Số điện thoại": "", "Giới tính": "", "Ngày sinh": "", "CCCD/Hộ chiếu": "" },
   ]);
 
   const workbook = XLSX.utils.book_new();

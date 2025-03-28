@@ -7,17 +7,21 @@ const ContactForm = ({ formData, setFormData, passengers, setPassengers, user, t
   const [passengerData, setPassengerData] = useState([]);
 
   useEffect(() => {
+    const adults = passengerData.filter((p) => p.type === "adult").length;
+    const children = passengerData.filter((p) => p.type === "child").length;
+    const infants = passengerData.filter((p) => p.type === "infant").length;
+
     setFormData((prev) => ({
       ...prev,
       travel_tour_id: travelTourData[0]?.id || "",
-      number_adult: passengers.adult,
-      number_children: passengers.child,
-      number_newborn: passengers.infant,
+      number_adult: adults + passengers.adult,
+      number_children: children + passengers.child,
+      number_newborn: infants + passengers.infant,
       passengers: passengerData ?? [],
     }));
   }, [passengers, passengerData, travelTourData]);
 
-  // console.log(formData);
+  console.log(formData);
 
   const handlePassengerDataChange = (data) => {
     // console.log("Received new passengerData:", data);
@@ -33,10 +37,13 @@ const ContactForm = ({ formData, setFormData, passengers, setPassengers, user, t
       birth_date: p.birthdate || "",
       gender: p.gender || "",
       phone_number: p.phone || "",
+      passport_number: p.passport || "",
     }));
 
     setPassengerData(formattedPassengers);
   };
+
+    // console.log(passengers);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -53,12 +60,8 @@ const ContactForm = ({ formData, setFormData, passengers, setPassengers, user, t
     }));
   };
 
-  // console.log(passengers);
-
-  const handleSubmit = () => {
-    console.log("Dữ liệu gửi lên backend:", formData);
-    onSubmit(formData);
-  };
+  console.log("Hành khách", passengers);
+  
 
   return (
     <div className="flex flex-col gap-4 p-4">
@@ -111,6 +114,20 @@ const ContactForm = ({ formData, setFormData, passengers, setPassengers, user, t
             value={formData.email}
             onChange={handleInputChange}
             placeholder="Nhập email"
+            className="w-full py-2 rounded outline-none"
+            required
+          />
+        </div>
+        <div>
+          <label className="block font-bold after:content-['*'] after:text-red-500 after:ml-1">
+            Số CCCD/Passport
+          </label>
+          <input
+            type="text"
+            name="passport"
+            // value={formData.passport}
+            // onChange={handleInputChange}
+            placeholder="Nhập số CCCD/Passport"
             className="w-full py-2 rounded outline-none"
             required
           />
