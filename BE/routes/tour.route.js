@@ -30,8 +30,8 @@ router.get(
 
 router.post(
   "/create",
-  authenticateUser,
-  authenticateAdmin,
+  // authenticateUser,
+  // authenticateAdmin,
   uploadTourImage.single("image"),
   tourController.createTour
 );
@@ -39,8 +39,8 @@ router.post(
 router.put(
   "/update/:id",
   uploadTourImage.single("image"),
-  authenticateUser,
-  authenticateAdmin,
+  // authenticateUser,
+  // authenticateAdmin,
   tourController.updateTourById
 );
 
