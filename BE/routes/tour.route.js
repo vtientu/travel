@@ -13,32 +13,23 @@ router.get(
   "/get-by-location-id/:locationId",
   tourController.getTourByLocationId
 );
-router.get(
-  "/:id/activities",
-  tourController.getTourActivities
-);
+router.get("/:id/activities", tourController.getTourActivities);
 
-router.get(
-  "/",
-  tourController.getAllTours
-);
+router.get("/", tourController.getAllTours);
 
-router.get(
-  "/:id",
-  tourController.getTourById
-);
+router.get("/:id", tourController.getTourById);
 
 router.post(
   "/create",
   // authenticateUser,
   // authenticateAdmin,
-  uploadTourImage.single("image"),
+  uploadTourImage.array("image"),
   tourController.createTour
 );
 
 router.put(
   "/update/:id",
-  uploadTourImage.single("image"),
+  uploadTourImage.array("image"),
   // authenticateUser,
   // authenticateAdmin,
   tourController.updateTourById
