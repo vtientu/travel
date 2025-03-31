@@ -1,7 +1,9 @@
 import "./App.css";
+import { Bounce, ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Calendar from "./components/Calendar/Calendar";
-import PaymentForm from "./components/Payment/CreditCardForm.jsx";
 import GoogleAuthCallback from "./components/GoogleAuthCallback";
+import PaymentForm from "./components/Payment/CreditCardForm.jsx";
 import ProtectedRoute from "./components/PrivateRouter";
 import ScrollToTop from "./components/ScrollToTop/ScrollToTop";
 import LayoutLandingPage from "./layouts/LayoutLandingPage.jsx";
@@ -21,6 +23,19 @@ function App() {
   return (
     <BrowserRouter>
       <ScrollToTop />
+      <ToastContainer
+        position="bottom-right"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+        transition={Bounce}
+      />
       <Routes>
         <Route path={"/"} element={<LayoutLandingPage />} />
         <Route path="/auth/callback" element={<GoogleAuthCallback />} />

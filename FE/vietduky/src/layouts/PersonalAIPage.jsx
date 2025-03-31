@@ -3,7 +3,7 @@ import Header from "../components/Header/Header.jsx";
 import Footer from "../components/Footer/Footer.jsx";
 import {useNavigate} from "react-router-dom";
 import PromotionalProgram from "../components/Landing/PromotionalProgram.jsx";
-import ExpireTour from "../components/Landing/ExpireTour.jsx";
+import ExpireTour from "../components/Landing/ExpireTour/ExpireTour.jsx";
 import FeaturedTour from "../components/Landing/FeaturedTour.jsx";
 import LocationVN from "../components/Landing/LocationVN.jsx";
 
