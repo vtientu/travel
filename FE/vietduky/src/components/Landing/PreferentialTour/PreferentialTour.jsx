@@ -1,4 +1,5 @@
-import ExpireTourCard from "./ExpireTourCard";
+import PreferentialTourCard from "./PreferentialTourCard";
+import React from "react";
 
 const tours = [
   {
@@ -12,6 +13,7 @@ const tours = [
     seatsLeft: 14,
     originalPrice: "9.900.000 VNĐ",
     discountPrice: "5.900.000 VNĐ",
+    type_tour: "Tiêu chuẩn",
   },
   {
     id: 2,
@@ -24,6 +26,7 @@ const tours = [
     seatsLeft: 14,
     originalPrice: "9.900.000 VNĐ",
     discountPrice: "5.900.000 VNĐ",
+    type_tour: "Tiêu chuẩn",
   },
   {
     id: 3,
@@ -36,6 +39,7 @@ const tours = [
     seatsLeft: 14,
     originalPrice: "9.900.000 VNĐ",
     discountPrice: "5.900.000 VNĐ",
+    type_tour: "Tiết kiệm",
   },
   {
     id: 4,
@@ -48,6 +52,7 @@ const tours = [
     seatsLeft: 14,
     originalPrice: "9.900.000 VNĐ",
     discountPrice: "5.900.000 VNĐ",
+    type_tour: "Cao cấp",
   },
   {
     id: 5,
@@ -60,6 +65,7 @@ const tours = [
     seatsLeft: 14,
     originalPrice: "9.900.000 VNĐ",
     discountPrice: "5.900.000 VNĐ",
+    type_tour: "Cao cấp",
   },
   {
     id: 6,
@@ -72,23 +78,26 @@ const tours = [
     seatsLeft: 14,
     originalPrice: "9.900.000 VNĐ",
     discountPrice: "5.900.000 VNĐ",
+    type_tour: "Cao cấp",
   },
 ];
-export default function ExpireTour() {
+
+const PreferentialTour = () => {
   return (
-    <div className="bg-[#FEEEC759]">
+    <div className="bg-white">
       <div className="py-10 w-4/5 mx-auto relative p-6 ">
         <div className="flex flex-col">
-          <p className="text-3xl font-bold text-[#A80F21]">Ưu đãi phút chót</p>
-          <p className="text-zinc-900 mt-2">
-            Hãy nhanh tay nắm bắt cơ hội giảm giá cuối cùng.
+          <p className="text-3xl font-bold text-[#A80F21]">
+            Ưu đãi nhất hôm nay
           </p>
+          <p className="text-zinc-900 mt-2">Nhanh Tay Đặt Ngay. Để Mai Sẽ Lỡ</p>
           <div className="w-1/5 h-1 bg-red-800 rounded-sm mt-2" />
         </div>
         <div className="flex flex-wrap justify-between gap-12 mt-6 mx-auto">
           {tours.map((tour) => (
-            <div className="box-border" key={tour.id}>
-              <ExpireTourCard {...tour} />
+            <div className="relative box-border" key={tour.id}>
+              
+              <PreferentialTourCard {...tour} />
             </div>
           ))}
         </div>
@@ -100,4 +109,6 @@ export default function ExpireTour() {
       </div>
     </div>
   );
-}
+};
+
+export default PreferentialTour;

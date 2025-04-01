@@ -1,3 +1,4 @@
+import PreferentialTour from "@/components/Landing/PreferentialTour/PreferentialTour";
 import Footer from "../components/Footer/Footer";
 import Header from "../components/Header/Header";
 import ExpireTour from "../components/Landing/ExpireTour/ExpireTour.jsx";
@@ -37,7 +38,10 @@ export default function LayoutLandingPage() {
       </div>
 
       {/* Chương trình khuyến mại */}
-      <PromotionSection />
+      {/* <PromotionSection /> */}
+
+      {/* Tour ưu đãi đặc biệt */}
+      <PreferentialTour />
 
       {/* Chương trình khuyến mại */}
       <ExpireTour />

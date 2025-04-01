@@ -1,29 +1,53 @@
 import Icons from "@/components/Icons/Icon";
+import { formatDate } from "@/utils/dateUtil";
 import { useState, useEffect } from "react";
-import { FaHeart } from "react-icons/fa";
 
-const ExpireTourCard = ({ title, duration, seatsLeft, originalPrice, discountPrice}) => {
-  const [timeLeft, setTimeLeft] = useState("14:15:04");
+const ExpireTourCard = ({
+  title,
+  duration,
+  seatsLeft,
+  start_time,
+  end_time,
+  originalPrice,
+  discountPrice,
+}) => {
+  const [timeLeft, setTimeLeft] = useState(3600); // 1 giờ = 3600 giây
 
   useEffect(() => {
     const interval = setInterval(() => {
-      const now = new Date();
-      setTimeLeft(now.toLocaleTimeString());
+      setTimeLeft((prevTime) => {
+        if (prevTime <= 0) {
+          clearInterval(interval);
+          return 0; // Dừng lại khi thời gian hết
+        }
+        return prevTime - 1; // Giảm 1 giây
+      });
     }, 1000);
 
-    return () => clearInterval(interval);
+    return () => clearInterval(interval); // Dọn dẹp interval khi component unmount
   }, []);
+
+  // Chuyển đổi giây thành định dạng hh:mm:ss
+  const formatTime = (seconds) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
+      2,
+      "0"
+    )}:${String(secs).padStart(2, "0")}`;
+  };
 
   return (
     <div className="w-96 px-2 py-3 bg-white rounded-2xl flex flex-col gap-2 shadow">
       {/* Hình ảnh + Thời gian */}
-      <div className="relative h-48 rounded-2xl overflow-hidden">
+      <div className="relative h-60 rounded-2xl overflow-hidden">
         <img
           src="https://pos.nvncdn.com/d75ecc-146199/art/artCT/20230807_oG6YHK3q.jpeg"
           alt="Tour"
           className="w-full h-full object-cover rounded-2xl"
         />
-        <button className="absolute top-2 left-2 rounded-full shadow">
+        <button className="absolute top-3 left-3 rounded-full shadow">
           <img src={Icons.Heart} alt="Heart" className="w-9 h-9" />
         </button>
 
@@ -33,14 +57,12 @@ const ExpireTourCard = ({ title, duration, seatsLeft, originalPrice, discountPri
         </div>
 
         <div className="absolute bottom-3 right-3 bg-white px-3 py-2 rounded-[5px] text-red-800 text-sm font-bold shadow">
-          {timeLeft}
+          {formatTime(timeLeft)}
         </div>
       </div>
 
       {/* Tiêu đề */}
-      <h3 className="text-sky-900 text-sm font-bold leading-tight">
-        {title}
-      </h3>
+      <h3 className="text-sky-900 text-sm font-bold leading-tight">{title}</h3>
 
       {/* Thông tin tour */}
       <div className="flex justify-between items-center text-blue-950 text-xs font-normal">
@@ -53,6 +75,17 @@ const ExpireTourCard = ({ title, duration, seatsLeft, originalPrice, discountPri
           <img src={Icons.Plane} />
           <img src={Icons.Car} />
         </div>
+      </div>
+
+      <div className="flex justify-between items-center text-blue-950 text-xs font-normal">
+        <span className="text-blue-950 text-xs">
+          Ngày khởi hành:
+          <span className="font-bold">{formatDate(start_time)}</span>
+        </span>
+        <span className="text-blue-950 text-xs">
+          Ngày về:
+          <span className="font-bold">{formatDate(end_time)}</span>
+        </span>
       </div>
 
       {/* Số lượng chỗ ngồi */}
@@ -74,7 +107,9 @@ const ExpireTourCard = ({ title, duration, seatsLeft, originalPrice, discountPri
           {originalPrice}
         </span>
       </p>
-      <p className="text-red-800 text-xl font-bold leading-7">{discountPrice}</p>
+      <p className="text-red-800 text-xl font-bold leading-7">
+        {discountPrice}
+      </p>
     </div>
   );
 };
