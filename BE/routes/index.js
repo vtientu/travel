@@ -28,6 +28,7 @@ const ArticleRouter = require("./article.route");
 const DirectoryRouter = require("./directory.route");
 const PassengerRouter = require("./passenger.route");
 const ChatBotRouter = require("./chatbot.route");
+const PaymentRouter = require("./payment.route");
 
 router.use("/auth", AuthRouter);
 router.use("/tour", TourRouter);
@@ -57,4 +58,5 @@ router.use("/article", ArticleRouter);
 router.use("/directory", DirectoryRouter);
 router.use("/passenger", PassengerRouter);
 router.use("/chatbot", ChatBotRouter);
+router.use("/payment", PaymentRouter);
 module.exports = router;
