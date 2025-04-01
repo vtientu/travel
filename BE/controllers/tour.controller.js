@@ -393,7 +393,7 @@ exports.createTour = async (req, res) => {
             start_location,
             end_location,
             available_month,
-            service_ids
+            service_ids,
         } = req.body;
         const travel_tours = req.body.travel_tours
             ? JSON.parse(req.body.travel_tours)
@@ -413,7 +413,10 @@ exports.createTour = async (req, res) => {
             }
         }
 
-        const image = req.file ? req.file.path : null;
+        const image =
+            req.files && req.files.length > 0
+                ? JSON.stringify(req.files.map((file) => file.path))
+                : null;
 
         const startLoc = await Location.findByPk(Number(start_location));
         const endLoc = await Location.findByPk(Number(end_location));
@@ -481,16 +484,16 @@ exports.createTour = async (req, res) => {
         if (parsedServiceIds && parsedServiceIds.length > 0) {
             const services = await Service.findAll({
                 where: {
-                    id: parsedServiceIds
-                }
+                    id: parsedServiceIds,
+                },
             });
 
             if (services.length !== parsedServiceIds.length) {
                 return res.status(404).json({
-                    message: "Một số dịch vụ không tồn tại!"
+                    message: "Một số dịch vụ không tồn tại!",
                 });
             }
-            const tourServiceData = parsedServiceIds.map(service_id => ({
+            const tourServiceData = parsedServiceIds.map((service_id) => ({
                 tour_id: newTour.id,
                 service_id,
             }));
@@ -557,7 +560,10 @@ exports.updateTourById = async (req, res) => {
             return res.status(404).json({message: "Tour not found!"});
         }
 
-        const image = req.file ? req.file.path : null;
+        const image =
+            req.files && req.files.length > 0
+                ? JSON.stringify(req.files.map((file) => file.path))
+                : null;
 
         if (req.body.type_id !== undefined) tour.type_id = req.body.type_id;
         if (req.body.service_id !== undefined)
@@ -580,46 +586,62 @@ exports.updateTourById = async (req, res) => {
         if (req.body.available_month !== undefined)
             tour.available_month = req.body.available_month;
         if (req.file) tour.image = image;
-        console.log(req.body.service_ids);
-        //
-        // if (req.body.service_ids !== undefined && req.body.service_ids.length > 0) {
-        //   const services = await Service.findAll({
-        //     where: {
-        //       id: req.body.service_ids
-        //     }
-        //   });
-        //
-        //   if (services.length !== req.body.service_ids.length) {
-        //     return res.status(404).json({
-        //       message: "Một số dịch vụ không tồn tại!"
-        //     });
-        //   }
-        //   const existingTourServices = await TourService.findAll({
-        //     where: {
-        //         tour_id,
-        //         service_id: service_ids
-        //     }
-        // });
-        // const servicesToRemove = existingTourServices.map(service => service.service_id);
-        // const servicesToAdd = services.filter(service => !servicesToRemove.includes(service.id));
-        //
-        //   await TourService.destroy({
-        //     where: {
-        //       tour_id: tourId,
-        //       service_id: {
-        //         [Op.in]: servicesToRemove
-        //       }
-        //     }
-        //   });
-        //
-        //   const tourServiceData = servicesToAdd.map(service => ({
-        //     tour_id: tourId,
-        //     service_id: service.id
-        //   }));
-        //
-        //   await TourService.bulkCreate(tourServiceData);
-        // }
-        //
+
+        if (req.body.service_ids !== undefined && req.body.service_ids.length > 0) {
+            const serviceIds = req.body.service_ids; // Lấy danh sách service_id từ request
+
+            // Tìm tất cả services có trong database dựa trên danh sách serviceIds
+            const services = await Service.findAll({
+                where: {
+                    id: serviceIds
+                }
+            });
+
+            if (services.length !== serviceIds.length) {
+                return res.status(404).json({
+                    message: "Một số dịch vụ không tồn tại!"
+                });
+            }
+
+            // Tìm danh sách dịch vụ hiện tại trong TourService
+            const existingTourServices = await TourService.findAll({
+                where: {
+                    tour_id: tourId
+                }
+            });
+
+            // Lấy danh sách service_id hiện có
+            const existingServiceIds = existingTourServices.map(service => service.service_id);
+
+            // Tìm các dịch vụ cần thêm
+            const servicesToAdd = serviceIds.filter(id => !existingServiceIds.includes(id));
+
+            // Tìm các dịch vụ cần xóa
+            const servicesToRemove = existingServiceIds.filter(id => !serviceIds.includes(id));
+
+            // Xóa các dịch vụ không còn trong danh sách mới
+            if (servicesToRemove.length > 0) {
+                await TourService.destroy({
+                    where: {
+                        tour_id: tourId,
+                        service_id: {
+                            [Op.in]: servicesToRemove
+                        }
+                    }
+                });
+            }
+
+            // Thêm các dịch vụ mới vào TourService
+            if (servicesToAdd.length > 0) {
+                const tourServiceData = servicesToAdd.map(service_id => ({
+                    tour_id: tourId,
+                    service_id
+                }));
+
+                await TourService.bulkCreate(tourServiceData);
+            }
+        }
+
 
         await tour.save();
         res.json({
