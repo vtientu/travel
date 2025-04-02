@@ -12,9 +12,9 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
   const [services, setServices] = useState([]);
   const [typeTours, setTypeTours] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [pendingTourData, setPendingTourData] = useState(null);
+  const [previewImages, setPreviewImages] = useState([]);
 
   const [tourData, setTourData] = useState({
     name_tour: "",
@@ -26,9 +26,9 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
     end_location: "",
     available_month: "3",
     type_id: "",
-    service_id: "",
+    service_id: [],
     rating_tour: "5",
-    image: null,
+    album: [],
     travel_tours: [],
   });
 
@@ -58,18 +58,17 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
     setIsModalOpen(false);
   };
 
-  // const handleDeleteTravelTour = (index) => {
-  //   setTourData((prev) => ({
-  //     ...prev,
-  //     travel_tours: prev.travel_tours.filter((_, i) => i !== index),
-  //   }));
-  // };
-
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setTourData((prev) => ({ ...prev, image: file }));
-      setPreviewImage(URL.createObjectURL(file));
+    const newFiles = Array.from(e.target.files);
+    if (newFiles.length > 0) {
+      setTourData((prev) => ({
+        ...prev,
+        album: [...prev.album, ...newFiles], // ✅ giữ ảnh cũ + ảnh mới
+      }));
+      setPreviewImages((prev) => [
+        ...prev,
+        ...newFiles.map((file) => URL.createObjectURL(file)),
+      ]);
     }
   };
 
@@ -88,9 +87,21 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
   const handleCreateTour = async (callback) => {
     try {
       const formData = new FormData();
+
       Object.keys(pendingTourData).forEach((key) => {
         if (key === "travel_tours") {
           formData.append(key, JSON.stringify(pendingTourData[key]));
+        } else if (key === "album") {
+          pendingTourData.album.forEach((file) => {
+            formData.append("album", file);
+          });
+        } else if (key === "service_id") {
+          formData.append("service_ids", JSON.stringify(pendingTourData.service_id.map(Number)));
+          formData.append("service_id", pendingTourData.service_id[0]);
+          console.log("== FormData Preview ==");
+          for (let pair of formData.entries()) {
+            console.log(pair[0] + ": " + pair[1]);
+          }
         } else if (
             pendingTourData[key] !== null &&
             pendingTourData[key] !== undefined
@@ -98,11 +109,12 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
           formData.append(key, pendingTourData[key]);
         }
       });
-
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
+      }
       const response = await createTour(formData);
       console.log("API response:", response);
 
-      // ✅ Lấy tourId đúng chỗ
       const tourId = response?.tour?.id;
 
       if (tourId) {
@@ -115,7 +127,6 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
       console.error("Lỗi API:", error.response?.data || error.message);
     }
   };
-
   const handleConfirm = () => {
     setIsConfirmModalOpen(false);
     handleCreateTour((id) => {
@@ -130,10 +141,6 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
       onClose();
     });
   };
-
-  // const toggleDropdown = (id) => {
-  //   setOpenDropdown(openDropdown === id ? null : id);
-  // };
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
@@ -297,31 +304,30 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
               <label className="block mb-2 font-medium before:content-['*'] before:text-red-500 before:mr-1">
                 Dịch vụ
               </label>
-              <select
-                name="service_id"
-                className="w-full p-2 border rounded text-gray-600"
-                value={tourData.service_id}
-                onChange={(e) => {
-                  setTourData((prev) => ({
-                    ...prev,
-                    service_id: e.target.value,
-                  }));
-                }}
-                required
-              >
-                <option value="" disabled>
-                  Chọn dịch vụ kèm theo
-                </option>
-                {services.length > 0 ? (
-                  services.map((service) => (
-                    <option key={service.id} value={service.id}>
-                      {service.name_service}
-                    </option>
-                  ))
-                ) : (
-                  <option disabled>Không có dịch vụ</option>
-                )}
-              </select>
+              <div className="grid grid-cols-2 gap-2 mb-4">
+                {services.map((service) => (
+                    <label key={service.id} className="flex items-center gap-2">
+                      <input
+                          type="checkbox"
+                          value={service.id}
+                          checked={tourData.service_id.includes(String(service.id))}
+                          onChange={(e) => {
+                            const value = e.target.value;
+                            setTourData((prev) => {
+                              const isSelected = prev.service_id.includes(value);
+                              return {
+                                ...prev,
+                                service_id: isSelected
+                                    ? prev.service_id.filter((id) => id !== value)
+                                    : [...prev.service_id, value]
+                              };
+                            });
+                          }}
+                      />
+                      <span>{service.name_service}</span>
+                    </label>
+                ))}
+              </div>
 
               {/* Ảnh minh họa */}
               <label className="block mb-2 font-medium before:content-['*'] before:text-red-500 before:mr-1">
@@ -332,28 +338,56 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
                   onDragOver={(e) => e.preventDefault()}
                   onDrop={(e) => {
                     e.preventDefault();
-                    const file = e.dataTransfer.files[0];
-                    if (file) {
-                      setTourData((prev) => ({ ...prev, image: file }));
-                      setPreviewImage(URL.createObjectURL(file));
+                    const newFiles = Array.from(e.dataTransfer.files);
+                    if (newFiles.length > 0) {
+                      setTourData((prev) => ({
+                        ...prev,
+                        album: [...prev.album, ...newFiles],
+                      }));
+                      setPreviewImages((prev) => [
+                        ...prev,
+                        ...newFiles.map((file) => URL.createObjectURL(file)),
+                      ]);
                     }
                   }}
                   onClick={() => document.getElementById("fileInput")?.click()}
               >
-                {previewImage ? (
-                    <img
-                        src={previewImage}
-                        alt="Xem trước ảnh"
-                        className="h-full w-full object-cover rounded-lg"
-                    />
+                {previewImages.length > 0 ? (
+                    <div className="flex gap-2 overflow-x-auto">
+                      {previewImages.map((src, index) => (
+                          <div key={index} className="relative group">
+                            <img
+                                src={src}
+                                alt={`Ảnh ${index + 1}`}
+                                className="h-36 w-auto object-cover rounded"
+                            />
+                            <button
+                                type="button"
+                                className="absolute top-1 right-1 bg-black bg-opacity-50 text-white rounded px-1 text-xs hidden group-hover:block"
+                                onClick={() => {
+                                  setPreviewImages((prev) =>
+                                      prev.filter((_, i) => i !== index)
+                                  );
+                                  setTourData((prev) => ({
+                                    ...prev,
+                                    album: prev.album.filter((_, i) => i !== index),
+                                  }));
+                                }}
+                            >
+                              ✕
+                            </button>
+                          </div>
+                      ))}
+                    </div>
                 ) : (
-                    <span>Kéo & thả ảnh Tour tại đây (.png .jpg .pdf)</span>
+                    <span>Kéo & thả ảnh Tour tại đây (.png .jpg .jpeg)</span>
                 )}
               </div>
               <input
                   type="file"
                   id="fileInput"
-                  accept=".png,.jpg,.jpeg,.pdf"
+                  accept=".png,.jpg,.jpeg"
+                  multiple
                   className="hidden"
                   onChange={handleFileChange}
               />
