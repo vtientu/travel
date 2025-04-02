@@ -1,24 +1,18 @@
 import TextEditor from "../../../lib/TextEditor";
 import { FaArrowRight } from "react-icons/fa";
 import { useEffect, useState } from "react";
-import { HiOutlineDotsHorizontal, HiOutlineInbox } from "react-icons/hi";
-import {
-  fetchLocations,
-  fetchServices,
-  fetchTypeTours,
-} from "../../../services/service";
+import { HiOutlineInbox } from "react-icons/hi";
+import {fetchLocations, fetchServices, fetchTypeTours} from "../../../services/service";
 import { createTour } from "../../../services/API/tour.service";
 import ModalConfirmTravelTour from "../ModalConfirm/ModalConfirmTravelTour.jsx";
 import ModalAddProgram from "../ModalAddProgram.jsx";
 
 export default function ModalAddTour({ onClose, onCreateSuccess }) {
-  const [travelTours, setTravelTours] = useState([]);
   const [locations, setLocations] = useState([]);
   const [services, setServices] = useState([]);
   const [typeTours, setTypeTours] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
-  const [openDropdown, setOpenDropdown] = useState(null);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [pendingTourData, setPendingTourData] = useState(null);
 
@@ -64,12 +58,12 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
     setIsModalOpen(false);
   };
 
-  const handleDeleteTravelTour = (index) => {
-    setTourData((prev) => ({
-      ...prev,
-      travel_tours: prev.travel_tours.filter((_, i) => i !== index),
-    }));
-  };
+  // const handleDeleteTravelTour = (index) => {
+  //   setTourData((prev) => ({
+  //     ...prev,
+  //     travel_tours: prev.travel_tours.filter((_, i) => i !== index),
+  //   }));
+  // };
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -137,9 +131,9 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
     });
   };
 
-  const toggleDropdown = (id) => {
-    setOpenDropdown(openDropdown === id ? null : id);
-  };
+  // const toggleDropdown = (id) => {
+  //   setOpenDropdown(openDropdown === id ? null : id);
+  // };
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
@@ -154,7 +148,7 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
   };
   return (
     <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center" onClick={handleWrapperClick}>
-      <div className="bg-white p-6 rounded-lg shadow-lg w-3/4" onClick={handleModalClick}>
+      <div className="bg-white p-6 rounded-lg shadow-lg w-3/4 h-5/7" onClick={handleModalClick}>
         <form onSubmit={handleSubmit}>
           <div className="flex gap-6">
             {/* Cột trái */}
@@ -183,7 +177,7 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
               <input
                 type="text"
                 name="name_tour"
-                className="w-full p-2 border rounded mb-4"
+                className="w-full p-2 border rounded mb-4 "
                 placeholder="Nhập tên tour"
                 value={tourData.name_tour}
                 onChange={handleChange}
@@ -198,7 +192,7 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
                   </label>
                   <select
                     name="start_location"
-                    className="w-[250px] p-2 border rounded text-gray-500"
+                    className="w-[250px] p-2 border rounded text-gray-600"
                     value={tourData.start_location}
                     onChange={handleChange}
                     required
@@ -224,7 +218,7 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
                   </label>
                   <select
                     name="end_location"
-                    className="w-[250px] p-2 border rounded text-gray-500"
+                    className="w-[250px] p-2 border rounded text-gray-600"
                     value={tourData.end_location}
                     onChange={handleChange}
                     required
@@ -283,7 +277,7 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
                   }));
                 }}
                 required
-                className="w-full p-2 border rounded text-gray-500"
+                className="w-full p-2 border rounded text-gray-600"
               >
                 <option value="" disabled>
                   Chọn loại Tour
@@ -305,7 +299,7 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
               </label>
               <select
                 name="service_id"
-                className="w-full p-2 border rounded text-gray-500"
+                className="w-full p-2 border rounded text-gray-600"
                 value={tourData.service_id}
                 onChange={(e) => {
                   setTourData((prev) => ({
@@ -331,23 +325,38 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
 
               {/* Ảnh minh họa */}
               <label className="block mb-2 font-medium before:content-['*'] before:text-red-500 before:mr-1">
-                Ảnh minh họa
+                Ảnh bìa
               </label>
-              <input
-                type="file"
-                className="w-full border p-2 rounded mb-4"
-                onChange={handleFileChange}
-                required
-              />
-              {previewImage && (
-                  <div className="mt-2">
+              <div
+                  className="w-full h-36 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center text-center bg-gray-50 text-gray-600 cursor-pointer hover:bg-gray-100 transition"
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    const file = e.dataTransfer.files[0];
+                    if (file) {
+                      setTourData((prev) => ({ ...prev, image: file }));
+                      setPreviewImage(URL.createObjectURL(file));
+                    }
+                  }}
+                  onClick={() => document.getElementById("fileInput")?.click()}
+              >
+                {previewImage ? (
                     <img
                         src={previewImage}
-                        alt="Xem trước ảnh minh họa"
-                        className="h-40 w-full object-cover rounded shadow"
+                        alt="Xem trước ảnh"
+                        className="h-full w-full object-cover rounded-lg"
                     />
-                  </div>
-              )}
+                ) : (
+                    <span>Kéo & thả ảnh Tour tại đây (.png .jpg .pdf)</span>
+                )}
+              </div>
+              <input
+                  type="file"
+                  id="fileInput"
+                  accept=".png,.jpg,.jpeg,.pdf"
+                  className="hidden"
+                  onChange={handleFileChange}
+              />
             </div>
 
             {/* Cột phải */}
@@ -385,9 +394,9 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
                               <td colSpan="5" className="p-6 text-center">
                                 <div className="flex flex-col items-center h-[160px]">
                                   <div className="p-4 bg-gray-100 rounded-full mb-2">
-                                    <HiOutlineInbox className="text-4xl text-gray-500" />
+                                    <HiOutlineInbox className="text-4xl text-gray-600" />
                                   </div>
-                                  <p className="text-gray-500 text-md">
+                                  <p className="text-gray-600 text-md">
                                     Chưa có hành trình nào
                                   </p>
                                 </div>

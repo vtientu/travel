@@ -57,3 +57,35 @@ export function deleteTour(id) {
       throw error;
     });
 }
+// Lấy chi tiết tour theo ID
+export function getTourById(id) {
+  return restClient({
+    url: `tour/${id}`,
+    method: "GET",
+    headers: getAuthHeaders(),
+  })
+      .then(res => res.data?.data)
+      .catch(err => {
+        console.error("Lỗi khi lấy tour:", err);
+        throw err;
+      });
+}
+
+// Cập nhật tour
+export function updateTour(id, data) {
+  return restClient({
+    url: `tour/update/${id}`,
+    method: "PUT",
+    data,
+    headers: {
+      ...getAuthHeaders(),
+      "Content-Type": "multipart/form-data",
+    },
+  })
+      .then(res => res.data)
+      .catch(err => {
+        console.error("Lỗi cập nhật tour:", err);
+        throw err;
+      });
+}
+

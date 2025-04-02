@@ -5,11 +5,14 @@ import { useEffect, useState } from "react";
 import { LuSearch } from "react-icons/lu";
 import ModalAddTravelTour from "../ModalAddTravelTour";
 import { deleteTravelTour, getTravelTourByTourId } from "../../../services/API/travel_tour.service";
+import {FiCalendar, FiList} from "react-icons/fi";
+import CalendarTravelTour from "./CalendarTravelTour.jsx";
 
-export default function ModalManageTravelTour({ tourId, onClose }) {
+export default function ModalManageTravelTour({ tourId, onClose, tours = [] }) {
   const [openDropdown, setOpenDropdown] = useState(null);
   const [travelTours, setTravelTours] = useState([]);
   const [isAddTravelTourModalOpen, setIsAddTravelTourModalOpen] = useState(false);
+  const [viewMode, setViewMode] = useState("list"); // hoặc "calendar"
 
   const handleAddTravelTour = () => {
     setIsAddTravelTourModalOpen(true);
@@ -96,60 +99,78 @@ export default function ModalManageTravelTour({ tourId, onClose }) {
                         onAddSuccess={handleAddTravelTourSuccess}
                     />
                 )}
+                <button
+                    onClick={() => setViewMode(viewMode === "list" ? "calendar" : "list")}
+                    className="flex items-center gap-1 border px-4 py-2 rounded-md hover:bg-gray-100"
+                >
+                  {viewMode === "list" ? <FiList className="text-lg" /> : <FiCalendar className="text-lg" />}
+                </button>
               </div>
             </div>
 
-            {travelTours.length === 0 ? (
-                <div className="flex flex-col items-center justify-center mt-20">
-                  <div className="p-4 bg-gray-100 rounded-full mb-2">
-                    <HiOutlineInbox className="text-4xl text-gray-500" />
-                  </div>
-                  <p className="text-gray-600 text-lg font-medium mb-4">Chưa có lịch khởi hành nào</p>
-                  <button onClick={handleAddTravelTour} className="bg-red-700 text-white px-4 py-2 rounded-md">Thêm lịch khởi hành</button>
-                </div>
-            ) : (
-                <div className="overflow-auto">
-                  <table className="w-full  rounded-lg shadow-md bg-white">
-                    <thead>
-                    <tr className="text-SmokyGray">
-                      <th className="p-2 text-left">Ngày khởi hành</th>
-                      <th className="p-2">Ngày về</th>
-                      <th className="p-2">Tình trạng chỗ</th>
-                      <th className="p-2 ">Giá</th>
-                      <th className="p-2"></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {travelTours.map((travelTour, index) => {
-                      if (!travelTour || !travelTour.start_time || !travelTour.end_time) return null; // ⛔ tránh crash
+            {viewMode === "list" ? (
+                travelTours.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center mt-20">
+                      <div className="p-4 bg-gray-100 rounded-full mb-2">
+                        <HiOutlineInbox className="text-4xl text-gray-500" />
+                      </div>
+                      <p className="text-gray-600 text-lg font-medium mb-4">Chưa có lịch khởi hành nào</p>
+                      <button onClick={handleAddTravelTour} className="bg-red-700 text-white px-4 py-2 rounded-md">
+                        Thêm lịch khởi hành
+                      </button>
+                    </div>
+                ) : (
+                    <div className="overflow-auto">
+                      <table className="w-full rounded-lg shadow-md bg-white">
+                        <thead>
+                        <tr className="text-SmokyGray">
+                          <th className="p-2 text-left">Ngày khởi hành</th>
+                          <th className="p-2">Ngày về</th>
+                          <th className="p-2">Tình trạng chỗ</th>
+                          <th className="p-2">Giá</th>
+                          <th className="p-2"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {travelTours.map((travelTour, index) => {
+                          if (!travelTour || !travelTour.start_time || !travelTour.end_time) return null;
 
-                      return (
-                          <tr key={index} className={`border-t text-center ${index % 2 === 0 ? "bg-white" : "bg-gray-100"}`}>
-                            <td className="p-2 text-left">{formatDayDMY(travelTour.start_time)}</td>
-                            <td className="p-2">{formatDayDMY(travelTour.end_time)}</td>
-                            <td className="p-2">{travelTour.max_people}</td>
-                            <td className="p-2 text-RedPrice">{travelTour.price_tour.toLocaleString("vi-VN")} VNĐ</td>
-                            <td className="flex justify-end p-2 relative">
-                              <button onClick={() => toggleDropdown(index)} className="relative">
-                                <HiOutlineDotsHorizontal className="text-xl cursor-pointer" />
-                              </button>
-                              {openDropdown === index && (
-                                  <div className="absolute right-0 mt-2 w-48 bg-white shadow-md rounded-md z-10">
-                                    <button className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left whitespace-nowrap">
-                                      <MdEdit className="mr-2 text-gray-700" /> Cập nhật hành trình
-                                    </button>
-                                    <button onClick={() => handleDeleteTravelTour(index)} className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left text-red-600 whitespace-nowrap">
-                                      <MdDelete className="mr-2" /> Xóa hành trình
-                                    </button>
-                                  </div>
-                              )}
-                            </td>
-                          </tr>
-                      );
-                    })}
-                    </tbody>
-                  </table>
-                </div>
+                          return (
+                              <tr key={index} className={`border-t text-center ${index % 2 === 0 ? "bg-white" : "bg-gray-100"}`}>
+                                <td className="p-2 text-left">{formatDayDMY(travelTour.start_time)}</td>
+                                <td className="p-2">{formatDayDMY(travelTour.end_time)}</td>
+                                <td className="p-2">{travelTour.max_people}</td>
+                                <td className="p-2 text-RedPrice">
+                                  {travelTour.price_tour.toLocaleString("vi-VN")} VNĐ
+                                </td>
+                                <td className="flex justify-end p-2 relative">
+                                  <button onClick={() => toggleDropdown(index)} className="relative">
+                                    <HiOutlineDotsHorizontal className="text-xl cursor-pointer" />
+                                  </button>
+                                  {openDropdown === index && (
+                                      <div className="absolute right-0 mt-2 w-48 bg-white shadow-md rounded-md z-10">
+                                        <button className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left whitespace-nowrap">
+                                          <MdEdit className="mr-2 text-gray-700" /> Cập nhật hành trình
+                                        </button>
+                                        <button
+                                            onClick={() => handleDeleteTravelTour(index)}
+                                            className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left text-red-600 whitespace-nowrap"
+                                        >
+                                          <MdDelete className="mr-2" /> Xóa hành trình
+                                        </button>
+                                      </div>
+                                  )}
+                                </td>
+                              </tr>
+                          );
+                        })}
+                        </tbody>
+                      </table>
+                    </div>
+                )
+            ) : (
+                <CalendarTravelTour travelTours={travelTours} tourId={tourId} tours={tours}
+                />
             )}
           </div>
         </div>

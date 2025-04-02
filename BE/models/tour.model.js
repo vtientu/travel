@@ -43,7 +43,7 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.TEXT,
         allowNull: false,
       },
-      image: {
+      album: {
         type: Sequelize.STRING,
         allowNull: false,
       },

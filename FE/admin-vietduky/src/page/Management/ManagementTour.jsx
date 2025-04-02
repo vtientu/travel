@@ -70,8 +70,8 @@
     };
 
     const handleEditTour = (tour) => {
-      setEditingTour(tour);
-      setOpenDropdown(null); // 👈 Tắt dropdown đang mở
+      setEditingTour(tour.id);
+      setOpenDropdown(null);
       setIsUpdateTourModalOpen(true);
     };
 
@@ -225,17 +225,16 @@
                 <ModalManageTravelTour
                     tourId={selectedTour}
                     onClose={toggleManageTravelTourModal}
+                    tours={tours} // 👈 thêm dòng này
                 />
             )}
 
             {isUpdateTourModalOpen && (
                 <ModalUpdateTour
-                    tour={editingTour}
+                    tourId={editingTour} // truyền id vào đúng prop
                     onClose={() => setIsUpdateTourModalOpen(false)}
-                    onSuccess={(updatedTour) => {
-                      setTours((prev) =>
-                          prev.map((t) => (t.id === updatedTour.id ? updatedTour : t))
-                      );
+                    onCreateSuccess={(updatedId) => {
+                      fetchTours(); // Cập nhật lại danh sách tour
                       setIsUpdateTourModalOpen(false);
                     }}
                 />

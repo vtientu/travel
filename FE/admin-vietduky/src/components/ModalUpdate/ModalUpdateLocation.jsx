@@ -89,11 +89,37 @@ export default function ModalUpdateLocation({ onClose, onSuccess, initialData })
 
                     <div className="mb-4">
                         <label className="block font-medium mb-1">Ảnh mới (tùy chọn)</label>
+                        <div
+                            className="w-full h-40 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center text-center bg-gray-50 text-gray-500 cursor-pointer hover:bg-gray-100 transition"
+                            onDragOver={(e) => e.preventDefault()}
+                            onDrop={(e) => {
+                                e.preventDefault();
+                                const file = e.dataTransfer.files[0];
+                                if (file) {
+                                    setImageFile(file);
+                                }
+                            }}
+                            onClick={() => document.getElementById("updateImageInput")?.click()}
+                        >
+                            {imageFile ? (
+                                <img
+                                    src={URL.createObjectURL(imageFile)}
+                                    alt="Ảnh mới"
+                                    className="h-full w-full object-cover rounded-lg"
+                                />
+                            ) : (
+                                <span>Kéo & thả ảnh mới tại đây hoặc click để chọn</span>
+                            )}
+                        </div>
                         <input
                             type="file"
+                            id="updateImageInput"
                             accept="image/*"
-                            onChange={(e) => setImageFile(e.target.files[0])}
-                            className="w-full"
+                            className="hidden"
+                            onChange={(e) => {
+                                const file = e.target.files[0];
+                                setImageFile(file);
+                            }}
                         />
                     </div>
 

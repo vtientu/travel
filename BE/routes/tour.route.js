@@ -23,13 +23,13 @@ router.post(
   "/create",
   // authenticateUser,
   // authenticateAdmin,
-  uploadTourImage.array("image"),
+  uploadTourImage.array("album"),
   tourController.createTour
 );
 
 router.put(
   "/update/:id",
-  uploadTourImage.array("image"),
+  uploadTourImage.array("album"),
   // authenticateUser,
   // authenticateAdmin,
   tourController.updateTourById
