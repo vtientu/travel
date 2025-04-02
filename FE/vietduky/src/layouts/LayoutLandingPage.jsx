@@ -1,4 +1,3 @@
-import PreferentialTour from "@/components/Landing/PreferentialTour/PreferentialTour";
 import Footer from "../components/Footer/Footer";
 import Header from "../components/Header/Header";
 import ExpireTour from "../components/Landing/ExpireTour/ExpireTour.jsx";
@@ -7,7 +6,10 @@ import LocationVN from "../components/Landing/LocationVN.jsx";
 import TopicTour from "../components/Landing/TopicTour.jsx";
 import VacationTour from "../components/Landing/VacationTour.jsx";
 import SearchTour from "../components/SearchTour/SearchTour";
+import FavouriteTour from "@/components/Landing/FavouriteTour/FavouriteTour";
+import PreferentialTour from "@/components/Landing/PreferentialTour/PreferentialTour";
 import PromotionSection from "@/components/Landing/PromotionSection";
+import TopTours from "@/components/Landing/TopTour/TopTour";
 
 export default function LayoutLandingPage() {
   return (
@@ -37,6 +39,9 @@ export default function LayoutLandingPage() {
         />
       </div>
 
+      {/* Tour nổi bật */}
+      <TopTours />
+
       {/* Chương trình khuyến mại */}
       {/* <PromotionSection /> */}
 
@@ -46,17 +51,22 @@ export default function LayoutLandingPage() {
       {/* Chương trình khuyến mại */}
       <ExpireTour />
 
+      {/* Tour du lịch được yêu thích nhất */}
+      <FavouriteTour />
+
       {/*Topic Tour*/}
-      <TopicTour />
+      {/* <TopicTour /> */}
 
       {/*Vacation Tour*/}
-      <VacationTour />
+      {/* <VacationTour /> */}
 
       {/* Tour trong nước nổi bật */}
-      <FeaturedTour />
+      {/* <FeaturedTour /> */}
 
       {/* Khám phá địa điểm vui chơi ở Việt Nam */}
       <LocationVN />
+
+      {/* Footer */}
       <Footer />
     </div>
   );

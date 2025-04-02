@@ -87,7 +87,7 @@ export default function ExpireTour() {
         </div>
         <div className="flex flex-wrap justify-between gap-12 mt-6 mx-auto">
           {tours.map((tour) => (
-            <div className="box-border" key={tour.id}>
+            <div className="box-border cursor-pointer" key={tour.id}>
               <ExpireTourCard {...tour} />
             </div>
           ))}

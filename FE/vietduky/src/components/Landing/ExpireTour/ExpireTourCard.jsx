@@ -39,7 +39,7 @@ const ExpireTourCard = ({
   };
 
   return (
-    <div className="w-96 px-2 py-3 bg-white rounded-2xl flex flex-col gap-2 shadow">
+    <div className="w-96 px-2 py-3 bg-white hover:bg-gray-100 rounded-2xl flex flex-col gap-2 shadow">
       {/* Hình ảnh + Thời gian */}
       <div className="relative h-60 rounded-2xl overflow-hidden">
         <img

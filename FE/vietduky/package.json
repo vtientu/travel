@@ -30,6 +30,7 @@
     "react-quill": "^2.0.0",
     "react-router-dom": "^7.1.5",
     "react-toastify": "^11.0.5",
+    "swiper": "^11.2.6",
     "tailwind-merge": "^3.0.2",
     "tailwindcss-animate": "^1.0.7",
     "ui": "github:shadcn/ui",
