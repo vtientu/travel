@@ -86,11 +86,37 @@ export default function ModalAddLocation({ onClose, onSuccess }) {
             </div>
 
             {/* Input Ảnh */}
+            {/* Drag & Drop Ảnh */}
             <div className="mb-4">
               <label className="block font-medium mb-1">Ảnh (tùy chọn)</label>
+              <div
+                  className="w-full h-40 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center text-center bg-gray-50 text-gray-500 cursor-pointer hover:bg-gray-100 transition"
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    const file = e.dataTransfer.files[0];
+                    if (file) {
+                      setImageFile(file);
+                      setImagePreview(URL.createObjectURL(file));
+                    }
+                  }}
+                  onClick={() => document.getElementById("locationImageInput")?.click()}
+              >
+                {imagePreview ? (
+                    <img
+                        src={imagePreview}
+                        alt="Preview"
+                        className="h-full w-full object-cover rounded-lg"
+                    />
+                ) : (
+                    <span>Kéo & thả ảnh vị trí tại đây (.jpg, .png)</span>
+                )}
+              </div>
               <input
                   type="file"
+                  id="locationImageInput"
                   accept="image/*"
+                  className="hidden"
                   onChange={(e) => {
                     const file = e.target.files[0];
                     setImageFile(file);
@@ -100,18 +126,7 @@ export default function ModalAddLocation({ onClose, onSuccess }) {
                       setImagePreview(null);
                     }
                   }}
-                  className="w-full"
               />
-              {imagePreview && (
-                  <div className="mt-2">
-                    <p className="text-sm text-gray-500 mb-1">Ảnh xem trước:</p>
-                    <img
-                        src={imagePreview}
-                        alt="Preview"
-                        className="w-32 h-32 object-cover border rounded"
-                    />
-                  </div>
-              )}
             </div>
 
             {/* Buttons */}
