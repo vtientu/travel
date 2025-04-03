@@ -10,6 +10,83 @@ const TravelTour = db.TravelTour;
 const User = db.User;
 const Voucher = db.Voucher;
 const Passenger = db.Passenger;
+const nodemailer = require("nodemailer");
+const Tour = db.Tour;
+
+//Cấu hình nodemailer
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "titi2024hd@gmail.com",
+    pass: "mrwm vfbp dprc qwyu",
+  },
+});
+
+// Format VND
+const formatCurrency = (amount) => {
+  return new Intl.NumberFormat("vi-VN").format(amount);
+};
+
+// Format ngày tháng năm
+const formatDate = (date) => {
+  return new Intl.DateTimeFormat("vi-VN", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date(date));
+};
+
+// Hàm gửi email xác nhận
+const sendConfirmationEmail = (userEmail, bookingDetails) => {
+  const {
+    name,
+    email,
+    travelTour,
+    name_tour,
+    total_cost,
+    start_time,
+    end_time,
+  } = bookingDetails;
+  const { price_tour } = travelTour;
+
+  const formattedPriceTour = formatCurrency(price_tour);
+  const formattedTotalCost = formatCurrency(total_cost);
+  const formattedStartDate = formatDate(start_time);
+  const formattedEndDate = formatDate(end_time);
+
+  const mailOptions = {
+    from: '"Việt Du Ký" <titi2024hd@gmail.com>',
+    to: userEmail,
+    subject: "Xác nhận đặt tour",
+    html: `
+      <html>
+        <body>
+          <h1>Xác nhận đặt tour</h1>
+          <p>Xin chào ${name},</p>
+          <p>Đặt tour của bạn đã được hoàn tất thành công!</p>
+          <p><strong>Thông tin tour:</strong></p>
+          <ul>
+            <li>Tour: ${name_tour}</li>
+            <li>Ngày bắt đầu: ${formattedStartDate}</li>
+            <li>Ngày kết thúc: ${formattedEndDate}</li>
+            <li>Giá tour: ${formattedPriceTour} VND</li>
+            <li>Tổng chi phí: ${formattedTotalCost} VND</li>
+          </ul>
+          <p>Cảm ơn bạn đã đặt tour cùng chúng tôi!</p>
+        </body>
+      </html>
+    `,
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log("Lỗi khi gửi email: ", error);
+    } else {
+      console.log("Email đã được gửi: " + info.response);
+    }
+  });
+};
+
 //Lấy danh sách tất cả booking
 exports.getAllBookings = async (req, res) => {
   try {
@@ -216,8 +293,8 @@ exports.createBooking = async (req, res) => {
     }
 
     // Kiểm tra tour có tồn tại không
-    const tour = await TravelTour.findByPk(travel_tour_id);
-    if (!tour) {
+    const travelTour = await TravelTour.findByPk(travel_tour_id);
+    if (!travelTour) {
       return res.status(404).json({
         message: "Tour không tồn tại!",
       });
@@ -230,6 +307,8 @@ exports.createBooking = async (req, res) => {
         message: "Người dùng không tồn tại!",
       });
     }
+
+    const tour = await Tour.findByPk(travelTour.tour_id);
 
     // Tạo booking mới
     const newBooking = await Booking.create({
@@ -249,6 +328,17 @@ exports.createBooking = async (req, res) => {
       voucher_id,
     });
     newBooking.booking_code = newBooking.id;
+
+    //Gửi email xác nhận
+    sendConfirmationEmail(email, {
+      name,
+      email,
+      name_tour: tour.name_tour,
+      travelTour,
+      total_cost,
+      start_time: travelTour.start_time,
+      end_time: travelTour.end_time,
+    });
 
     // Xử lý danh sách passenger nếu có
     if (passengersArray && passengersArray.length > 0) {
