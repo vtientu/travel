@@ -10,11 +10,10 @@ const {
 router.get("/", authenticateUser, authenticateAdmin, customerController.getAllCustomers);
 router.get("/profile", authenticateUser, customerController.getCustomerProfile);
 router.put("/update-profile", authenticateUser, customerController.updateCustomerProfile);
-router.post("/create", authenticateUser, authenticateAdmin, customerController.createCustomer);
+router.post("/create", authenticateUser, customerController.createCustomer);
 router.put(
   "/update/:id",
   authenticateUser,
-  authenticateAdmin,
   customerController.updateCustomer
 );
 

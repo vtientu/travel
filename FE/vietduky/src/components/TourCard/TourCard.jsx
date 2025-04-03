@@ -82,7 +82,7 @@ export default function TourCard() {
 
                                 <div className="flex justify-between items-center">
                                     <span className="text-lg font-bold text-red-600">
-                                        Giá từ: {tour.price_tour.toLocaleString()} VNĐ
+                                        Giá từ: {Number(tour.price_tour).toLocaleString("vi-VN")} VNĐ
                                     </span>
                                     <button
                                         className="bg-red-600 text-white text-sm py-2 px-4 rounded hover:bg-red-700"

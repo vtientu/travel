@@ -3,7 +3,14 @@ import { CustomerService } from "@/services/API/customer.service";
 import { StorageService } from "@/services/storage/StorageService";
 import { useEffect, useState } from "react";
 
-const ContactForm = ({ formData, setFormData, passengers, setPassengers, user, travelTourData }) => {
+const ContactForm = ({
+  formData,
+  setFormData,
+  passengers,
+  setPassengers,
+  user,
+  travelTourData,
+}) => {
   const [passengerData, setPassengerData] = useState([]);
 
   useEffect(() => {
@@ -43,7 +50,7 @@ const ContactForm = ({ formData, setFormData, passengers, setPassengers, user, t
     setPassengerData(formattedPassengers);
   };
 
-    // console.log(passengers);
+  // console.log(passengers);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -61,7 +68,6 @@ const ContactForm = ({ formData, setFormData, passengers, setPassengers, user, t
   };
 
   console.log("Hành khách", passengers);
-  
 
   return (
     <div className="flex flex-col gap-4 p-4">
@@ -119,21 +125,9 @@ const ContactForm = ({ formData, setFormData, passengers, setPassengers, user, t
           />
         </div>
         <div>
-          <label className="block font-bold after:content-['*'] after:text-red-500 after:ml-1">
-            Số CCCD/Passport
+          <label className="block font-bold">
+            Địa chỉ
           </label>
-          <input
-            type="text"
-            name="passport"
-            // value={formData.passport}
-            // onChange={handleInputChange}
-            placeholder="Nhập số CCCD/Passport"
-            className="w-full py-2 rounded outline-none"
-            required
-          />
-        </div>
-        <div>
-          <label className="block font-bold">Địa chỉ</label>
           <input
             type="text"
             name="address"
@@ -150,7 +144,13 @@ const ContactForm = ({ formData, setFormData, passengers, setPassengers, user, t
       <div className="grid grid-cols-2 gap-4">
         {[
           { label: "Người lớn", type: "adult", desc: "Từ 12 trở lên", min: 0 },
-          { label: "Trẻ em", type: "child", desc: "Từ 5 - 11 tuổi", min: 0 },
+          { label: "Trẻ em", type: "children", desc: "Từ 5 - 11 tuổi", min: 0 },
+          {
+            label: "Trẻ nhỏ",
+            type: "young-child",
+            desc: "Từ 2 - 4 tuổi",
+            min: 0,
+          },
           { label: "Em bé", type: "infant", desc: "Dưới 2 tuổi", min: 0 },
         ].map(({ label, type, desc, min }) => (
           <div
@@ -187,7 +187,7 @@ const ContactForm = ({ formData, setFormData, passengers, setPassengers, user, t
             setFormData((prev) => ({ ...prev, note: e.target.value }))
           }
           placeholder="Vui lòng nhập nội dung lời nhắn bằng tiếng Anh hoặc tiếng Việt"
-          className="p-4 w-full h-24 border rounded-md bg-[#f8f8f8]"
+          className="p-4 w-full h-40 border rounded-md bg-[#f8f8f8]"
         ></textarea>
       </div>
 

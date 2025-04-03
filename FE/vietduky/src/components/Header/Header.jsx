@@ -1,13 +1,15 @@
+import Icons from "../Icons/Icon";
 import ModalLogin from "../ModalLogin/ModalLogin";
 import { StorageService } from "@/services/storage/StorageService";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import HeaderMenu from "./HeaderMenu";
 
 export default function Header() {
   const navigate = useNavigate();
   const [isOpenLogin, setIsOpenLogin] = useState(false);
   const [isOpenMenu, setIsOpenMenu] = useState(false);
-  const [avatar, setAvatar] = useState("/Image/avatar.png"); // Ảnh mặc định
+  const [avatar, setAvatar] = useState(Icons.User);
   const [user, setUser] = useState(null);
 
   // Lấy thông tin user khi component mount
@@ -23,8 +25,17 @@ export default function Header() {
   const handleSignout = () => {
     StorageService.signout(navigate);
     setUser(null);
-    setAvatar("/Image/avatar.png");
+    setAvatar(Icons.User);
     setIsOpenMenu(false);
+  };
+
+  // Hàm xử lý click vào avatar
+  const handleAvatarClick = () => {
+    if (user) {
+      setIsOpenMenu(!isOpenMenu);
+    } else {
+      setIsOpenLogin(true);
+    }
   };
 
   return (
@@ -35,8 +46,9 @@ export default function Header() {
         width={150}
         height={100}
         onClick={() => navigate("/")}
+        className="cursor-pointer transition duration-300 hover:scale-105"
       />
-      <div className="flex items-center space-x-6">
+      <div className="flex items-center">
         <nav className="flex space-x-16">
           <a href="/" className="hover:underline text-white">
             Trang Chủ
@@ -53,44 +65,29 @@ export default function Header() {
         </nav>
 
         {/* Ảnh Avatar mở menu */}
-        <div className="relative">
+        <div className="relative ml-16">
           <img
-            onClick={() => setIsOpenMenu(!isOpenMenu)}
+            onClick={handleAvatarClick}
             src={avatar}
             alt="Avatar"
-            width={50}
-            height={50}
-            className="rounded-full cursor-pointer border-2 border-transparent hover:border-white transition"
+            width={user ? 45 : 30}
+            height={user ? 45 : 30}
+            className={`rounded-full cursor-pointer transition duration-300 ${
+              user
+                ? ""
+                : "hover:filter hover:invert hover:sepia hover:saturate hover:hue-rotate-180"
+            }`}
           />
 
           {/* Dropdown menu */}
           {isOpenMenu && (
-            <div className="absolute right-0 mt-2 w-48 bg-white text-black rounded-lg shadow-lg py-2 z-50">
+            <div className="absolute right-0 mt-2 w-96 bg-white text-black rounded-md border border-gray-300 shadow-lg z-50">
               {user ? (
                 <>
-                  <button
-                    className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                    onClick={() => navigate("/account/profile")}
-                  >
-                    Trang cá nhân
-                  </button>
-                  <button
-                    className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                    onClick={handleSignout}
-                  >
-                    Đăng xuất
-                  </button>
+                  <HeaderMenu user={user} handleSignout={handleSignout}/>
                 </>
               ) : (
-                <button
-                  className="block w-full text-left px-4 py-2 hover:bg-gray-100"
-                  onClick={() => {
-                    setIsOpenLogin(true);
-                    setIsOpenMenu(false);
-                  }}
-                >
-                  Đăng nhập
-                </button>
+                <></>
               )}
             </div>
           )}

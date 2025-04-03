@@ -80,9 +80,6 @@ export default function BookingTour() {
           <div className="p-6 rounded-xl">
             <ContactForm user={user} formData={formData} setFormData={setFormData} passengers={passengers} setPassengers={setPassengers} travelTourData={travelTourData}/>
           </div>
-          <div className="p-6 rounded-xl">
-            <PaymentMethod />
-          </div>
         </div>
 
         {/* Cột phải */}

@@ -24,6 +24,27 @@ import StepGray from "@/assets/icons/step-gray.svg";
 import BankTransfer from "@/assets/icons/bank-transfer.svg";
 import CreditCard from "@/assets/icons/credit-card.svg";
 import QrCode from "@/assets/icons/qr-code.svg";
+import Search from "@/assets/icons/search.svg";
+import AlertCircle from "@/assets/icons/alert-circle.svg";
+import Calendar from "@/assets/icons/calendar.svg";
+import ImageVoucher from "@/assets/icons/image-voucher.svg";
+import Info from "@/assets/icons/info.svg";
+import Copy from "@/assets/icons/copy.svg";
+import Heart from "@/assets/icons/heart.svg";
+import Flame from "@/assets/icons/flame.svg";
+import Clock_3 from "@/assets/icons/clock-3.svg";
+import AimChair from "@/assets/icons/armchair.svg";
+import ConciergeBell from "@/assets/icons/concierge-bell.svg";
+import Plane from "@/assets/icons/plane.svg";
+import Car from "@/assets/icons/car.svg";
+import CalendarThin from "@/assets/icons/calendar-thin.svg";
+import PlanePaper from "@/assets/icons/plane-paper.svg";
+import LocationThin from "@/assets/icons/location-thin.svg";
+import User from "@/assets/icons/user.svg";
+import PlaneFly from "@/assets/icons/plane-fly.svg";
+import Place from "@/assets/icons/place.svg";
+import Bus from "@/assets/icons/bus.svg";
+import Coupon from "@/assets/icons/coupon.svg";
 
 const Icons = {
   Sidebar: barChartIcon,
@@ -52,6 +73,27 @@ const Icons = {
   BankTransfer: BankTransfer,
   CreditCard: CreditCard,
   QrCode: QrCode,
+  Search: Search,
+  AlertCircle: AlertCircle,
+  Calendar: Calendar,
+  ImageVoucher: ImageVoucher,
+  Info: Info,
+  Copy: Copy,
+  Heart: Heart,
+  Flame: Flame,
+  Clock_3: Clock_3,
+  Plane: Plane,
+  Car: Car,
+  AimChair: AimChair,
+  ConciergeBell: ConciergeBell,
+  CalendarThin: CalendarThin,
+  LocationThin: LocationThin,
+  PlanePaper: PlanePaper,
+  User: User,
+  PlaneFly: PlaneFly,
+  Place: Place,
+  Bus: Bus,
+  Coupon: Coupon,
 };
 
 export default Icons;

@@ -1,13 +1,38 @@
+import AppleAuth from "../AuthProviders/AppleAuth";
+import FacebookAuth from "../AuthProviders/FacebookAuth";
+import GoogleAuth from "../AuthProviders/GoogleAuth";
+import PhoneAuth from "../AuthProviders/PhoneAuth";
 import { X, Plane } from "lucide-react";
-import AuthProviders from "../AuthProviders/AuthProviders";
+import { useEffect } from "react";
+import { FaFacebook, FaApple } from "react-icons/fa";
+import Icons from "../Icons/Icon";
 
 export default function ModalLogin({ onClose }) {
+  useEffect(() => {
+    const handleEsc = (event) => {
+      if (event.key === "Escape") {
+        onClose(); // Đóng modal khi nhấn ESC
+      }
+    };
+    window.addEventListener("keydown", handleEsc);
+    return () => window.removeEventListener("keydown", handleEsc);
+  }, [onClose]);
+
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg max-w-sm w-full relative">
+    <div
+      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white p-8 pt-14 rounded-lg shadow-lg max-w-md w-full relative"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* <Plane className="absolute top-2 left-2 text-red-500" size={24} /> */}
+        <img src={Icons.PlaneFly} className="absolute left-0 top-1"/>
+
         {/* Nút đóng modal */}
         <button
-          className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
+          className="absolute top-3 right-3 text-gray-800 hover:text-gray-800"
           onClick={onClose}
         >
           <X size={18} />
@@ -15,26 +40,18 @@ export default function ModalLogin({ onClose }) {
 
         {/* Nội dung modal */}
         <div className="relative text-center">
-          <Plane className="absolute -top-6 left-2 text-red-500" size={24} />
-          <h2 className="text-lg font-semibold text-black">Chào mừng đến với VietDuKy</h2>
+          <h2 className="text-lg font-semibold text-black">
+            Chào mừng đến với VietDuKy
+          </h2>
           <p className="text-sm text-gray-500">Chọn phương thức đăng nhập</p>
         </div>
 
         {/* Các nút đăng nhập */}
         <div className="mt-4 space-y-3">
-          <AuthProviders onClose={onClose}/>
-          <button className="w-full flex items-center gap-2 bg-white border border-gray-300 text-black py-2 px-4 rounded-md hover:bg-gray-100">
-            <img src="/icons/phone.svg" alt="Phone" className="w-5 h-5" />
-            Đăng nhập bằng số điện thoại
-          </button>
-          <button className="w-full flex items-center gap-2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700">
-            <img src="/icons/facebook.svg" alt="Facebook" className="w-5 h-5" />
-            Đăng nhập bằng Facebook
-          </button>
-          <button className="w-full flex items-center gap-2 bg-black text-white py-2 px-4 rounded-md hover:bg-gray-900">
-            <img src="/icons/apple.svg" alt="Apple" className="w-5 h-5" />
-            Đăng nhập bằng Apple
-          </button>
+          <GoogleAuth onClose={onClose} />
+          <PhoneAuth onClose={onClose} />
+          <FacebookAuth onClose={onClose} />
+          <AppleAuth onClose={onClose} />
         </div>
       </div>
     </div>

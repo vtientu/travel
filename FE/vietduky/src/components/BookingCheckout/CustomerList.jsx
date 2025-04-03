@@ -220,9 +220,12 @@ export default function CustomerList({ passengerData, bookingData }) {
                       {label}
                     </td>
                     <td className="p-2 border">{passenger.passport_number}</td> {/* Hiển thị số passport */}
-                    <td className="p-2 border text-center">
+                    {(type === "adult") && (
+                      <td className="p-2 border text-center">
                       <input type="checkbox" />
                     </td>
+                    )
+                    }
                   </tr>
                 );
               })}
