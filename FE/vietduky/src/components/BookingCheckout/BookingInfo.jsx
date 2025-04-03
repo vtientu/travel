@@ -17,7 +17,7 @@ const BookingInfo = ({ bookingData }) => {
       <div className="space-y-4">
         <div className="flex justify-between">
           <div className="text-gray-900 font-bold">Mã đặt chỗ:</div>
-          <div className="text-[#e01600] font-bold">{bookingData?.booking_code || "N/A"}</div>
+          <div className="text-[#a80f21] font-bold">{bookingData?.booking_code || "N/A"}</div>
         </div>
         <div className="flex justify-between">
           <div className="text-gray-900 font-bold">Ngày tạo:</div>
@@ -30,10 +30,10 @@ const BookingInfo = ({ bookingData }) => {
             currency: "VND",
           }) || "0 ₫"}</div>
         </div>
-        <div className="flex justify-between">
+        {/* <div className="flex justify-between">
           <div className="text-gray-900 font-bold">Hình thức thanh toán:</div>
           <div className="text-[#a80f21] font-bold cursor-pointer">Thay đổi hình thức thanh toán</div>
-        </div>
+        </div> */}
         <div className="flex justify-between">
           <div className="text-gray-900 font-bold">Số tiền đã thanh toán:</div>
           <div className="text-gray-900 font-bold">0 ₫</div>
@@ -46,7 +46,7 @@ const BookingInfo = ({ bookingData }) => {
           <div className="flex justify-between">
             <div className="text-gray-900 font-bold">Thời hạn thanh toán:</div>
             <div>
-              <span className="text-[#e01600] font-bold">{getPaymentDeadline(bookingData?.booking_date)}</span>
+              <span className="text-[#a80f21] font-bold">{getPaymentDeadline(bookingData?.booking_date)}</span>
               <span className="text-gray-900 font-bold"> -</span>
             </div>
           </div>

@@ -40,12 +40,16 @@ const PassengerInfoForm = ({ passengers, onPassengerDataChange }) => {
                 ? "Người lớn"
                 : type === "child"
                 ? "Trẻ em"
+                : type === "young-child"
+                ? "Trẻ nhỏ"
                 : "Em bé",
             desc:
               type === "adult"
                 ? "Từ 12 trở lên"
                 : type === "child"
                 ? "Từ 5 - 11 tuổi"
+                : type === "young-child"
+                ? "Từ 2 - 4 tuổi"
                 : "Dưới 2 tuổi",
             name: "",
             phone: "",
@@ -305,7 +309,7 @@ const PassengerInfoForm = ({ passengers, onPassengerDataChange }) => {
                   />
                 </div>
 
-                <div className="border-gray-300">
+                {/* <div className="border-gray-300">
                   <label className="text-sm font-semibold block mb-1">
                     CCCD/Passport
                   </label>
@@ -320,9 +324,9 @@ const PassengerInfoForm = ({ passengers, onPassengerDataChange }) => {
                     className="w-full p-2 rounded-md text-sm outline-none"
                     required
                   />
-                </div>
+                </div> */}
 
-                {/* {type === "adult" && (
+                {type === "adult" && (
                   <div className="flex flex-col gap-2">
                     <label className="text-sm font-semibold">Phòng đơn</label>
 
@@ -365,7 +369,7 @@ const PassengerInfoForm = ({ passengers, onPassengerDataChange }) => {
                       </span>
                     </div>
                   </div>
-                )} */}
+                )}
               </div>
             </div>
           ))}

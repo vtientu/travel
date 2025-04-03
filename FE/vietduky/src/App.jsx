@@ -14,9 +14,8 @@ import BookingTour from "./page/Booking/BookingInformation.jsx";
 import DealsPage from "./page/DealsPage.jsx";
 import DetailTourPage from "./page/DetailTourPage.jsx";
 import ListTour from "./page/ListTourPage.jsx";
-import Profile from "./page/Profile";
-import ProfileCustomer from "./page/ProfileCustomer";
-import TourBookingHistoryPage from "@/page/TourBookingHistoryPage.jsx";
+import ProfileCustomer from "./page/Account/ProfileCustomer";
+import TourBookingHistoryPage from "@/page/Account/TourBookingHistoryPage.jsx";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
@@ -39,22 +38,18 @@ function App() {
       <Routes>
         <Route path={"/"} element={<LayoutLandingPage />} />
         <Route path="/auth/callback" element={<GoogleAuthCallback />} />
-        <Route path="/account" element={<ProtectedRoute />}>
+        <Route element={<ProtectedRoute />}>
           <Route path="profile" element={<ProfileCustomer />} />
+          <Route path={"/booking/:id"} element={<BookingTour />} />
+          <Route path={"/bookingConfirm"} element={<BookingConfirm />} />
+          <Route path={"/bookingComplete"} element={<BookingComplete />} />
+          <Route path={"/bookingHistory"} element={<TourBookingHistoryPage />} />
         </Route>
         <Route path={"/personalAI"} element={<PersonalAIPage />} />
         <Route path={"/deals"} element={<DealsPage />} />
         <Route path={"/listTour"} element={<ListTour />} />
         <Route path={"/detailTour"} element={<DetailTourPage />} />
         <Route path="/tour/:id" element={<DetailTourPage />} />
-
-        <Route path={"/booking/:id"} element={<BookingTour />} />
-        <Route path={"/bookingConfirm"} element={<BookingConfirm />} />
-        <Route path={"/bookingComplete"} element={<BookingComplete />} />
-        <Route
-          path={"/tourBookingHistory"}
-          element={<TourBookingHistoryPage />}
-        />
 
         <Route path={"/credit"} element={<PaymentForm />} />
 

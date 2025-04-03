@@ -115,7 +115,10 @@ const googleAuth = async (accessToken, refreshToken, profile, done) => {
         return res.status(401).json({ message: "Authentication failed" });
       }
 
-      const user = await User.findOne({ where: { id: req.user.id } });
+      const user = await User.findOne({
+        where: { id: req.user.id },
+        include: { model: Role, as: "role", attributes: ["id", "role_name"] },
+      });
 
       if (!user) {
         return res.status(404).json({ message: "User not found" });
@@ -135,7 +138,7 @@ const googleAuth = async (accessToken, refreshToken, profile, done) => {
       const token = generateAccessToken(user.id);
 
       return res.redirect(
-        `http://localhost:5173/auth/callback?token=${token}&id=${user.id}&email=${encodeURIComponent(user.email)}&avatar=${encodeURIComponent(user.avatar || '')}`
+        `http://localhost:5173/auth/callback?token=${token}&id=${user.id}&email=${encodeURIComponent(user.email)}&avatar=${encodeURIComponent(user.avatar || '')}&name=${encodeURIComponent(user.displayName)}&role_name=${encodeURIComponent(user.role.role_name)}`
       );
     } catch (error) {
       return res.status(500).json({ error: error.message });

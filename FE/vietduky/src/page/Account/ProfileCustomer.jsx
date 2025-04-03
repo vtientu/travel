@@ -6,10 +6,8 @@ import Layout from "@/layouts/LayoutAccountService";
 const ProfileCustomer = () => {
   return (
     <Layout>
-      <div className=" mx-auto p-5 flex flex-col md:flex-row gap-6">
-        <SidebarProfile />
-        <div className="flex-1 space-y-6">
-          <BreadCrumbProfile />
+      <div className="p-6">
+        <div className="space-y-6">
           <ProfileDetail />
         </div>
       </div>

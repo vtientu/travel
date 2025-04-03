@@ -139,7 +139,7 @@ exports.getCustomerProfile = async (req, res) => {
       include: [
         {
           model: Customer,
-          attributes: ["id", "first_name", "last_name", "number_phone"], // Các trường của Customer
+          attributes: ["id", "first_name", "last_name", "number_phone", "gender", "birth_date", "payment_card_id"], // Các trường của Customer
         },
       ],
     });
@@ -159,7 +159,7 @@ exports.getCustomerProfile = async (req, res) => {
 exports.updateCustomerProfile = async (req, res) => {
   try {
     const userId = req.user.id; // Lấy user_id từ token
-    const { password, number_phone } = req.body; // Dữ liệu từ client
+    const { password, number_phone, gender, birth_date } = req.body; // Dữ liệu từ client
 
     // Kiểm tra user tồn tại
     const user = await User.findOne({ where: { id: userId }, include: Customer });
@@ -179,10 +179,27 @@ exports.updateCustomerProfile = async (req, res) => {
       await user.Customer.save();
     }
 
+    // Cập nhật giới tính (nếu có customer)
+    if (user.Customer) {
+      user.Customer.birth_date = birth_date || user.Customer.birth_date;
+      await user.Customer.save();
+    }
+
+    // Cập nhật ngày sinh (nếu có customer)
+    if (user.Customer) {
+      user.Customer.gender = gender || user.Customer.gender;
+      await user.Customer.save();
+    }
+
+    // Cập nhật thông tin user
+    user.displayName = req.body.displayName || user.displayName;
+    user.avatar = req.body.avatar || user.avatar;
+    user.email = req.body.email || user.email;
+
     // Lưu thông tin user
     await user.save();
 
-    return res.json({ message: "Profile updated successfully" });
+    return res.json({ message: "Profile updated successfully", user });
   } catch (error) {
     console.error("Lỗi khi cập nhật profile:", error);
     return res.status(500).json({ error: "Internal server error" });

@@ -43,7 +43,7 @@ export default function LayoutLandingPage() {
       <TopTours />
 
       {/* Chương trình khuyến mại */}
-      {/* <PromotionSection /> */}
+      <PromotionSection />
 
       {/* Tour ưu đãi đặc biệt */}
       <PreferentialTour />
