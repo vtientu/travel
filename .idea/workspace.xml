@@ -4,26 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="791ecbbc-1cb1-4700-a35b-341959abb6b2" name="Changes" comment="-cuongdm update">
-      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/SEP490_G67_VietDuKy.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/php.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BE/config/config.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BE/controllers/chatbot.controller.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BE/db/init.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BE/routes/chatbot.route.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BE/utils/uploads/tourImage/1740845772591-786176899.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BE/utils/uploads/tourImage/1740845945134-438777270.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BE/utils/uploads/tourImage/1740846001589-873094368.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/BE/utils/uploads/tourImage/1740846007868-842858098.jpg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BE/.env.sample" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/BE/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/BE/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BE/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/BE/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/BE/routes/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/BE/routes/index.js" afterDir="false" />
-    </list>
+    <list default="true" id="791ecbbc-1cb1-4700-a35b-341959abb6b2" name="Changes" comment="-cuongdm update" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -64,7 +45,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "Dev",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/DMC/Workspace/FPTU/Spring 2025/SEP/SEP490_G67_VietDuKy/BE/routes",
+    "last_opened_file_path": "D:/SEP490_VietDuKy",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -86,23 +67,11 @@
       <recent name="D:\SEP490_VietDuKy\SEP490_G67_VietDuKy\FE\vietduky\public\Image" />
     </key>
   </component>
-  <component name="RunManager">
-    <configuration default="true" type="JetRunConfigurationType">
-      <module name="SEP490_G67_VietDuKy" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
-      <module name="SEP490_G67_VietDuKy" />
-      <option name="filePath" />
-      <method v="2" />
-    </configuration>
-  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-php-predefined-ba97393d7c68-6f8e3395a2b4-com.jetbrains.php.sharedIndexes-PS-233.15026.12" />
+        <option value="bundled-jdk-9823dce3aa75-125ca727e0f0-intellij.indexing.shared.core-IU-243.24978.46" />
+        <option value="bundled-js-predefined-d6986cc7102b-76f8388c3a79-JavaScript-IU-243.24978.46" />
       </set>
     </attachedChunks>
   </component>
@@ -167,6 +136,7 @@
       <workItem from="1743340035954" duration="2009000" />
       <workItem from="1743357213472" duration="71000" />
       <workItem from="1743445628381" duration="3874000" />
+      <workItem from="1743574530783" duration="24000" />
     </task>
     <task id="LOCAL-00001" summary="-cuongdm commit">
       <option name="closed" value="true" />
