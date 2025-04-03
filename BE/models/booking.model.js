@@ -69,14 +69,6 @@ module.exports = (sequelize, Sequelize) => {
                 type: Sequelize.TEXT,
                 allowNull: true,
             },
-            created_at: {
-                type: Sequelize.DATE,
-                allowNull: true,
-            },
-            updated_at: {
-                type: Sequelize.DATE,
-                allowNull: true,
-            },
             booking_code: {
                 type: Sequelize.STRING,
                 allowNull: true,
@@ -84,7 +76,7 @@ module.exports = (sequelize, Sequelize) => {
         },
         {
             tableName: "booking", // Đảm bảo tên bảng khớp với DB
-            timestamps: false, // Không dùng createdAt và updatedAt
+            timestamps: true, // Không dùng createdAt và updatedAt
         }
     );
 
