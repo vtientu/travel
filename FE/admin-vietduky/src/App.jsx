@@ -8,7 +8,7 @@ import ManagementTravelTour from "./page/Management/ManagementTravelTour.jsx";
 import ManagementHotel from "./page/Management/ManagementHotel.jsx";
 import ManagementRestaurant from "./page/Management/ManagementRestaurant.jsx";
 import ManagementVehicle from "./page/Management/ManagementVehicle.jsx";
-import ModalManageTravelTour from "./components/ModalManage/ModalTour/ModalManageTravelTour.jsx";
+import ModalManageTravelTour from "./components/ModalManage/ModalList/ModalManageTravelTour.jsx";
 import PrivateRoute from "./components/PrivateRouter.jsx";
 import Profile from "./components/Profile.jsx";
 import Calendar from "./components/Calendar/Calendar.jsx";

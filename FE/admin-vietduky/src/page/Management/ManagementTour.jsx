@@ -3,9 +3,10 @@
   import ModalAddTour from "../../components/ModalManage/ModalTour/ModalAddTour";
   import { LuSearch } from "react-icons/lu";
   import DropdownMenu from "../../components/Dropdown/DropdownMenuTour";
-  import ModalManageTravelTour from "../../components/ModalManage/ModalTour/ModalManageTravelTour";
+  import ModalManageTravelTour from "../../components/ModalManage/ModalList/ModalManageTravelTour.jsx";
   import { getTours } from "../../services/API/tour.service";
   import ModalUpdateTour from "../../components/ModalUpdate/ModalUpdateTour.jsx";
+  import ModalAddProgram from "../../components/ModalManage/ModalAddProgram.jsx";
 
   export default function ManagementTour() {
     const [tours, setTours] = useState([]);
@@ -19,8 +20,10 @@
     const [isUpdateTourModalOpen, setIsUpdateTourModalOpen] = useState(false);
     const [editingTour, setEditingTour] = useState(null);
     const [newCreatedTourId, setNewCreatedTourId] = useState(null);
+    const [isAddProgramModalOpen, setIsAddProgramModalOpen] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const toursPerPage = 12;
+    const [selectedProgramTour, setSelectedProgramTour] = useState(null);
 
     const toggleDropdown = (id) => {
       setOpenDropdown(openDropdown === id ? null : id);
@@ -77,10 +80,15 @@
 
     const handleManageTravelTour = (tourId) => {
       setSelectedTour(tourId);
-      setOpenDropdown(null); // 👈 Tắt dropdown đang mở
+      setOpenDropdown(null);
       toggleManageTravelTourModal();
     };
 
+    const handleOpenAddProgram = (tour) => {
+      setSelectedProgramTour(tour);
+      setIsAddProgramModalOpen(true);
+      setOpenDropdown(null);
+    };
     const filteredTours = tours.filter((tour) => {
       if (location && tour?.startLocation?.name_location !== location) return false;
       const price = tour.price_tour;
@@ -182,6 +190,7 @@
                                 onEdit={() => handleEditTour(tour)}
                                 isOpen={openDropdown === tour.id}
                                 setOpenDropdown={setOpenDropdown}
+                                onOpenAddProgram={handleOpenAddProgram}
                             />
                           </button>
                         </td>
@@ -225,17 +234,27 @@
                 <ModalManageTravelTour
                     tourId={selectedTour}
                     onClose={toggleManageTravelTourModal}
-                    tours={tours} // 👈 thêm dòng này
+                    tours={tours}
                 />
             )}
 
             {isUpdateTourModalOpen && (
                 <ModalUpdateTour
-                    tourId={editingTour} // truyền id vào đúng prop
+                    tourId={editingTour}
                     onClose={() => setIsUpdateTourModalOpen(false)}
                     onCreateSuccess={(updatedId) => {
-                      fetchTours(); // Cập nhật lại danh sách tour
+                      fetchTours();
                       setIsUpdateTourModalOpen(false);
+                    }}
+                />
+            )}
+            {isAddProgramModalOpen && (
+                <ModalAddProgram
+                    tour={selectedProgramTour} // truyền tour vào modal
+                    onClose={() => setIsAddProgramModalOpen(false)}
+                    onAddTravelTour={(programData) => {
+                      console.log("Chương trình mới:", programData);
+                      setIsAddProgramModalOpen(false);
                     }}
                 />
             )}

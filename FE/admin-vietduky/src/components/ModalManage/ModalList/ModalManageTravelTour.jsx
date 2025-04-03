@@ -1,12 +1,12 @@
 import { HiOutlineDotsHorizontal, HiOutlineInbox } from "react-icons/hi";
-import { formatDayDMY } from "../../../utils/dateUtil";
+import { formatDayDMY } from "../../../utils/dateUtil.jsx";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { useEffect, useState } from "react";
 import { LuSearch } from "react-icons/lu";
-import ModalAddTravelTour from "../ModalAddTravelTour";
-import { deleteTravelTour, getTravelTourByTourId } from "../../../services/API/travel_tour.service";
+import ModalAddTravelTour from "../ModalAddTravelTour.jsx";
+import { deleteTravelTour, getTravelTourByTourId } from "../../../services/API/travel_tour.service.js";
 import {FiCalendar, FiList} from "react-icons/fi";
-import CalendarTravelTour from "./CalendarTravelTour.jsx";
+import CalendarTravelTour from "../ModalTour/CalendarTravelTour.jsx";
 
 export default function ModalManageTravelTour({ tourId, onClose, tours = [] }) {
   const [openDropdown, setOpenDropdown] = useState(null);

@@ -11,10 +11,10 @@ export default function ModalUpdateTour({ mode = "update", tourId = null, onClos
     const [services, setServices] = useState([]);
     const [typeTours, setTypeTours] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [previewImages, setPreviewImages] = useState([]);       // Mảng ảnh hiển thị (url)
-    const [removedImageIndexes, setRemovedImageIndexes] = useState([]); // Đánh dấu ảnh backend đã xoá
-    const oldImages = previewImages.filter((img) => img.startsWith("http")); // ảnh từ backend
-    const newImages = previewImages.filter((img) => !img.startsWith("http")); // ảnh mới upload
+    const [previewImages, setPreviewImages] = useState([]);
+    const [removedImageIndexes, setRemovedImageIndexes] = useState([]);
+    // const oldImages = previewImages.filter((img) => img.startsWith("http"));
+    // const newImages = previewImages.filter((img) => !img.startsWith("http"));
     const [tourData, setTourData] = useState({
         name_tour: "",
         price_tour: "",

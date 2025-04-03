@@ -1,17 +1,15 @@
 import TextEditor from "../../../lib/TextEditor";
 import { FaArrowRight } from "react-icons/fa";
 import { useEffect, useState } from "react";
-import { HiOutlineInbox } from "react-icons/hi";
 import {fetchLocations, fetchServices, fetchTypeTours} from "../../../services/service";
 import { createTour } from "../../../services/API/tour.service";
 import ModalConfirmTravelTour from "../ModalConfirm/ModalConfirmTravelTour.jsx";
-import ModalAddProgram from "../ModalAddProgram.jsx";
 
 export default function ModalAddTour({ onClose, onCreateSuccess }) {
   const [locations, setLocations] = useState([]);
   const [services, setServices] = useState([]);
   const [typeTours, setTypeTours] = useState([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // const [isModalOpen, setIsModalOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [pendingTourData, setPendingTourData] = useState(null);
   const [previewImages, setPreviewImages] = useState([]);
@@ -49,14 +47,14 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
   const handleEditorChange = (content) => {
     setTourData((prev) => ({ ...prev, activity_description: content }));
   };
-
-  const handleAddTravelTour = (newTravelTour) => {
-    setTourData((prev) => ({
-      ...prev,
-      travel_tours: [...prev.travel_tours, newTravelTour],
-    }));
-    setIsModalOpen(false);
-  };
+  //
+  // const handleAddTravelTour = (newTravelTour) => {
+  //   setTourData((prev) => ({
+  //     ...prev,
+  //     travel_tours: [...prev.travel_tours, newTravelTour],
+  //   }));
+  //   setIsModalOpen(false);
+  // };
 
   const handleFileChange = (e) => {
     const newFiles = Array.from(e.target.files);
@@ -142,9 +140,9 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
     });
   };
 
-  const toggleModal = () => {
-    setIsModalOpen(!isModalOpen);
-  };
+  // const toggleModal = () => {
+  //   setIsModalOpen(!isModalOpen);
+  // };
 
   const handleWrapperClick = () => {
     onClose();
@@ -395,58 +393,59 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
 
             {/* Cột phải */}
             <div className="w-3/5">
-              <div>
-                <div className="flex justify-between items-center mb-4">
-                  <div>
-                    <label className="font-medium">
-                      Chương trình Tour
-                    </label>
-                  </div>
-                  <div className="flex gap-4">
-                    <button
-                      type="button"
-                      className="bg-red-700 text-white px-4 py-2 rounded-md"
-                      onClick={toggleModal}
-                    >
-                      Thêm chương trình
-                    </button>
-                  </div>
-                </div>
 
-                <div className="relative">
-                  <div className="mt-4 mb-4 bg-white">
-                    <table className="w-full border-collapse border rounded-lg shadow-md bg-white">
-                      <thead>
-                        <tr className="text-SmokyGray">
-                          <th className="p-2 ">Tiêu đề</th>
-                          <th className="p-2">Mô tả</th>
-                          <th className="p-2">Mô tả chi tiết</th>
-                        </tr>
-                      </thead>
-                        <tbody>
-                            <tr>
-                              <td colSpan="5" className="p-6 text-center">
-                                <div className="flex flex-col items-center h-[160px]">
-                                  <div className="p-4 bg-gray-100 rounded-full mb-2">
-                                    <HiOutlineInbox className="text-4xl text-gray-600" />
-                                  </div>
-                                  <p className="text-gray-600 text-md">
-                                    Chưa có hành trình nào
-                                  </p>
-                                </div>
-                              </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                  </div>
-                  {isModalOpen && (
-                    <ModalAddProgram
-                      onClose={toggleModal}
-                      onAddTravelTour={handleAddTravelTour}
-                    />
-                  )}
-                </div>
-              </div>
+              {/*<div>*/}
+              {/*  <div className="flex justify-between items-center mb-4">*/}
+              {/*    <div>*/}
+              {/*      <label className="font-medium">*/}
+              {/*        Chương trình Tour*/}
+              {/*      </label>*/}
+              {/*    </div>*/}
+              {/*    <div className="flex gap-4">*/}
+              {/*      <button*/}
+              {/*        type="button"*/}
+              {/*        className="bg-red-700 text-white px-4 py-2 rounded-md"*/}
+              {/*        onClick={toggleModal}*/}
+              {/*      >*/}
+              {/*        Thêm chương trình*/}
+              {/*      </button>*/}
+              {/*    </div>*/}
+              {/*  </div>*/}
+              {/*  <div className="relative">*/}
+              {/*    <div className="mt-4 mb-4 bg-white">*/}
+              {/*      <table className="w-full border-collapse border rounded-lg shadow-md bg-white">*/}
+              {/*        <thead>*/}
+              {/*          <tr className="text-SmokyGray">*/}
+              {/*            <th className="p-2 ">Tiêu đề</th>*/}
+              {/*            <th className="p-2">Mô tả</th>*/}
+              {/*            <th className="p-2">Mô tả chi tiết</th>*/}
+              {/*          </tr>*/}
+              {/*        </thead>*/}
+              {/*          <tbody>*/}
+              {/*              <tr>*/}
+              {/*                <td colSpan="5" className="p-6 text-center">*/}
+              {/*                  <div className="flex flex-col items-center h-[160px]">*/}
+              {/*                    <div className="p-4 bg-gray-100 rounded-full mb-2">*/}
+              {/*                      <HiOutlineInbox className="text-4xl text-gray-600" />*/}
+              {/*                    </div>*/}
+              {/*                    <p className="text-gray-600 text-md">*/}
+              {/*                      Chưa có hành trình nào*/}
+              {/*                    </p>*/}
+              {/*                  </div>*/}
+              {/*                </td>*/}
+              {/*              </tr>*/}
+              {/*          </tbody>*/}
+              {/*      </table>*/}
+              {/*    </div>*/}
+              {/*    {isModalOpen && (*/}
+              {/*      <ModalAddProgram*/}
+              {/*        onClose={toggleModal}*/}
+              {/*        onAddTravelTour={handleAddTravelTour}*/}
+              {/*      />*/}
+              {/*    )}*/}
+              {/*  </div>*/}
+              {/*</div>*/}
+
               <div>
                 <label className="block mb-2 font-medium">
                   Mô tả hành trình
