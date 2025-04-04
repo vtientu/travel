@@ -316,6 +316,7 @@ exports.createBooking = async (req, res) => {
       travel_tour_id,
       number_adult,
       number_children,
+      number_toddler,
       number_newborn,
       total_cost,
       booking_date: new Date(),
@@ -327,7 +328,8 @@ exports.createBooking = async (req, res) => {
       note,
       voucher_id,
     });
-    newBooking.booking_code = newBooking.id;
+    travelTour.current_people += number_adult + number_children + number_toddler;
+    await travelTour.save();
 
     //Gửi email xác nhận
     sendConfirmationEmail(email, {

@@ -33,6 +33,11 @@ module.exports = (sequelize, Sequelize) => {
                 allowNull: true,
                 defaultValue: 0,
             },
+            number_toddler: {
+                type: Sequelize.INTEGER,
+                allowNull: true,
+                defaultValue: 0,
+            },
             number_newborn: {
                 type: Sequelize.INTEGER,
                 allowNull: true,
