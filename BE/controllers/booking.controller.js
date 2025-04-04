@@ -133,7 +133,7 @@ exports.getAllBookings = async (req, res) => {
     });
 
     res.status(200).json({
-      message: "All bookings retrieved successfully",
+      message: "Tất cả booking đã được lấy thành công!",
       data: bookings,
     });
   } catch (error) {
@@ -196,7 +196,7 @@ exports.getBookingById = async (req, res) => {
     }
 
     res.status(200).json({
-      message: "Booking retrieved successfully",
+      message: "Tất cả booking đã được lấy thành công!",
       data: booking,
     });
   } catch (error) {
@@ -405,12 +405,12 @@ exports.updateBooking = async (req, res) => {
     await booking.save();
 
     res.status(200).json({
-      message: "Booking updated successfully!",
+      message: "Cập nhật booking thành công!",
       data: booking,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error updating booking",
+      message: "Cập nhật booking thất bại!",
       error: error.message,
     });
   }
@@ -423,17 +423,17 @@ exports.deleteBooking = async (req, res) => {
 
     const booking = await Booking.findByPk(bookingId);
     if (!booking) {
-      return res.status(404).json({ message: "Booking not found!" });
+      return res.status(404).json({ message: "Không tìm thấy booking!" });
     }
 
     await booking.destroy();
 
     res.status(200).json({
-      message: "Booking canceled successfully!",
+      message: "Đã hủy booking thành công!",
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error canceling booking",
+      message: "Lỗi khi hủy booking!",
       error: error.message,
     });
   }

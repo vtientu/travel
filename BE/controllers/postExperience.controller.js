@@ -2,7 +2,7 @@ const db = require("../models");
 const PostExperience = db.PostExperience;
 const Customer = db.Customer;
 
-//Lấy tất cả bài viết trải nghiệm
+// Lấy tất cả bài viết trải nghiệm
 exports.getAllPostExperiences = async (req, res) => {
   try {
     const postExperiences = await PostExperience.findAll({
@@ -10,12 +10,12 @@ exports.getAllPostExperiences = async (req, res) => {
     });
 
     res.status(200).json({
-      message: "Get all post experiences successfully!",
+      message: "Lấy tất cả bài viết trải nghiệm thành công!",
       data: postExperiences,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error fetching post experiences",
+      message: "Lỗi khi lấy bài viết trải nghiệm",
       error: error.message,
     });
   }
@@ -30,16 +30,18 @@ exports.getPostExperienceById = async (req, res) => {
     });
 
     if (!postExperience) {
-      return res.status(404).json({ message: "Post experience not found!" });
+      return res
+        .status(404)
+        .json({ message: "Không tìm thấy bài viết trải nghiệm!" });
     }
 
     res.status(200).json({
-      message: "Post experience fetched successfully!",
+      message: "Lấy bài viết trải nghiệm thành công!",
       data: postExperience,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error fetching post experience",
+      message: "Lỗi khi lấy bài viết trải nghiệm",
       error: error.message,
     });
   }
@@ -53,7 +55,7 @@ exports.createPostExperience = async (req, res) => {
     // Kiểm tra xem customer có tồn tại không
     const customer = await Customer.findByPk(customer_id);
     if (!customer) {
-      return res.status(404).json({ message: "Customer not found!" });
+      return res.status(404).json({ message: "Không tìm thấy khách hàng!" });
     }
 
     // Tạo mới bài viết trải nghiệm
@@ -65,12 +67,12 @@ exports.createPostExperience = async (req, res) => {
     });
 
     res.status(201).json({
-      message: "Post experience created successfully!",
+      message: "Tạo bài viết trải nghiệm thành công!",
       data: newPostExperience,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error creating post experience",
+      message: "Lỗi khi tạo bài viết trải nghiệm",
       error: error.message,
     });
   }
@@ -84,7 +86,9 @@ exports.updatePostExperience = async (req, res) => {
 
     const postExperience = await PostExperience.findByPk(postId);
     if (!postExperience) {
-      return res.status(404).json({ message: "Post experience not found!" });
+      return res
+        .status(404)
+        .json({ message: "Không tìm thấy bài viết trải nghiệm!" });
     }
 
     // Cập nhật bài viết trải nghiệm
@@ -99,35 +103,37 @@ exports.updatePostExperience = async (req, res) => {
     await postExperience.save();
 
     res.status(200).json({
-      message: "Post experience updated successfully!",
+      message: "Cập nhật bài viết trải nghiệm thành công!",
       data: postExperience,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error updating post experience",
+      message: "Lỗi khi cập nhật bài viết trải nghiệm",
       error: error.message,
     });
   }
 };
 
-//Xóa bài viết trải nghiệm
+// Xóa bài viết trải nghiệm
 exports.deletePostExperience = async (req, res) => {
   try {
     const postId = req.params.id;
 
     const postExperience = await PostExperience.findByPk(postId);
     if (!postExperience) {
-      return res.status(404).json({ message: "Post experience not found!" });
+      return res
+        .status(404)
+        .json({ message: "Không tìm thấy bài viết trải nghiệm!" });
     }
 
     await postExperience.destroy();
 
     res.status(200).json({
-      message: "Post experience deleted successfully!",
+      message: "Xóa bài viết trải nghiệm thành công!",
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error deleting post experience",
+      message: "Lỗi khi xóa bài viết trải nghiệm",
       error: error.message,
     });
   }

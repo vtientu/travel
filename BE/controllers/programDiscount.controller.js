@@ -1,43 +1,45 @@
 const db = require("../models");
 const ProgramDiscount = db.ProgramDiscount;
 
-//Lấy tất cả chương trình giảm giá
+// Lấy tất cả chương trình giảm giá
 exports.getAllProgramDiscounts = async (req, res) => {
   try {
     const discounts = await ProgramDiscount.findAll();
     res.status(200).json({
-      message: "Program discounts fetched successfully",
+      message: "Lấy danh sách chương trình giảm giá thành công",
       data: discounts,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error fetching program discounts",
+      message: "Lỗi khi lấy danh sách chương trình giảm giá",
       error: error.message,
     });
   }
 };
 
-//Lấy chương trình giảm giá theo ID
+// Lấy chương trình giảm giá theo ID
 exports.getProgramDiscountById = async (req, res) => {
   try {
     const discountId = req.params.id;
     const discount = await ProgramDiscount.findByPk(discountId);
     if (!discount) {
-      return res.status(404).json({ message: "Program discount not found!" });
+      return res
+        .status(404)
+        .json({ message: "Không tìm thấy chương trình giảm giá!" });
     }
     res.status(200).json({
-      message: "Program discount fetched successfully",
+      message: "Lấy thông tin chương trình giảm giá thành công",
       data: discount,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error fetching program discount",
+      message: "Lỗi khi lấy thông tin chương trình giảm giá",
       error: error.message,
     });
   }
 };
 
-//Tạo chương trình giảm giá mới
+// Tạo chương trình giảm giá mới
 exports.createProgramDiscount = async (req, res) => {
   try {
     const {
@@ -59,18 +61,18 @@ exports.createProgramDiscount = async (req, res) => {
     });
 
     res.status(201).json({
-      message: "Program discount created successfully!",
+      message: "Tạo chương trình giảm giá thành công!",
       data: newDiscount,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error creating program discount",
+      message: "Lỗi khi tạo chương trình giảm giá",
       error: error.message,
     });
   }
 };
 
-//  Cập nhật chương trình giảm giá theo ID
+// Cập nhật chương trình giảm giá theo ID
 exports.updateProgramDiscount = async (req, res) => {
   try {
     const discountId = req.params.id;
@@ -86,7 +88,9 @@ exports.updateProgramDiscount = async (req, res) => {
 
     const discount = await ProgramDiscount.findByPk(discountId);
     if (!discount) {
-      return res.status(404).json({ message: "Program discount not found!" });
+      return res
+        .status(404)
+        .json({ message: "Không tìm thấy chương trình giảm giá!" });
     }
 
     if (discount_name != undefined)
@@ -106,12 +110,12 @@ exports.updateProgramDiscount = async (req, res) => {
     await discount.save();
 
     res.status(200).json({
-      message: "Program discount updated successfully!",
+      message: "Cập nhật chương trình giảm giá thành công!",
       data: discount,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error updating program discount",
+      message: "Lỗi khi cập nhật chương trình giảm giá",
       error: error.message,
     });
   }
@@ -124,17 +128,19 @@ exports.deleteProgramDiscount = async (req, res) => {
 
     const discount = await ProgramDiscount.findByPk(discountId);
     if (!discount) {
-      return res.status(404).json({ message: "Program discount not found!" });
+      return res
+        .status(404)
+        .json({ message: "Không tìm thấy chương trình giảm giá!" });
     }
 
     await discount.destroy();
 
     res.status(200).json({
-      message: "Program discount deleted successfully!",
+      message: "Xóa chương trình giảm giá thành công!",
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error deleting program discount",
+      message: "Lỗi khi xóa chương trình giảm giá",
       error: error.message,
     });
   }

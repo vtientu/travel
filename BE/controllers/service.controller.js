@@ -6,12 +6,12 @@ module.exports.getAllServices = async (req, res) => {
   try {
     const services = await Service.findAll();
     res.json({
-      message: "Get all services successfully!",
+      message: "Lấy tất cả dịch vụ thành công!",
       data: services,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Get all services failed!",
+      message: "Lấy tất cả dịch vụ thất bại!",
       error: error.message,
     });
   }
@@ -23,15 +23,15 @@ module.exports.getServiceById = async (req, res) => {
     const id = req.params.id;
     const service = await Service.findByPk(id);
     if (!service) {
-      return res.status(404).json({ error: "Service not found" });
+      return res.status(404).json({ error: "Dịch vụ không tồn tại" });
     }
     res.json({
-      message: "Get service by id successfully!",
+      message: "Lấy dịch vụ theo ID thành công!",
       data: service,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Get service by id failed!",
+      message: "Lấy dịch vụ theo ID thất bại!",
       error: error.message,
     });
   }
@@ -42,7 +42,7 @@ module.exports.createService = async (req, res) => {
   try {
     const { name_service, price_service, description_service } = req.body;
     if (!name_service || !price_service || !description_service) {
-      return res.status(400).json({ error: "Please enter all fields" });
+      return res.status(400).json({ error: "Vui lòng nhập đầy đủ các trường" });
     }
     const newService = await Service.create({
       name_service,
@@ -50,12 +50,12 @@ module.exports.createService = async (req, res) => {
       description_service,
     });
     res.status(201).json({
-      message: "Create service successfully!",
+      message: "Tạo dịch vụ mới thành công!",
       data: newService,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Create service failed!",
+      message: "Tạo dịch vụ mới thất bại!",
       error: error.message,
     });
   }
@@ -67,16 +67,16 @@ module.exports.deleteService = async (req, res) => {
     const id = req.params.id;
     const service = await Service.findByPk(id);
     if (!service) {
-      return res.status(404).json({ error: "Service not found" });
+      return res.status(404).json({ error: "Dịch vụ không tồn tại" });
     }
     await service.destroy();
     res.json({
-      message: "Delete service successfully!",
+      message: "Xóa dịch vụ thành công!",
       data: service,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Delete service failed!",
+      message: "Xóa dịch vụ thất bại!",
       error: error.message,
     });
   }
@@ -89,7 +89,7 @@ module.exports.updateService = async (req, res) => {
     const { name_service, price_service, description_service } = req.body;
     const service = await Service.findByPk(id);
     if (!service) {
-      return res.status(404).json({ error: "Service not found" });
+      return res.status(404).json({ error: "Dịch vụ không tồn tại" });
     }
 
     if (name_service !== undefined) service.name_service = name_service;
@@ -99,12 +99,12 @@ module.exports.updateService = async (req, res) => {
 
     await service.save();
     res.json({
-      message: "Update service successfully!",
+      message: "Cập nhật dịch vụ thành công!",
       data: service,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Update service failed!",
+      message: "Cập nhật dịch vụ thất bại!",
       error: error.message,
     });
   }

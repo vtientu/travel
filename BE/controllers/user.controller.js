@@ -9,12 +9,12 @@ exports.getAllUsers = async (req, res) => {
   try {
     const users = await User.findAll();
     res.json({
-      message: "Get user successfully!",
+      message: "Lấy danh sách người dùng thành công!",
       data: users,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error retrieving users!",
+      message: "Lỗi khi lấy danh sách người dùng!",
       error: error.message,
     });
   }
@@ -27,16 +27,16 @@ exports.getUserById = async (req, res) => {
     const user = await User.findByPk(id);
     if (!user) {
       return res.status(404).json({
-        message: "User not found!",
+        message: "Không tìm thấy người dùng!",
       });
     }
     res.json({
-      message: "Get user successfully!",
+      message: "Lấy thông tin người dùng thành công!",
       data: user,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error retrieving user!",
+      message: "Lỗi khi lấy thông tin người dùng!",
       error: error.message,
     });
   }
@@ -51,7 +51,7 @@ exports.addNewUser = async (req, res) => {
     // Kiểm tra xem username đã tồn tại chưa
     const existingUser = await User.findOne({ where: { username } });
     if (existingUser) {
-      return res.status(400).json({ message: "Username already exists" });
+      return res.status(400).json({ message: "Tên người dùng đã tồn tại" });
     }
 
     // Hash password bằng bcryptjs
@@ -65,13 +65,13 @@ exports.addNewUser = async (req, res) => {
     });
 
     res.status(201).json({
-      message: "User created successfully!",
+      message: "Tạo người dùng mới thành công!",
       data: newUser,
     });
   } catch (error) {
     res
       .status(500)
-      .json({ message: "Error creating user", error: error.message });
+      .json({ message: "Lỗi khi tạo người dùng mới", error: error.message });
   }
 };
 
@@ -84,7 +84,7 @@ exports.updateUser = async (req, res) => {
 
     const user = await User.findByPk(id);
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "Không tìm thấy người dùng" });
     }
 
     // Hash password bằng bcryptjs
@@ -97,11 +97,17 @@ exports.updateUser = async (req, res) => {
 
     await user.save();
 
-    res.json({ message: "User updated successfully!", data: user });
+    res.json({
+      message: "Cập nhật thông tin người dùng thành công!",
+      data: user,
+    });
   } catch (error) {
     res
       .status(500)
-      .json({ message: "Error updating user", error: error.message });
+      .json({
+        message: "Lỗi khi cập nhật thông tin người dùng",
+        error: error.message,
+      });
   }
 };
 
@@ -113,13 +119,13 @@ exports.changePassword = async (req, res) => {
 
     const user = await User.findByPk(id);
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "Không tìm thấy người dùng" });
     }
 
     // Kiểm tra mật khẩu cũ
     const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
     if (!isPasswordValid) {
-      return res.status(400).json({ message: "Invalid old password" });
+      return res.status(400).json({ message: "Mật khẩu cũ không đúng" });
     }
 
     // Hash mật khẩu mới
@@ -128,11 +134,11 @@ exports.changePassword = async (req, res) => {
 
     await user.save();
 
-    res.json({ message: "Password changed successfully!" });
+    res.json({ message: "Thay đổi mật khẩu thành công!" });
   } catch (error) {
     res
       .status(500)
-      .json({ message: "Error changing password", error: error.message });
+      .json({ message: "Lỗi khi thay đổi mật khẩu", error: error.message });
   }
 };
 
@@ -143,19 +149,19 @@ exports.changeStatus = async (req, res) => {
     const user = await User.findByPk(id);
     if (!user) {
       return res.status(404).json({
-        message: "User not found!",
+        message: "Không tìm thấy người dùng!",
       });
     }
 
     user.status = !user.status;
     await user.save();
     res.json({
-      message: "User updated successfully!",
+      message: "Cập nhật trạng thái người dùng thành công!",
       data: user,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error updating user!",
+      message: "Lỗi khi cập nhật trạng thái người dùng!",
       error: error.message,
     });
   }
@@ -171,12 +177,12 @@ exports.filterByStatus = async (req, res) => {
       },
     });
     res.json({
-      message: "Get user successfully!",
+      message: "Lấy danh sách người dùng thành công!",
       data: users,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error retrieving users!",
+      message: "Lỗi khi lấy danh sách người dùng!",
       error: error.message,
     });
   }
@@ -188,30 +194,30 @@ exports.assignRole = async (req, res) => {
     const { user_id, role_id } = req.body;
     const user = await User.findByPk(user_id);
     if (!user) {
-      return res.status(404).json({ message: "User not found!" });
+      return res.status(404).json({ message: "Không tìm thấy người dùng!" });
     }
 
     const role = await Role.findByPk(role_id);
     if (!role) {
-      return res.status(404).json({ message: "Role not found!" });
+      return res.status(404).json({ message: "Không tìm thấy vai trò!" });
     }
 
     const existingRole = await RoleService.findOne({
       where: { user_id, role_id },
     });
     if (existingRole) {
-      return res.status(400).json({ message: "User already has this role!" });
+      return res.status(400).json({ message: "Người dùng đã có vai trò này!" });
     }
 
     const newRoleService = await RoleService.create({ user_id, role_id });
 
     res.status(201).json({
-      message: "Role assigned successfully!",
+      message: "Phân quyền thành công!",
       data: newRoleService,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error assigning role",
+      message: "Lỗi khi phân quyền",
       error: error.message,
     });
   }

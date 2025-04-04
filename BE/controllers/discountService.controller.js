@@ -3,7 +3,7 @@ const DiscountService = db.DiscountService;
 const ProgramDiscount = db.ProgramDiscount;
 const TravelTour = db.TravelTour;
 
-//Lấy tất cả dịch vụ giảm giá
+// Lấy tất cả dịch vụ giảm giá
 exports.getAllDiscountServices = async (req, res) => {
   try {
     const discountServices = await DiscountService.findAll({
@@ -13,18 +13,18 @@ exports.getAllDiscountServices = async (req, res) => {
       ],
     });
     res.status(200).json({
-      message: "Discount services fetched successfully",
+      message: "Lấy danh sách dịch vụ giảm giá thành công",
       data: discountServices,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error fetching discount services",
+      message: "Lỗi khi lấy danh sách dịch vụ giảm giá",
       error: error.message,
     });
   }
 };
 
-//Lấy dịch vụ giảm giá theo ID
+// Lấy dịch vụ giảm giá theo ID
 exports.getDiscountServiceById = async (req, res) => {
   try {
     const discountServiceId = req.params.id;
@@ -35,21 +35,23 @@ exports.getDiscountServiceById = async (req, res) => {
       ],
     });
     if (!discountService) {
-      return res.status(404).json({ message: "Discount service not found!" });
+      return res
+        .status(404)
+        .json({ message: "Không tìm thấy dịch vụ giảm giá!" });
     }
     res.status(200).json({
-      message: "Discount service fetched successfully",
+      message: "Lấy dịch vụ giảm giá thành công",
       data: discountService,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error fetching discount service",
+      message: "Lỗi khi lấy dịch vụ giảm giá",
       error: error.message,
     });
   }
 };
 
-//Tạo dịch vụ giảm giá mới
+// Tạo dịch vụ giảm giá mới
 exports.createDiscountService = async (req, res) => {
   try {
     const { travel_tour_id, program_discount_id } = req.body;
@@ -60,18 +62,18 @@ exports.createDiscountService = async (req, res) => {
     });
 
     res.status(201).json({
-      message: "Discount service created successfully!",
+      message: "Tạo dịch vụ giảm giá thành công!",
       data: newDiscountService,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error creating discount service",
+      message: "Lỗi khi tạo dịch vụ giảm giá",
       error: error.message,
     });
   }
 };
 
-//Cập nhật dịch vụ giảm giá
+// Cập nhật dịch vụ giảm giá
 exports.updateDiscountService = async (req, res) => {
   try {
     const discountServiceId = req.params.id;
@@ -79,7 +81,9 @@ exports.updateDiscountService = async (req, res) => {
 
     const discountService = await DiscountService.findByPk(discountServiceId);
     if (!discountService) {
-      return res.status(404).json({ message: "Discount service not found!" });
+      return res
+        .status(404)
+        .json({ message: "Không tìm thấy dịch vụ giảm giá!" });
     }
 
     discountService.travel_tour_id =
@@ -90,35 +94,37 @@ exports.updateDiscountService = async (req, res) => {
     await discountService.save();
 
     res.status(200).json({
-      message: "Discount service updated successfully!",
+      message: "Cập nhật dịch vụ giảm giá thành công!",
       data: discountService,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error updating discount service",
+      message: "Lỗi khi cập nhật dịch vụ giảm giá",
       error: error.message,
     });
   }
 };
 
-//Xóa dịch vụ giảm giá
+// Xóa dịch vụ giảm giá
 exports.deleteDiscountService = async (req, res) => {
   try {
     const discountServiceId = req.params.id;
 
     const discountService = await DiscountService.findByPk(discountServiceId);
     if (!discountService) {
-      return res.status(404).json({ message: "Discount service not found!" });
+      return res
+        .status(404)
+        .json({ message: "Không tìm thấy dịch vụ giảm giá!" });
     }
 
     await discountService.destroy();
 
     res.status(200).json({
-      message: "Discount service deleted successfully!",
+      message: "Xóa dịch vụ giảm giá thành công!",
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error deleting discount service",
+      message: "Lỗi khi xóa dịch vụ giảm giá",
       error: error.message,
     });
   }

@@ -6,7 +6,7 @@ exports.getAllTravelTours = async (req, res) => {
   try {
     const filter = req.params.filter;
     // if (filter == 'about') {
-    //   const travelTours = await TravelTour.findAll({  
+    //   const travelTours = await TravelTour.findAll({
     //     where: {
     //       status: 1,
     //       start_time: {
@@ -17,7 +17,7 @@ exports.getAllTravelTours = async (req, res) => {
 
     // }
     // if (filter == 'now') {
-    //   const travelTours = await TravelTour.findAll({    
+    //   const travelTours = await TravelTour.findAll({
     //     where: {
     //       status: 1,
     //       start_time: {
@@ -53,13 +53,13 @@ exports.getTravelTourById = async (req, res) => {
     const travelTour = await TravelTour.findByPk(travelTourId);
 
     if (!travelTour) {
-      return res.status(404).json({ message: "Travel tour not found!" });
+      return res.status(404).json({ message: "Không tìm thấy tour du lịch!" });
     }
 
     res.json(travelTour);
   } catch (error) {
     res.status(500).json({
-      message: "Error retrieving travel tour with id=" + req.params.id,
+      message: "Lỗi khi lấy thông tin tour du lịch với id=" + req.params.id,
       error: error.message,
     });
   }
@@ -73,14 +73,15 @@ exports.getTravelTourByTourId = async (req, res) => {
 
     if (!travelTour || travelTour.length === 0) {
       return res.status(404).json({
-        message: "Travel tour not found!",
+        message: "Không tìm thấy tour du lịch!",
       });
     }
 
     res.json(travelTour);
   } catch (error) {
     res.status(500).json({
-      message: "Error retrieving travel tour with tour_id=" + req.params.id,
+      message:
+        "Lỗi khi lấy thông tin tour du lịch với tour_id=" + req.params.id,
       error: error.message,
     });
   }
@@ -92,7 +93,7 @@ exports.createTravelTour = async (req, res) => {
     const { tour_id, start_time, end_time, price_tour, max_people } = req.body;
 
     if (!tour_id || !start_time || !end_time || !price_tour || !max_people) {
-      return res.status(400).json({ message: "Missing required information!" });
+      return res.status(400).json({ message: "Thiếu thông tin bắt buộc!" });
     }
 
     const data = {
@@ -104,29 +105,32 @@ exports.createTravelTour = async (req, res) => {
     };
     const Tour = await db.Tour.findByPk(tour_id);
     if (!Tour) {
-      return res.status(404).json({ message: "Tour not found!" });
+      return res.status(404).json({ message: "Không tìm thấy tour!" });
     }
     if (start_time < Date.now()) {
-      return res.status(400).json({ message: "Start time must be in the future!" });
+      return res
+        .status(400)
+        .json({ message: "Thời gian bắt đầu phải ở tương lai!" });
     }
     if (end_time < start_time) {
-      return res.status(400).json({ message: "End time must be after start time!" });
+      return res
+        .status(400)
+        .json({ message: "Thời gian kết thúc phải sau thời gian bắt đầu!" });
     }
     if (price_tour < 0) {
-      return res.status(400).json({ message: "Price must be > 0!" });
+      return res.status(400).json({ message: "Giá tour phải lớn hơn 0!" });
     }
     if (max_people < 0) {
-      return res.status(400).json({ message: "People must be > 0!" });
+      return res.status(400).json({ message: "Số người phải lớn hơn 0!" });
     }
-    
 
     const newTravelTour = await db.TravelTour.create(data);
     res.json({
-      message: "Create new travel tour successfully!",
+      message: "Tạo tour du lịch mới thành công!",
       tour: newTravelTour,
     });
   } catch (error) {
-    console.error("Error inserting tour:", error);
+    console.error("Lỗi khi thêm tour:", error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -138,11 +142,11 @@ exports.deleteTravelTour = async (req, res) => {
     const travelTour = await TravelTour.findByPk(travelTourId);
 
     if (!travelTour) {
-      return res.status(404).json({ message: "Travel tour not found!" });
+      return res.status(404).json({ message: "Không tìm thấy tour du lịch!" });
     }
 
     await travelTour.destroy();
-    res.json({ message: "Delete travel tour successfully!" });
+    res.json({ message: "Xóa tour du lịch thành công!" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -155,7 +159,7 @@ exports.updateTravelTour = async (req, res) => {
     const travelTour = await TravelTour.findByPk(travelTourId);
 
     if (!travelTour) {
-      return res.status(404).json({ message: "Travel tour not found!" });
+      return res.status(404).json({ message: "Không tìm thấy tour du lịch!" });
     }
 
     const { tour_id, start_time, end_time, price_tour, max_people } = req.body;
@@ -168,12 +172,12 @@ exports.updateTravelTour = async (req, res) => {
 
     await travelTour.save();
     res.json({
-      message: "Update travel tour successfully!",
+      message: "Cập nhật tour du lịch thành công!",
       data: travelTour,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error updating travel tour with id=" + req.params.id,
+      message: "Lỗi khi cập nhật tour du lịch với id=" + req.params.id,
       error: error.message,
     });
   }

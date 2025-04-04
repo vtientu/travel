@@ -2,17 +2,17 @@ const db = require("../models");
 const PaymentCard = db.PaymentCard;
 const Customer = db.Customer;
 
-//Lấy danh sách tất cả Payment Card
+// Lấy danh sách tất cả Payment Card
 exports.getAllPaymentCards = async (req, res) => {
   try {
     const cards = await PaymentCard.findAll();
     res.status(200).json({
-      message: "Get payment cards successfully!",
+      message: "Lấy danh sách thẻ thanh toán thành công!",
       data: cards,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error fetching payment cards",
+      message: "Lỗi khi lấy danh sách thẻ thanh toán",
       error: error.message,
     });
   }
@@ -23,15 +23,17 @@ exports.getPaymentCardById = async (req, res) => {
   try {
     const card = await PaymentCard.findByPk(req.params.id);
     if (!card) {
-      return res.status(404).json({ message: "PaymentCard not found!" });
+      return res
+        .status(404)
+        .json({ message: "Không tìm thấy thẻ thanh toán!" });
     }
     res.status(200).json({
-      message: "Get payment card successfully!",
+      message: "Lấy thông tin thẻ thanh toán thành công!",
       data: card,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error fetching payment card",
+      message: "Lỗi khi lấy thông tin thẻ thanh toán",
       error: error.message,
     });
   }
@@ -51,7 +53,7 @@ exports.createPaymentCard = async (req, res) => {
     // Kiểm tra xem customer có tồn tại không
     const customer = await Customer.findByPk(customer_id);
     if (!customer) {
-      return res.status(404).json({ message: "Customer not found!" });
+      return res.status(404).json({ message: "Không tìm thấy khách hàng!" });
     }
 
     // Tạo mới PaymentCard
@@ -64,12 +66,12 @@ exports.createPaymentCard = async (req, res) => {
     });
 
     res.status(201).json({
-      message: "Payment card created successfully!",
+      message: "Tạo thẻ thanh toán thành công!",
       data: newCard,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error creating payment card",
+      message: "Lỗi khi tạo thẻ thanh toán",
       error: error.message,
     });
   }
@@ -89,7 +91,9 @@ exports.updatePaymentCard = async (req, res) => {
 
     const card = await PaymentCard.findByPk(id);
     if (!card) {
-      return res.status(404).json({ message: "PaymentCard not found!" });
+      return res
+        .status(404)
+        .json({ message: "Không tìm thấy thẻ thanh toán!" });
     }
 
     if (card_number != undefined)
@@ -105,12 +109,12 @@ exports.updatePaymentCard = async (req, res) => {
     await card.save();
 
     res.status(200).json({
-      message: "Payment card updated successfully!",
+      message: "Cập nhật thẻ thanh toán thành công!",
       data: card,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error updating payment card",
+      message: "Lỗi khi cập nhật thẻ thanh toán",
       error: error.message,
     });
   }
@@ -123,18 +127,20 @@ exports.deletePaymentCard = async (req, res) => {
 
     const card = await PaymentCard.findByPk(id);
     if (!card) {
-      return res.status(404).json({ message: "PaymentCard not found!" });
+      return res
+        .status(404)
+        .json({ message: "Không tìm thấy thẻ thanh toán!" });
     }
 
     // Xóa PaymentCard
     await card.destroy();
 
     res.status(200).json({
-      message: "Payment card deleted successfully!",
+      message: "Xóa thẻ thanh toán thành công!",
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error deleting payment card",
+      message: "Lỗi khi xóa thẻ thanh toán",
       error: error.message,
     });
   }

@@ -8,32 +8,32 @@ exports.getAllLocations = async (req, res) => {
     res.json(locations);
   } catch (error) {
     res.status(500).json({
-      message: "Error retrieving locations!",
+      message: "Lỗi khi lấy danh sách địa điểm!",
       error: error.message,
     });
   }
 };
 
-//Lấy một Location theo ID
+// Lấy một Location theo ID
 exports.getLocationById = async (req, res) => {
   try {
     const id = req.params.id;
     const location = await Location.findByPk(id);
     if (!location) {
       return res.status(404).json({
-        message: "Location not found!",
+        message: "Không tìm thấy địa điểm!",
       });
     }
     res.json(location);
   } catch (error) {
     res.status(500).json({
-      message: "Error retrieving location!",
+      message: "Lỗi khi lấy thông tin địa điểm!",
       error: error.message,
     });
   }
 };
 
-//Tạo một Location mới
+// Tạo một Location mới
 exports.createLocation = async (req, res) => {
   try {
     const { name_location } = req.body;
@@ -41,7 +41,7 @@ exports.createLocation = async (req, res) => {
     console.log("FILE UPLOADED:", req.file);
     if (!name_location) {
       return res.status(400).json({
-        message: "Name and image are required!",
+        message: "Tên và hình ảnh là bắt buộc!",
       });
     }
     const newLocation = {
@@ -50,47 +50,47 @@ exports.createLocation = async (req, res) => {
     };
     const location = await Location.create(newLocation);
     res.status(201).json({
-      message: "Location created successfully!",
+      message: "Tạo địa điểm thành công!",
       data: location,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error creating location!",
+      message: "Lỗi khi tạo địa điểm!",
       error: error.message,
     });
   }
 };
 
-//Xóa một Location theo ID
+// Xóa một Location theo ID
 exports.deleteLocation = async (req, res) => {
   try {
     const id = req.params.id;
     const location = await Location.findByPk(id);
     if (!location) {
       return res.status(404).json({
-        message: "Location not found!",
+        message: "Không tìm thấy địa điểm!",
       });
     }
     await location.destroy();
     res.json({
-      message: "Location deleted successfully!",
+      message: "Xóa địa điểm thành công!",
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error deleting location!",
+      message: "Lỗi khi xóa địa điểm!",
       error: error.message,
     });
   }
 };
 
-//Cap nhat Location theo ID
+// Cập nhật Location theo ID
 exports.updateLocation = async (req, res) => {
   try {
     const id = req.params.id;
     const location = await Location.findByPk(id);
     if (!location) {
       return res.status(404).json({
-        message: "Location not found!",
+        message: "Không tìm thấy địa điểm!",
       });
     }
     const { name } = req.body;
@@ -99,12 +99,12 @@ exports.updateLocation = async (req, res) => {
     if (name != undefined) location.name_location = name;
     await location.save();
     res.json({
-      message: "Location updated successfully!",
+      message: "Cập nhật địa điểm thành công!",
       data: location,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error updating location!",
+      message: "Lỗi khi cập nhật địa điểm!",
       error: error.message,
     });
   }
