@@ -12,8 +12,8 @@ router.get("/", travelTourController.getAllTravelTours);
 router.get("/:id", travelTourController.getTravelTourById);
 router.post(
   "/create",
-  authenticateUser,
-  authenticateAdmin,
+  // authenticateUser,
+  // authenticateAdmin,
   travelTourController.createTravelTour
 );
 router.put(

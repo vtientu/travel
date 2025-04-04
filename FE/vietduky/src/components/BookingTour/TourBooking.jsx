@@ -5,7 +5,13 @@ import { TourService } from "@/services/API/tour.service";
 import React, { use, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const TourBooking = ({ formData, setFormData, tourId, travelTour }) => {
+const TourBooking = ({
+  formData,
+  setFormData,
+  tourId,
+  travelTour,
+  roomCost,
+}) => {
   const navigate = useNavigate();
   const [agreed, setAgreed] = useState(false);
   const [tours, setTours] = useState("");
@@ -66,9 +72,55 @@ const TourBooking = ({ formData, setFormData, tourId, travelTour }) => {
   };
 
   const totalPrice =
-    (formData?.number_adult +
-      formData?.number_children +
-      formData?.number_newborn || 0) * travelTourData?.price_tour;
+    ((formData?.number_adult +
+      formData?.number_children
+      + formData?.number_toddler || 0) * travelTourData?.price_tour + roomCost)/1000;
+
+  // const calculateTotalPrice = (formData, roomCost, travelTourData) => {
+  //   const numberAdult = formData?.number_adult || 0;
+  //   const numberToddler = formData?.number_toddler || 0;
+  //   const numberChildren = formData?.number_children || 0;
+  //   const numberNewborn = formData?.number_newborn || 0;
+
+  //   let totalPrice = 0;
+
+  //   // Tính phí cho người lớn
+  //   totalPrice += numberAdult * travelTourData?.price_tour;
+
+  //   // Tính phí cho trẻ em dưới 2 tuổi
+  //   if (numberNewborn > 0) {
+  //     // Chỉ tính phí cho trẻ em thứ 2 trở đi
+  //     const extraNewborns = numberNewborn - 1 > 0 ? numberNewborn - 1 : 0;
+  //     if (numberAdult > 1) {
+  //       totalPrice += extraNewborns * (travelTourData?.price_tour * 0); // 75% giá tour cho trẻ em thứ 2 trở đi
+  //     }
+  //   }
+
+  //   // Tính phí cho trẻ em dưới 5 tuổi
+  //   if (numberToddler > 0) {
+  //     totalPrice += numberToddler * (travelTourData?.price_tour * 0.5); // 50% giá tour
+  //   }
+
+  //   // Tính phí cho trẻ em từ 5 đến dưới 12 tuổi
+  //   if (numberChildren > 0) {
+  //     totalPrice += numberChildren * (travelTourData?.price_tour * 0.75); // 75% giá tour
+  //   }
+
+  //   // Tính phí cho trẻ em 12 tuổi trở lên
+  //   const numberOlderChildren = formData?.number_children || 0; // Số trẻ em trên 12 tuổi
+  //   totalPrice += numberOlderChildren * travelTourData?.price_tour; // Tính phí như người lớn
+
+  //   // Cộng thêm chi phí phòng
+  //   totalPrice += roomCost;
+
+  //   return totalPrice;
+  // };
+
+  // // Sử dụng hàm calculateTotalPrice trong nơi thích hợp
+  // const totalPrice = calculateTotalPrice(formData, roomCost, travelTourData);
+
+  console.log("Tổng tiền:", totalPrice);
+  
 
   useEffect(() => {
     setFormData((prev) => ({
@@ -77,8 +129,8 @@ const TourBooking = ({ formData, setFormData, tourId, travelTour }) => {
     }));
   }, [totalPrice]);
 
-  // console.log("Dữ liệu booking:", formData);
-  console.log("Tour booking:", travelTourData);
+  console.log("Dữ liệu booking:", formData);
+  // console.log("Tour booking:", travelTourData);
 
   return (
     <div className="flex flex-col items-end gap-4">
@@ -227,21 +279,22 @@ const TourBooking = ({ formData, setFormData, tourId, travelTour }) => {
                   <span>Em bé</span>
                   <span>
                     {formData.number_newborn} x{" "}
-                    {travelTourData?.price_tour?.toLocaleString("vi-VN", {
+                    {/* {travelTourData?.price_tour?.toLocaleString("vi-VN", {
                       style: "currency",
                       currency: "VND",
-                    }) || "0 ₫"}
+                    }) || "0 ₫"} */}
+                    0 đ
                   </span>
                 </div>
               )}
             </div>
           )}
 
-          {formData?.singleRoomSurcharge > 0 && (
+          {roomCost > 0 && (
             <div className="flex justify-between">
               <span>Phụ thu phòng đơn</span>
               <span>
-                {formData.singleRoomSurcharge.toLocaleString("vi-VN", {
+                {roomCost.toLocaleString("vi-VN", {
                   style: "currency",
                   currency: "VND",
                 })}

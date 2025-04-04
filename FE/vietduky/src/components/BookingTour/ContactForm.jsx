@@ -10,25 +10,32 @@ const ContactForm = ({
   setPassengers,
   user,
   travelTourData,
+  roomCost,
+  setRoomCost,
 }) => {
   const [passengerData, setPassengerData] = useState([]);
 
   useEffect(() => {
     const adults = passengerData.filter((p) => p.type === "adult").length;
-    const children = passengerData.filter((p) => p.type === "child").length;
+    const children = passengerData.filter((p) => p.type === "children").length;
+    const toddlers = passengerData.filter((p) => p.type === "toddler").length;
     const infants = passengerData.filter((p) => p.type === "infant").length;
 
     setFormData((prev) => ({
       ...prev,
       travel_tour_id: travelTourData[0]?.id || "",
       number_adult: adults + passengers.adult,
-      number_children: children + passengers.child,
+      number_children: children + passengers.children,
+      number_toddler: toddlers + passengers.toddler,
       number_newborn: infants + passengers.infant,
       passengers: passengerData ?? [],
     }));
   }, [passengers, passengerData, travelTourData]);
 
-  console.log(formData);
+  // console.log("Dữ liệu booking", formData);
+  // console.log("Hành khách đã chọn:", passengerData);
+  // console.log("Giá phòng đơn", roomCost);
+  
 
   const handlePassengerDataChange = (data) => {
     // console.log("Received new passengerData:", data);
@@ -50,8 +57,6 @@ const ContactForm = ({
     setPassengerData(formattedPassengers);
   };
 
-  // console.log(passengers);
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -67,7 +72,7 @@ const ContactForm = ({
     }));
   };
 
-  console.log("Hành khách", passengers);
+  // console.log("Hành khách", passengers);
 
   return (
     <div className="flex flex-col gap-4 p-4">
@@ -147,7 +152,7 @@ const ContactForm = ({
           { label: "Trẻ em", type: "children", desc: "Từ 5 - 11 tuổi", min: 0 },
           {
             label: "Trẻ nhỏ",
-            type: "young-child",
+            type: "toddler",
             desc: "Từ 2 - 4 tuổi",
             min: 0,
           },
@@ -172,7 +177,11 @@ const ContactForm = ({
 
       <PassengerInfoForm
         passengers={passengers}
+        setPassengers={setPassengers}
+        roomCost={roomCost}
+        setRoomCost={setRoomCost}
         onPassengerDataChange={handlePassengerDataChange}
+        setFormData={setFormData}
       />
       <div className="border-b border-[#b1b1b1]" />
       <div className="space-y-2">

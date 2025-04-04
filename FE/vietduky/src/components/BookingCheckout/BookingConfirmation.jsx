@@ -58,9 +58,11 @@ const BookingConfirmation = ({ bookingData }) => {
     return `${randomLetters}${timestamp}`;
   };
 
-  const qrSrc = `https://img.vietqr.io/image/mbbank-0868884528-compact2.jpg?amount=${bookingData?.total_cost}&addInfo=${generateAddInfo()}&accountName=VietDuKy`;
+  const qrSrc = `https://img.vietqr.io/image/mbbank-0868884528-compact2.jpg?amount=${bookingData?.total_cost}&addInfo=start${generateAddInfo()}end&accountName=VietDuKy`;
 
   // console.log("tour", travelTour);
+  console.log("QR", qrSrc);
+  
   
 
   return (

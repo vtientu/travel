@@ -1,6 +1,7 @@
 const db = require("../models");
 const axios = require("axios");
-
+const Booking = db.Booking;
+const Payment = db.Payment;
 
 //Lấy danh sách tất cả Payment Card
 exports.checkPayment = async (req, res) => {
@@ -25,7 +26,7 @@ exports.checkPayment = async (req, res) => {
                 const matches = value[1].toLowerCase().match(/start(.*?)end/i);
                 if (matches && paymentKey.toLowerCase() === matches[1].trim()) {
                     message = true;
-                    amount = parseInt(value[2], 1);
+                    amount = parseInt(value[2])*1000;
                 }
             });
 

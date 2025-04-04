@@ -216,6 +216,7 @@ exports.createBooking = async (req, res) => {
       number_adult,
       number_children,
       number_newborn,
+      number_toddler,
       total_cost,
       name,
       phone,
@@ -348,6 +349,7 @@ exports.createBooking = async (req, res) => {
       const totalPassengers =
         parseInt(number_adult) +
         parseInt(number_children) +
+        parseInt(number_toddler) +
         parseInt(number_newborn);
       if (passengersArray.length !== totalPassengers) {
         return res.status(400).json({
