@@ -26,7 +26,7 @@ exports.checkPayment = async (req, res) => {
                 const matches = value[1].toLowerCase().match(/start(.*?)end/i);
                 if (matches && paymentKey.toLowerCase() === matches[1].trim()) {
                     message = true;
-                    amount = parseInt(value[2])*1000;
+                    amount = parseInt(value[2]) * 1000;
                 }
             });
 
@@ -40,13 +40,24 @@ exports.checkPayment = async (req, res) => {
                 //         paymentDate: new Date(),
                 //     }
                 // );
-
                 const booking = await Booking.findOne({
                     where: {
                         id: bookingId,
                     },
                 });
-                booking.status = 1;
+                const existingPayment = await Payment.findOne({
+                    where: {
+                        booking_id: bookingId,
+                    },
+                });
+                if (existingPayment) {
+                    totalPayment = existingPayment.amount + amount;
+                }
+                if (totalPayment === booking.total_price) {
+                    booking.status = 2;
+                } else {
+                    booking.status = 1;
+                }
                 await booking.save();
                 const payment = await Payment.create({
                     customer_id: customerId,
@@ -74,7 +85,7 @@ exports.checkPayment = async (req, res) => {
             .json({error: "Đã xảy ra lỗi trong quá trình xử lý"});
     }
 };
- exports.getPayment = async (req, res) => {
+exports.getPayment = async (req, res) => {
     const {paymentId} = req.body;
     const payment = await Payment.findOne({
         where: {

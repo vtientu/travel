@@ -41,8 +41,16 @@ module.exports.getServiceById = async (req, res) => {
 module.exports.createService = async (req, res) => {
     try {
         const {name_service, price_service, description_service} = req.body;
-        if (!name_service || !description_service) {
-            return res.status(400).json({error: "Vui lòng nhập đầy đủ các trường"});
+        if (!name_service) {
+            return res.status(400).json({error: "Vui lòng nhập tên dịch vụ"});
+        }
+        const existingService = await Service.findOne({
+            where: {
+                name_service: name_service,
+            },
+        });
+        if (existingService) {
+            return res.status(400).json({error: "Dịch vụ đã tồn tại"});
         }
         const newService = await Service.create({
             name_service,
