@@ -15,3 +15,18 @@ export function getService() {
             throw error;
         });
 }
+export function createService(data) {
+    return restClient({
+        url: "service/create",
+        method: "POST",
+        data,
+    })
+        .then(response => {
+            // console.log("Dữ liệu API trả về:", response.data);
+            return response.data;
+        })
+        .catch(error => {
+            console.error("Lỗi API:", error);
+            throw error;
+        });
+}

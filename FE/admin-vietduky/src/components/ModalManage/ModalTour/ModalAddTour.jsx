@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import {fetchLocations, fetchServices, fetchTypeTours} from "../../../services/service";
 import { createTour } from "../../../services/API/tour.service";
 import ModalConfirmTravelTour from "../ModalConfirm/ModalConfirmTravelTour.jsx";
+import Select from "react-select"; // Import React Select đúng cách
 
 export default function ModalAddTour({ onClose, onCreateSuccess }) {
   const [locations, setLocations] = useState([]);
@@ -47,14 +48,13 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
   const handleEditorChange = (content) => {
     setTourData((prev) => ({ ...prev, activity_description: content }));
   };
-  //
-  // const handleAddTravelTour = (newTravelTour) => {
-  //   setTourData((prev) => ({
-  //     ...prev,
-  //     travel_tours: [...prev.travel_tours, newTravelTour],
-  //   }));
-  //   setIsModalOpen(false);
-  // };
+
+  const handleServiceChange = (selectedOptions) => {
+    setTourData((prev) => ({
+      ...prev,
+      service_id: selectedOptions.map((option) => option.value),
+    }));
+  };
 
   const handleFileChange = (e) => {
     const newFiles = Array.from(e.target.files);
@@ -139,10 +139,6 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
       onClose();
     });
   };
-
-  // const toggleModal = () => {
-  //   setIsModalOpen(!isModalOpen);
-  // };
 
   const handleWrapperClick = () => {
     onClose();
@@ -302,30 +298,21 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
               <label className="block mb-2 font-medium before:content-['*'] before:text-red-500 before:mr-1">
                 Dịch vụ
               </label>
-              <div className="grid grid-cols-2 gap-2 mb-4">
-                {services.map((service) => (
-                    <label key={service.id} className="flex items-center gap-2">
-                      <input
-                          type="checkbox"
-                          value={service.id}
-                          checked={tourData.service_id.includes(String(service.id))}
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            setTourData((prev) => {
-                              const isSelected = prev.service_id.includes(value);
-                              return {
-                                ...prev,
-                                service_id: isSelected
-                                    ? prev.service_id.filter((id) => id !== value)
-                                    : [...prev.service_id, value]
-                              };
-                            });
-                          }}
-                      />
-                      <span>{service.name_service}</span>
-                    </label>
-                ))}
-              </div>
+              <Select
+                  isMulti
+                  options={services.map((service) => ({
+                    value: service.id,
+                    label: service.name_service,
+                  }))}
+                  value={tourData.service_id.map((id) => ({
+                    value: id,
+                    label: services.find((service) => service.id === id)?.name_service,
+                  }))}
+                  onChange={handleServiceChange}
+                  className="w-full"
+                  placeholder="Chọn dịch vụ kèm theo"
+                  isSearchable
+              />
 
               {/* Ảnh minh họa */}
               <label className="block mb-2 font-medium before:content-['*'] before:text-red-500 before:mr-1">
@@ -393,58 +380,6 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
 
             {/* Cột phải */}
             <div className="w-3/5">
-
-              {/*<div>*/}
-              {/*  <div className="flex justify-between items-center mb-4">*/}
-              {/*    <div>*/}
-              {/*      <label className="font-medium">*/}
-              {/*        Chương trình Tour*/}
-              {/*      </label>*/}
-              {/*    </div>*/}
-              {/*    <div className="flex gap-4">*/}
-              {/*      <button*/}
-              {/*        type="button"*/}
-              {/*        className="bg-red-700 text-white px-4 py-2 rounded-md"*/}
-              {/*        onClick={toggleModal}*/}
-              {/*      >*/}
-              {/*        Thêm chương trình*/}
-              {/*      </button>*/}
-              {/*    </div>*/}
-              {/*  </div>*/}
-              {/*  <div className="relative">*/}
-              {/*    <div className="mt-4 mb-4 bg-white">*/}
-              {/*      <table className="w-full border-collapse border rounded-lg shadow-md bg-white">*/}
-              {/*        <thead>*/}
-              {/*          <tr className="text-SmokyGray">*/}
-              {/*            <th className="p-2 ">Tiêu đề</th>*/}
-              {/*            <th className="p-2">Mô tả</th>*/}
-              {/*            <th className="p-2">Mô tả chi tiết</th>*/}
-              {/*          </tr>*/}
-              {/*        </thead>*/}
-              {/*          <tbody>*/}
-              {/*              <tr>*/}
-              {/*                <td colSpan="5" className="p-6 text-center">*/}
-              {/*                  <div className="flex flex-col items-center h-[160px]">*/}
-              {/*                    <div className="p-4 bg-gray-100 rounded-full mb-2">*/}
-              {/*                      <HiOutlineInbox className="text-4xl text-gray-600" />*/}
-              {/*                    </div>*/}
-              {/*                    <p className="text-gray-600 text-md">*/}
-              {/*                      Chưa có hành trình nào*/}
-              {/*                    </p>*/}
-              {/*                  </div>*/}
-              {/*                </td>*/}
-              {/*              </tr>*/}
-              {/*          </tbody>*/}
-              {/*      </table>*/}
-              {/*    </div>*/}
-              {/*    {isModalOpen && (*/}
-              {/*      <ModalAddProgram*/}
-              {/*        onClose={toggleModal}*/}
-              {/*        onAddTravelTour={handleAddTravelTour}*/}
-              {/*      />*/}
-              {/*    )}*/}
-              {/*  </div>*/}
-              {/*</div>*/}
 
               <div>
                 <label className="block mb-2 font-medium">

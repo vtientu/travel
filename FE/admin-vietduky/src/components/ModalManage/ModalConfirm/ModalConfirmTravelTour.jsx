@@ -6,7 +6,7 @@ export default function ModalConfirmTravelTour({ open, onCancel, onConfirm }) {
             <div className="bg-white rounded-xl p-7 w-full max-w-lg shadow-lg">
                 <h2 className="text-lg font-semibold mb-2 text-gray-900">Bạn có muốn tạo lịch khởi hành</h2>
                 <p className="text-gray-500 text-md mb-6">
-                    Tạo Tour thành công. Và bạn có muốn tạo luôn lịch khởi hành cho Tour vừa tạo?
+                    Bạn có muốn tạo luôn lịch khởi hành cho Tour vừa tạo?
                 </p>
 
                 <div className="flex justify-end gap-3">
