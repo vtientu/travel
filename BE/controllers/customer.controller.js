@@ -8,12 +8,12 @@ exports.getAllCustomers = async (req, res) => {
   try {
     const customers = await Customer.findAll();
     res.json({
-      message: "Retrieve all customers successfully!",
+      message: "Lấy danh sách tất cả khách hàng thành công!",
       data: customers,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error retrieving customers!",
+      message: "Lỗi khi lấy danh sách khách hàng!",
       error: error.message,
     });
   }
@@ -26,16 +26,16 @@ exports.getCustomerById = async (req, res) => {
     const customer = await Customer.findByPk(id);
     if (!customer) {
       return res.status(404).json({
-        message: "Customer not found!",
+        message: "Khách hàng không tồn tại!",
       });
     }
     res.json({
-      message: "Retrieve customer successfully!",
+      message: "Lấy thông tin khách hàng thành công!",
       data: customer,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error retrieving customer!",
+      message: "Lỗi khi lấy thông tin khách hàng!",
       error: error.message,
     });
   }
@@ -47,7 +47,7 @@ exports.createCustomer = async (req, res) => {
     const { user_id, first_name, last_name, email } = req.body;
     if (!user_id || !first_name || !last_name || !email) {
       return res.status(400).json({
-        message: "Please enter full information of customer!",
+        message: "Vui lòng cung cấp đầy đủ thông tin!",
       });
     }
 
@@ -55,19 +55,19 @@ exports.createCustomer = async (req, res) => {
     const user = await User.findByPk(user_id);
     if (!user) {
       return res.status(404).json({
-        message: "User not found!",
+        message: "Người dùng không tồn tại!",
       });
     }
 
     const data = { user_id, first_name, last_name, email };
     const customer = await Customer.create(data);
     res.json({
-      message: "Customer created successfully!",
+      message: "Tạo người dùng thành công!",
       data: customer,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error creating customer!",
+      message: "Lỗi khi tạo người dùng!",
       error: error.message,
     });
   }
@@ -89,7 +89,7 @@ exports.updateCustomer = async (req, res) => {
     const customer = await Customer.findByPk(id);
     if (!customer) {
       return res.status(404).json({
-        message: "Customer not found!",
+        message: "Người dùng không tồn tại!",
       });
     }
 
@@ -116,12 +116,12 @@ exports.updateCustomer = async (req, res) => {
     }
     await customer.save();
     res.json({
-      message: "Customer updated successfully!",
+      message: "Cập nhật thông tin người dùng thành công!",
       data: customer,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error updating customer!",
+      message: "Lỗi khi cập nhật thông tin người dùng!",
       error: error.message,
     });
   }
@@ -139,13 +139,21 @@ exports.getCustomerProfile = async (req, res) => {
       include: [
         {
           model: Customer,
-          attributes: ["id", "first_name", "last_name", "number_phone", "gender", "birth_date", "payment_card_id"], // Các trường của Customer
+          attributes: [
+            "id",
+            "first_name",
+            "last_name",
+            "number_phone",
+            "gender",
+            "birth_date",
+            "payment_card_id",
+          ], // Các trường của Customer
         },
       ],
     });
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "Người dùng không tồn tại" });
     }
 
     return res.json(user); // Trả về toàn bộ thông tin User + Customer
@@ -162,9 +170,12 @@ exports.updateCustomerProfile = async (req, res) => {
     const { password, number_phone, gender, birth_date } = req.body; // Dữ liệu từ client
 
     // Kiểm tra user tồn tại
-    const user = await User.findOne({ where: { id: userId }, include: Customer });
+    const user = await User.findOne({
+      where: { id: userId },
+      include: Customer,
+    });
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "Người dùng không tồn tại" });
     }
 
     // Cập nhật mật khẩu (nếu có)
@@ -199,7 +210,10 @@ exports.updateCustomerProfile = async (req, res) => {
     // Lưu thông tin user
     await user.save();
 
-    return res.json({ message: "Profile updated successfully", user });
+    return res.json({
+      message: "Cập nhật thông tin người dùng thành công",
+      user,
+    });
   } catch (error) {
     console.error("Lỗi khi cập nhật profile:", error);
     return res.status(500).json({ error: "Internal server error" });

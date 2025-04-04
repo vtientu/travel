@@ -308,7 +308,7 @@ exports.getTourActivities = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Error getting tour activities:", error);
+    console.error("Lỗi khi lấy danh sách hoạt động:", error);
     res.status(500).json({
       message: "Lỗi khi lấy danh sách hoạt động!",
       error: error.message,
@@ -321,7 +321,11 @@ const generateTourCode = async (type_id, start_location) => {
     // Kiểm tra xem type_id có tồn tại không
     const typeTour = await TypeTour.findByPk(type_id);
     if (!typeTour) {
-      console.error("Error: TypeTour not found");
+      console.error("Lỗi: Không tìm thấy loại tour");
+      res.status(500).json({
+        message: "Lỗi khi tạo mã tour",
+        error: error.message,
+      });
       return null;
     }
 
@@ -367,13 +371,19 @@ const generateTourCode = async (type_id, start_location) => {
     }
 
     if (duplicate) {
-      console.error("Error: Failed to generate unique tour code");
+      res.status(500).json({
+        message: "Lỗi khi tạo mã tour - mã đã tồn tại!",
+        error: "Trùng mã tour",
+      });
       return null;
     }
 
     return newCode;
   } catch (error) {
-    console.error("Error generating tour code:", error);
+    res.status(500).json({
+      message: "Lỗi khi tạo mã tour",
+      error: error.message,
+    });
     return null;
   }
 };
@@ -408,7 +418,7 @@ exports.createTour = async (req, res) => {
           parsedServiceIds = [parsedServiceIds];
         }
       } catch (error) {
-        console.error("Error parsing service_ids:", error);
+        console.error("Lỗi khi phân tích cú pháp service_ids:", error);
         parsedServiceIds = [service_ids];
       }
     }
@@ -424,7 +434,7 @@ exports.createTour = async (req, res) => {
     if (!startLoc || !endLoc) {
       return res
         .status(400)
-        .json({ message: "Start or End location does not exist!" });
+        .json({ message: "Điểm khởi hành hoặc điểm đến không tồn tại!" });
     }
 
     if (
@@ -443,25 +453,25 @@ exports.createTour = async (req, res) => {
     ) {
       console.error("Missing fields:", req.body);
       return res.status(400).json({
-        message: "Please provide all required fields!",
+        message: "Vui lòng điền đầy đủ thông tin tour!",
       });
     }
     // Tạo `code_tour`
     const code_tour = await generateTourCode(type_id, startLoc.id);
     if (!code_tour) {
-      return res.status(500).json({ message: "Error generating tour code!" });
+      return res.status(500).json({ message: "Lỗi khi tạo code tour" });
     }
 
     // Kiểm tra `code_tour` đã tồn tại chưa trước khi lưu vào DB
     const existingTour = await Tour.findOne({ where: { code_tour } });
     if (existingTour) {
-      return res
-        .status(400)
-        .json({ message: "Tour code already exists! Try again." });
+      return res.status(400).json({ message: "Mã tour đã tồn tại!" });
     }
 
     if (!code_tour || code_tour.trim() === "") {
-      return res.status(400).json({ message: "Invalid tour code generated!" });
+      return res
+        .status(400)
+        .json({ message: "Mã tour không hợp lệ được tạo!" });
     }
 
     const tourData = {
@@ -508,20 +518,20 @@ exports.createTour = async (req, res) => {
 
       await TravelTour.bulkCreate(travelTourData);
       res.json({
-        message: "Create tour and travel tour successfully!",
+        message: "Tạo tour và TravelTour thành công!",
         tour: newTour,
         travel_tours: travelTourData,
       });
     } else {
       res.json({
-        message: "Create tour successfully!",
+        message: "Tạo tour thành công!",
         tour: newTour,
       });
     }
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({
-      message: "Error inserting tour",
+      message: "Lỗi khi tạo tour",
       error: error.message,
     });
   }
@@ -534,17 +544,17 @@ exports.deleteTourById = async (req, res) => {
     const tour = await db.Tour.findByPk(tourId);
 
     if (!tour) {
-      return res.status(404).json({ message: "Tour not found!" });
+      return res.status(404).json({ message: "Tour không tồn tại" });
     }
 
     await tour.destroy();
     res.json({
-      message: "Delete tour successfully!",
+      message: "Xóa tour thành công!",
       data: tour,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error deleting tour",
+      message: "Lỗi khi xóa tour",
       error: error,
     });
   }
@@ -557,7 +567,7 @@ exports.updateTourById = async (req, res) => {
     const tour = await db.Tour.findByPk(tourId);
 
     if (!tour) {
-      return res.status(404).json({ message: "Tour not found!" });
+      return res.status(404).json({ message: "Tour không tồn tại!" });
     }
 
     const album =
@@ -650,12 +660,12 @@ exports.updateTourById = async (req, res) => {
 
     await tour.save();
     res.json({
-      message: "Update tour successfully!",
+      message: "Cập nhật tour thành công!",
       data: tour,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error updating tour",
+      message: "Lỗi khi cập nhật tour",
       error: error,
     });
   }

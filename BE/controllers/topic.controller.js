@@ -6,29 +6,28 @@ exports.createTopic = async (req, res) => {
   try {
     const { name, description } = req.body;
     console.log(req.body);
-    
+
     if (!name) {
       return res.status(400).json({
-        message: "Vui lòng nhập tên chủ đề!"
+        message: "Vui lòng nhập tên chủ đề!",
       });
     }
 
     const topic = await Topic.create({
       name,
       description,
-      active: true
+      active: true,
     });
 
     res.status(201).json({
       message: "Tạo chủ đề thành công!",
-      data: topic
+      data: topic,
     });
-
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({
       message: "Lỗi khi tạo chủ đề!",
-      error: error.message
+      error: error.message,
     });
   }
 };
@@ -37,19 +36,18 @@ exports.createTopic = async (req, res) => {
 exports.getAllTopics = async (req, res) => {
   try {
     const topics = await Topic.findAll({
-      where: { active: true }
+      where: { active: true },
     });
 
     res.json({
       message: "Lấy danh sách chủ đề thành công!",
-      data: topics
+      data: topics,
     });
-
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({
       message: "Lỗi khi lấy danh sách chủ đề!",
-      error: error.message
+      error: error.message,
     });
   }
 };
@@ -62,20 +60,19 @@ exports.getTopicById = async (req, res) => {
 
     if (!topic || !topic.active) {
       return res.status(404).json({
-        message: "Không tìm thấy chủ đề!"
+        message: "Không tìm thấy chủ đề!",
       });
     }
 
     res.json({
       message: "Lấy thông tin chủ đề thành công!",
-      data: topic
+      data: topic,
     });
-
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({
       message: "Lỗi khi lấy thông tin chủ đề!",
-      error: error.message
+      error: error.message,
     });
   }
 };
@@ -90,7 +87,7 @@ exports.updateTopic = async (req, res) => {
 
     if (!topic || !topic.active) {
       return res.status(404).json({
-        message: "Không tìm thấy chủ đề!"
+        message: "Không tìm thấy chủ đề!",
       });
     }
 
@@ -101,14 +98,13 @@ exports.updateTopic = async (req, res) => {
 
     res.json({
       message: "Cập nhật chủ đề thành công!",
-      data: topic
+      data: topic,
     });
-
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({
       message: "Lỗi khi cập nhật chủ đề!",
-      error: error.message
+      error: error.message,
     });
   }
 };
@@ -121,7 +117,7 @@ exports.deleteTopic = async (req, res) => {
 
     if (!topic || !topic.active) {
       return res.status(404).json({
-        message: "Không tìm thấy chủ đề!"
+        message: "Không tìm thấy chủ đề!",
       });
     }
 
@@ -129,15 +125,13 @@ exports.deleteTopic = async (req, res) => {
     await topic.save();
 
     res.json({
-      message: "Xóa chủ đề thành công!"
+      message: "Xóa chủ đề thành công!",
     });
-
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({
       message: "Lỗi khi xóa chủ đề!",
-      error: error.message
+      error: error.message,
     });
   }
 };
-    

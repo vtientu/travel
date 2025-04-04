@@ -19,12 +19,12 @@ exports.getAllArticles = async (req, res) => {
       ],
     });
     res.status(200).json({
-      message: "Retrieved all articles successfully!",
+      message: "Lấy danh sách tất cả bài viết thành công!",
       data: articles,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error retrieving articles!",
+      message: "Lỗi khi lấy danh sách bài viết!",
       error: error.message,
     });
   }
@@ -48,12 +48,12 @@ exports.getArticlesByDirectory = async (req, res) => {
     });
 
     res.status(200).json({
-      message: "Retrieved articles by directory successfully!",
+      message: "Lấy bài viết theo danh mục thành công!",
       data: articles,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error retrieving articles by directory!",
+      message: "Lỗi khi lấy bài viết theo danh mục!",
       error: error.message,
     });
   }
@@ -78,12 +78,12 @@ exports.createArticle = async (req, res) => {
     const newArticle = await Article.create(data);
 
     res.status(200).json({
-      message: "Created new article successfully!",
+      message: "Thêm bài viết mới thành công!",
       data: newArticle,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error creating new article!",
+      message: "Lỗi khi thêm bài viết mới!",
       error: error.message,
     });
   }
@@ -101,7 +101,7 @@ exports.updateArticle = async (req, res) => {
 
     if (!article) {
       return res.status(404).json({
-        message: "Article not found!",
+        message: "Không tìm thấy bài viết!",
       });
     }
 
@@ -114,12 +114,12 @@ exports.updateArticle = async (req, res) => {
     await article.save();
 
     res.status(200).json({
-      message: "Updated article successfully!",
+      message: "Cập nhật bài viết thành công!",
       data: article,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error updating article!",
+      message: "Lỗi khi cập nhật bài viết!",
       error: error.message,
     });
   }
@@ -134,18 +134,18 @@ exports.deleteArticle = async (req, res) => {
 
     if (!article) {
       return res.status(404).json({
-        message: "Article not found!",
+        message: "Không tìm thấy bài viết!",
       });
     }
 
     await article.destroy();
 
     res.status(200).json({
-      message: "Deleted article successfully!",
+      message: "Xóa bài viết thành công!",
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error deleting article!",
+      message: "Lỗi khi xóa bài viết!",
       error: error.message,
     });
   }

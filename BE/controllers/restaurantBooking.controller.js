@@ -3,7 +3,7 @@ const RestaurantBooking = db.RestaurantBooking;
 const Restaurant = db.Restaurant;
 const Booking = db.Booking;
 
-//Lấy thông tin các nhà hàng đã được đặt cho một booking
+// Lấy thông tin các nhà hàng đã được đặt cho một booking
 exports.getRestaurantBookingsByBookingId = async (req, res) => {
   try {
     const bookingId = req.params.booking_id;
@@ -14,22 +14,24 @@ exports.getRestaurantBookingsByBookingId = async (req, res) => {
     });
 
     if (restaurantBookings.length === 0) {
-      return res.status(404).json({ message: "No restaurant bookings found!" });
+      return res
+        .status(404)
+        .json({ message: "Không tìm thấy đặt bàn nhà hàng nào!" });
     }
 
     res.status(200).json({
-      message: "Restaurant bookings fetched successfully",
+      message: "Lấy thông tin đặt bàn nhà hàng thành công",
       data: restaurantBookings,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error fetching restaurant bookings",
+      message: "Lỗi khi lấy thông tin đặt bàn nhà hàng",
       error: error.message,
     });
   }
 };
 
-//Thêm dịch vụ nhà hàng cho booking
+// Thêm dịch vụ nhà hàng cho booking
 exports.addRestaurantToBooking = async (req, res) => {
   try {
     const { booking_id, restaurant_id } = req.body;
@@ -40,18 +42,18 @@ exports.addRestaurantToBooking = async (req, res) => {
     });
 
     res.status(201).json({
-      message: "Restaurant added to booking successfully!",
+      message: "Thêm nhà hàng vào booking thành công!",
       data: newRestaurantBooking,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error adding restaurant to booking",
+      message: "Lỗi khi thêm nhà hàng vào booking",
       error: error.message,
     });
   }
 };
 
-//Hủy đặt bàn Restaurant
+// Hủy đặt bàn Restaurant
 exports.cancelRestaurantBooking = async (req, res) => {
   try {
     const id = req.params.id;
@@ -59,18 +61,18 @@ exports.cancelRestaurantBooking = async (req, res) => {
 
     if (!restaurantBooking) {
       return res.status(404).json({
-        message: "Restaurant booking not found!",
+        message: "Không tìm thấy đặt bàn nhà hàng!",
       });
     }
 
     await restaurantBooking.destroy();
 
     res.json({
-      message: "Restaurant booking cancelled successfully!",
+      message: "Hủy đặt bàn nhà hàng thành công!",
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error cancelling restaurant booking!",
+      message: "Lỗi khi hủy đặt bàn nhà hàng!",
       error: error.message,
     });
   }

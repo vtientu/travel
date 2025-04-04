@@ -29,9 +29,14 @@ const register = async (req, res) => {
       role_id: 1,
     });
 
-    return res.status(201).json({ message: "Tạo tài khoản thành công!", user: newUser });
+    return res
+      .status(201)
+      .json({ message: "Tạo tài khoản thành công!", user: newUser });
   } catch (error) {
-    return res.status(500).json({ message: "Xảy ra lỗi khi đăng ký, vui lòng thử lại sau !", error: error.message });
+    return res.status(500).json({
+      message: "Xảy ra lỗi khi đăng ký, vui lòng thử lại sau!",
+      error: error.message,
+    });
   }
 };
 
@@ -39,14 +44,18 @@ const login = async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res.status(400).json({ message: "Vui lòng nhập tài khoản hoặc mật khẩu!" });
+    return res
+      .status(400)
+      .json({ message: "Vui lòng nhập tài khoản hoặc mật khẩu!" });
   }
 
   try {
     const existingUser = await User.findOne({ where: { email } });
 
     if (!existingUser) {
-      return res.status(401).json({ message: "Tài khoản hoặc mật khẩu không đúng!" });
+      return res
+        .status(401)
+        .json({ message: "Tài khoản hoặc mật khẩu không đúng!" });
     }
 
     const passwordMatch = await bcrypt.compare(password, existingUser.password);
@@ -59,7 +68,9 @@ const login = async (req, res) => {
         access_token: generateAccessToken(existingUser.id),
       });
     } else {
-      return res.status(401).json({ message: "Tài khoản hoặc mật khẩu không đúng!" });
+      return res
+        .status(401)
+        .json({ message: "Tài khoản hoặc mật khẩu không đúng!" });
     }
   } catch (error) {
     return res.status(500).json({ error: error.message });
@@ -79,7 +90,7 @@ const googleAuth = async (accessToken, refreshToken, profile, done) => {
         displayName: profile.displayName,
         givenName: profile.name?.givenName || "",
         familyName: profile.name?.familyName || "",
-        role_id: 1, // Mặc định là customer
+        role_id: 1, // Mặc định là khách hàng
       });
 
       // Kiểm tra xem Customer đã tồn tại chưa
@@ -101,30 +112,29 @@ const googleAuth = async (accessToken, refreshToken, profile, done) => {
       }
     }
 
-      return done(null, user);
-    } catch (error) {
-      console.error("Lỗi trong googleAuth:", error);
-      return done(error, null);
+    return done(null, user);
+  } catch (error) {
+    console.error("Lỗi trong googleAuth:", error);
+    return done(error, null);
+  }
+};
+
+const googleLogin = async (req, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).json({ message: "Xác thực thất bại" });
     }
-  };
 
+    const user = await User.findOne({
+      where: { id: req.user.id },
+      include: { model: Role, as: "role", attributes: ["id", "role_name"] },
+    });
 
-  const googleLogin = async (req, res) => {
-    try {
-      if (!req.user) {
-        return res.status(401).json({ message: "Authentication failed" });
-      }
+    if (!user) {
+      return res.status(404).json({ message: "Không tìm thấy người dùng" });
+    }
 
-      const user = await User.findOne({
-        where: { id: req.user.id },
-        include: { model: Role, as: "role", attributes: ["id", "role_name"] },
-      });
-
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-
-      let customer = await Customer.findOne({ where: { user_id: user.id } });
+    let customer = await Customer.findOne({ where: { user_id: user.id } });
 
     if (!customer) {
       customer = await Customer.create({
@@ -135,50 +145,56 @@ const googleAuth = async (accessToken, refreshToken, profile, done) => {
       });
     }
 
-      const token = generateAccessToken(user.id);
+    const token = generateAccessToken(user.id);
 
-      return res.redirect(
-        `http://localhost:5173/auth/callback?token=${token}&id=${user.id}&email=${encodeURIComponent(user.email)}&avatar=${encodeURIComponent(user.avatar || '')}&name=${encodeURIComponent(user.displayName)}&role_name=${encodeURIComponent(user.role.role_name)}`
-      );
-    } catch (error) {
-      return res.status(500).json({ error: error.message });
+    return res.redirect(
+      `http://localhost:5173/auth/callback?token=${token}&id=${
+        user.id
+      }&email=${encodeURIComponent(user.email)}&avatar=${encodeURIComponent(
+        user.avatar || ""
+      )}&name=${encodeURIComponent(
+        user.displayName
+      )}&role_name=${encodeURIComponent(user.role.role_name)}`
+    );
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+const getProfile = async (req, res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ message: "Không được phép truy cập" });
     }
-  };
 
-  const getProfile = async (req, res) => {
-    try {
-      const authHeader = req.headers.authorization;
-      if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        return res.status(401).json({ message: "Unauthorized" });
-      }
+    const token = authHeader.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      const token = authHeader.split(" ")[1];
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findOne({
+      where: { id: decoded.id },
+      include: { model: Role, as: "role", attributes: ["id", "role_name"] },
+    });
 
-      const user = await User.findOne({
-        where: { id: decoded.id },
-        include: { model: Role, as: "role", attributes: ["id", "role_name"] },
-      });
-
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
-
-      return res.json({
-        id: user.id,
-        email: user.email,
-        avatar: user.avatar,
-        role_id: user.role_id,
-      });
-    } catch (error) {
-      return res.status(500).json({ error: error.message });
+    if (!user) {
+      return res.status(404).json({ message: "Không tìm thấy người dùng" });
     }
-  };
 
-  module.exports = {
-    register,
-    login,
-    googleAuth,
-    googleLogin,
-    getProfile,
-  };
+    return res.json({
+      id: user.id,
+      email: user.email,
+      avatar: user.avatar,
+      role_id: user.role_id,
+    });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+module.exports = {
+  register,
+  login,
+  googleAuth,
+  googleLogin,
+  getProfile,
+};

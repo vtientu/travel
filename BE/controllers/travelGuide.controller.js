@@ -7,12 +7,12 @@ exports.getAllTravelGuides = async (req, res) => {
   try {
     const travelGuides = await TravelGuide.findAll();
     res.status(200).json({
-      message: "Travel guides fetched successfully!",
+      message: "Lấy danh sách hướng dẫn viên du lịch thành công!",
       data: travelGuides,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error retrieving travel guides!",
+      message: "Lỗi khi lấy danh sách hướng dẫn viên du lịch!",
       error: error.message,
     });
   }
@@ -25,21 +25,23 @@ exports.getTravelGuidesByUser = async (req, res) => {
 
     const user = await User.findByPk(userId);
     if (!user) {
-      return res.status(404).json({ message: "User not found!" });
+      return res.status(404).json({ message: "Không tìm thấy người dùng!" });
     }
 
     const travelGuides = await TravelGuide.findByPk(userId);
     if (!travelGuides) {
-      return res.status(404).json({ message: "Travel guides not found!" });
+      return res
+        .status(404)
+        .json({ message: "Không tìm thấy hướng dẫn viên du lịch!" });
     }
 
     res.status(200).json({
-      message: "Travel guides fetched successfully!",
+      message: "Lấy danh sách hướng dẫn viên du lịch thành công!",
       data: travelGuides,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error fetching travel guides",
+      message: "Lỗi khi lấy danh sách hướng dẫn viên du lịch!",
       error: error.message,
     });
   }
@@ -60,7 +62,7 @@ exports.createTravelGuide = async (req, res) => {
 
     const user = await User.findByPk(user_id);
     if (!user) {
-      return res.status(404).json({ message: "User not found!" });
+      return res.status(404).json({ message: "Không tìm thấy người dùng!" });
     }
 
     const newTravelGuide = await TravelGuide.create({
@@ -74,12 +76,12 @@ exports.createTravelGuide = async (req, res) => {
     });
 
     res.status(201).json({
-      message: "Travel guide created successfully!",
+      message: "Tạo hướng dẫn viên du lịch thành công!",
       data: newTravelGuide,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error creating travel guide",
+      message: "Lỗi khi tạo hướng dẫn viên du lịch!",
       error: error.message,
     });
   }
@@ -100,7 +102,9 @@ exports.updateTravelGuide = async (req, res) => {
 
     const travelGuide = await TravelGuide.findByPk(travelGuideId);
     if (!travelGuide) {
-      return res.status(404).json({ message: "Travel guide not found!" });
+      return res
+        .status(404)
+        .json({ message: "Không tìm thấy hướng dẫn viên du lịch!" });
     }
 
     if (first_name != undefined)
@@ -118,12 +122,12 @@ exports.updateTravelGuide = async (req, res) => {
     await travelGuide.save();
 
     res.status(200).json({
-      message: "Travel guide updated successfully!",
+      message: "Cập nhật thông tin hướng dẫn viên du lịch thành công!",
       data: travelGuide,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error updating travel guide",
+      message: "Lỗi khi cập nhật thông tin hướng dẫn viên du lịch!",
       error: error.message,
     });
   }
@@ -136,17 +140,19 @@ exports.deleteTravelGuide = async (req, res) => {
 
     const travelGuide = await TravelGuide.findByPk(travelGuideId);
     if (!travelGuide) {
-      return res.status(404).json({ message: "Travel guide not found!" });
+      return res
+        .status(404)
+        .json({ message: "Không tìm thấy hướng dẫn viên du lịch!" });
     }
 
     await travelGuide.destroy();
 
     res.status(200).json({
-      message: "Travel guide deleted successfully!",
+      message: "Xóa hướng dẫn viên du lịch thành công!",
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error deleting travel guide",
+      message: "Lỗi khi xóa hướng dẫn viên du lịch!",
       error: error.message,
     });
   }

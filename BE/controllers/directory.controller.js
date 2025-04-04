@@ -7,12 +7,12 @@ exports.getAllDirectories = async (req, res) => {
   try {
     const directories = await Directory.findAll();
     res.status(200).json({
-      message: "Get all directories successfully!",
+      message: "Lấy tất cả danh mục thành công!",
       data: directories,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error retrieving directories!",
+      message: "Lỗi khi lấy danh mục!",
       error: error.message,
     });
   }
@@ -27,12 +27,12 @@ exports.createDirectory = async (req, res) => {
       alias,
     });
     res.status(201).json({
-      message: "Create directory successfully!",
+      message: "Tạo danh mục thành công!",
       data: directory,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error creating directory!",
+      message: "Lỗi khi tạo danh mục!",
       error: error.message,
     });
   }
@@ -46,19 +46,19 @@ exports.updateDirectory = async (req, res) => {
     const directory = await Directory.findByPk(id);
     if (!directory) {
       return res.status(404).json({
-        message: "Directory not found!",
+        message: "Không tìm thấy danh mục!",
       });
     }
     if (name_directory != undefined) directory.name_directory = name_directory;
     if (alias != undefined) directory.alias = alias;
     await directory.save();
     res.status(200).json({
-      message: "Update directory successfully!",
+      message: "Cập nhật danh mục thành công!",
       data: directory,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error updating directory!",
+      message: "Lỗi khi cập nhật danh mục!",
       error: error.message,
     });
   }
@@ -71,16 +71,16 @@ exports.deleteDirectory = async (req, res) => {
     const directory = await Directory.findByPk(id);
     if (!directory) {
       return res.status(404).json({
-        message: "Directory not found!",
+        message: "Không tìm thấy danh mục!",
       });
     }
     await directory.destroy();
     res.status(200).json({
-      message: "Delete directory successfully!",
+      message: "Xóa danh mục thành công!",
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error deleting directory!",
+      message: "Lỗi khi xóa danh mục!",
       error: error.message,
     });
   }

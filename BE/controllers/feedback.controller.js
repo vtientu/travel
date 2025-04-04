@@ -10,10 +10,10 @@ exports.getFeedbackByUser = async (req, res) => {
 
     const user = await User.findByPk(userId);
     if (!user) {
-      return res.status(404).json({ message: "User not found!" });
+      return res.status(404).json({ message: "Người dùng không tồn tại!" });
     }
 
-    // Lấy tất cả phản hồi của người dùng
+    // Lấy tất cả feedback của người dùng
     const feedbacks = await Feedback.findAll({
       where: { user_id: userId },
       include: [{ model: Tour, as: "tour" }],
@@ -22,16 +22,16 @@ exports.getFeedbackByUser = async (req, res) => {
     if (feedbacks.length === 0) {
       return res
         .status(404)
-        .json({ message: "No feedbacks found for this user" });
+        .json({ message: "Không tìm thấy feedback nào cho người dùng này" });
     }
 
     res.status(200).json({
-      message: "Feedbacks fetched successfully",
+      message: "Lấy feedback thành công",
       data: feedbacks,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error fetching feedbacks",
+      message: "Lỗi khi lấy feedback",
       error: error.message,
     });
   }
@@ -46,15 +46,15 @@ exports.createFeedback = async (req, res) => {
     // Kiểm tra xem người dùng và tour có tồn tại không
     const user = await User.findByPk(user_id);
     if (!user) {
-      return res.status(404).json({ message: "User not found!" });
+      return res.status(404).json({ message: "Người dùng không tồn tại!" });
     }
 
     const tour = await Tour.findByPk(tour_id);
     if (!tour) {
-      return res.status(404).json({ message: "Tour not found!" });
+      return res.status(404).json({ message: "Tour không tồn tại!" });
     }
 
-    // Tạo phản hồi cho tour
+    // Tạo feedback cho tour
     const newFeedback = await Feedback.create({
       user_id,
       tour_id,
@@ -64,12 +64,12 @@ exports.createFeedback = async (req, res) => {
     });
 
     res.status(201).json({
-      message: "Feedback created successfully!",
+      message: "Tạo feedback thành công!",
       data: newFeedback,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error creating feedback",
+      message: "Lỗi khi tạo feedback",
       error: error.message,
     });
   }
@@ -83,10 +83,10 @@ exports.updateFeedback = async (req, res) => {
 
     const feedback = await Feedback.findByPk(feedbackId);
     if (!feedback) {
-      return res.status(404).json({ message: "Feedback not found!" });
+      return res.status(404).json({ message: "Feedback không tồn tại!" });
     }
 
-    // Cập nhật các trường thông tin trong phản hồi
+    // Cập nhật các trường thông tin trong feedback
     if (description_feedback != undefined)
       feedback.description_feedback =
         description_feedback || feedback.description_feedback;
@@ -97,12 +97,12 @@ exports.updateFeedback = async (req, res) => {
     await feedback.save();
 
     res.status(200).json({
-      message: "Feedback updated successfully!",
+      message: "Cập nhật feedback thành công!",
       data: feedback,
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error updating feedback",
+      message: "Lỗi khi cập nhật feedback",
       error: error.message,
     });
   }
@@ -115,17 +115,17 @@ exports.deleteFeedback = async (req, res) => {
 
     const feedback = await Feedback.findByPk(feedbackId);
     if (!feedback) {
-      return res.status(404).json({ message: "Feedback not found!" });
+      return res.status(404).json({ message: "Feedback không tồn tại!" });
     }
 
     await feedback.destroy();
 
     res.status(200).json({
-      message: "Feedback deleted successfully!",
+      message: "Xóa feedback thành công!",
     });
   } catch (error) {
     res.status(500).json({
-      message: "Error deleting feedback",
+      message: "Lỗi khi xóa feedback",
       error: error.message,
     });
   }
