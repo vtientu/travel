@@ -46,7 +46,7 @@ module.exports = (sequelize, Sequelize) => {
             status: {
                 type: Sequelize.INTEGER,
                 allowNull: true,
-                defaultValue: 0, // 0: Pending, 1: Confirmed, 2: Canceled
+                defaultValue: 0, // 0: Not Paid, 1: Half Paid, 2: Paid, 3: Canceled, 4: Refunded, 5: Completed, 6: Expired
             },
             name: {
                 type: Sequelize.STRING,

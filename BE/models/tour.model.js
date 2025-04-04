@@ -1,70 +1,74 @@
 module.exports = (sequelize, Sequelize) => {
-  const Tour = sequelize.define(
-    "Tour",
-    {
-      id: {
-        type: Sequelize.INTEGER.UNSIGNED,
-        autoIncrement: true,
-        primaryKey: true,
-      },
-      type_id: {
-        type: Sequelize.INTEGER.UNSIGNED,
-        allowNull: true,
-      },
-      topic_id: {
-        type: Sequelize.INTEGER.UNSIGNED,
-        allowNull: true,
-      },
-      code_tour: {
-        type: Sequelize.STRING,
-        allowNull: true,
-      },
-      name_tour: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      price_tour: {
-        type: Sequelize.DECIMAL(10, 2),
-        allowNull: false,
-      },
-      day_number: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-      },
-      rating_tour: {
-        type: Sequelize.FLOAT,
-        allowNull: true,
-      },
-      max_people: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-      },
-      activity_description: {
-        type: Sequelize.TEXT,
-        allowNull: false,
-      },
-      album: {
-        type: Sequelize.STRING,
-        allowNull: false,
-      },
-      start_location: {
-        type: Sequelize.INTEGER.UNSIGNED,
-        allowNull: false,
-      },
-      end_location: {
-        type: Sequelize.INTEGER.UNSIGNED,
-        allowNull: false,
-      },
-      available_month: {
-        type: Sequelize.STRING,
-        allowNull: true,
-      },
-    },
-    {
-      tableName: "tour", // Tên bảng trong MySQL
-      timestamps: false, // Tắt `createdAt` và `updatedAt`
-    }
-  );
+    const Tour = sequelize.define(
+        "Tour",
+        {
+            id: {
+                type: Sequelize.INTEGER.UNSIGNED,
+                autoIncrement: true,
+                primaryKey: true,
+            },
+            type_id: {
+                type: Sequelize.INTEGER.UNSIGNED,
+                allowNull: true,
+            },
+            topic_id: {
+                type: Sequelize.INTEGER.UNSIGNED,
+                allowNull: true,
+            },
+            code_tour: {
+                type: Sequelize.STRING,
+                allowNull: true,
+            },
+            name_tour: {
+                type: Sequelize.STRING,
+                allowNull: false,
+            },
+            price_tour: {
+                type: Sequelize.DECIMAL(10, 2),
+                allowNull: false,
+            },
+            day_number: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+            },
+            rating_tour: {
+                type: Sequelize.FLOAT,
+                allowNull: true,
+            },
+            max_people: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+            },
+            activity_description: {
+                type: Sequelize.TEXT,
+                allowNull: false,
+            },
+            image: {
+                type: Sequelize.STRING,
+                allowNull: false,
+            },
+            start_location: {
+                type: Sequelize.INTEGER.UNSIGNED,
+                allowNull: false,
+            },
+            end_location: {
+                type: Sequelize.INTEGER.UNSIGNED,
+                allowNull: false,
+            },
+            available_month: {
+                type: Sequelize.STRING,
+                allowNull: true,
+            },
+            passport: {
+                type: Sequelize.BOOLEAN,
+                allowNull: true,
+            },
+        },
+        {
+            tableName: "tour", // Tên bảng trong MySQL
+            timestamps: false, // Tắt `createdAt` và `updatedAt`
+        }
+    );
 
-  return Tour;
+    return Tour;
 };
