@@ -9,6 +9,8 @@ const TopicTourCard = ({
   price_tour,
   typeTour,
   album,
+  day_number,
+  startLocation,
 }) => {
   return (
     <div className="w-96 px-2 py-3 bg-white rounded-2xl flex flex-col gap-2 hover:bg-gray-300 cursor-pointer relative group">
@@ -37,7 +39,13 @@ const TopicTourCard = ({
       <div className="flex justify-between items-center text-blue-950 text-xs font-normal">
         <div className="flex items-center gap-2">
           <img src={Icons.Clock_3} alt="Clock" className="w-4 h-4" />
-          <span>Thời gian: </span>
+          <span>
+            {" "}
+            Thời gian:{" "}
+            {day_number > 1
+              ? `${day_number} Ngày ${day_number - 1} Đêm`
+              : `${day_number} Ngày ${day_number} Đêm`}
+          </span>
         </div>
         <div className="flex items-center gap-2">
           <img src={Icons.ConciergeBell} alt="Concierge" className="w-4 h-4" />
@@ -57,7 +65,9 @@ const TopicTourCard = ({
       </div>
       {/* Giá cả */}
       <p className="text-gray-500 text-xs">Giá mỗi đêm chưa gồm thuế và phí</p>
-      <p className="text-red-800 text-xl font-bold leading-7">{Number(price_tour).toLocaleString("vi-VN")} VNĐ</p>
+      <p className="text-red-800 text-xl font-bold leading-7">
+        {Number(price_tour).toLocaleString("vi-VN")} VNĐ
+      </p>
     </div>
   );
 };
