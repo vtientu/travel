@@ -1,4 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
+
   const Tour = sequelize.define(
     "Tour",
     {

@@ -36,6 +36,10 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
         defaultValue: 0,
       },
+      image: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
     },
     {
       tableName: "program_discount",

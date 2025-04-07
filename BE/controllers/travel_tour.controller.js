@@ -100,6 +100,8 @@ exports.createTravelTour = async (req, res) => {
       end_time_depart,
       start_time_close,
       end_time_close,
+      children_price,
+      toddler_price,
     } = req.body;
 
     if (
@@ -111,7 +113,9 @@ exports.createTravelTour = async (req, res) => {
       !start_time_depart ||
       !end_time_depart ||
       !start_time_close ||
-      !end_time_close
+      !end_time_close ||
+      !children_price ||
+      !toddler_price
     ) {
       return res.status(400).json({ message: "Thiếu thông tin bắt buộc!" });
     }
@@ -126,6 +130,8 @@ exports.createTravelTour = async (req, res) => {
       end_time_depart,
       start_time_close,
       end_time_close,
+      children_price,
+      toddler_price,
     };
     const Tour = await db.Tour.findByPk(tour_id);
     if (!Tour) {
@@ -213,6 +219,8 @@ exports.updateTravelTour = async (req, res) => {
       end_time_depart,
       start_time_close,
       end_time_close,
+      children_price,
+      toddler_price,
     } = req.body;
 
     // Validate thời gian khởi hành và kết thúc
@@ -262,7 +270,8 @@ exports.updateTravelTour = async (req, res) => {
       travelTour.start_time_close = start_time_close;
     if (end_time_close !== undefined)
       travelTour.end_time_close = end_time_close;
-
+    if (children_price !== undefined) travelTour.children_price = children_price;
+    if (toddler_price !== undefined) travelTour.toddler_price = toddler_price;  
     await travelTour.save();
     res.json({
       message: "Cập nhật tour du lịch thành công!",
