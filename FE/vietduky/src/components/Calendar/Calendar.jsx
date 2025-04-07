@@ -5,6 +5,7 @@ import "dayjs/locale/vi";
 import { TourService } from "@/services/API/tour.service";
 import { TravelTourService } from "@/services/API/travel_tour.service";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 dayjs.locale("vi");
 
@@ -42,9 +43,10 @@ const Calendar = ({ id }) => {
         }
 
         const formattedTourDates = tour.reduce((acc, tour) => {
-          if (tour.start_day) {
-            const dateStr = dayjs(tour.start_day).format("YYYY-MM-DD");
-            acc[dateStr] = tour.price_tour.toLocaleString("vi-VN");
+          if (tour.start_time) {
+            const dateStr = dayjs(tour.start_time).format("YYYY-MM-DD");
+            acc[dateStr] =
+              (tour.price_tour / 1000).toLocaleString("vi-VN") + "k";
           }
           return acc;
         }, {});
@@ -72,13 +74,22 @@ const Calendar = ({ id }) => {
     return startOfMonth.subtract(startDay, "day").add(index, "day");
   });
 
+  const startYear = Math.floor(currentDate.year() / 16) * 16;
+  const years = Array.from({ length: 16 }, (_, i) => startYear + i);
+  const months = Array.from({ length: 12 }, (_, i) =>
+    `Thg${i + 1}`
+  );
+
+  const canGoBack = !currentDate.isSame(dayjs(), "month");
+
   const handlePrev = () => {
-    if (viewMode === "calendar")
+    if (viewMode === "calendar" && !currentDate.isSame(dayjs(), "month")) {
       setCurrentDate(currentDate.subtract(1, "month"));
-    else if (viewMode === "month")
+    } else if (viewMode === "month") {
       setCurrentDate(currentDate.subtract(1, "year"));
-    else if (viewMode === "year")
+    } else if (viewMode === "year") {
       setCurrentDate(currentDate.subtract(16, "year"));
+    }
   };
 
   const handleNext = () => {
@@ -98,16 +109,16 @@ const Calendar = ({ id }) => {
 
   const handleBooking = async () => {
     if (!selectedDate) {
-      alert("Vui lòng chọn ngày khởi hành trước khi đặt tour.");
+      toast.error("Vui lòng chọn ngày khởi hành trước khi đặt tour.");
       return;
     }
 
     const selectedTours = travelTourData.filter(
-      (tour) => selectedDate === dayjs(tour.start_day).format("YYYY-MM-DD")
+      (tour) => selectedDate === dayjs(tour.start_time).format("YYYY-MM-DD")
     );
 
     if (selectedTours.length === 0) {
-      alert("Không tìm thấy tour nào phù hợp.");
+      toast.error("Không tìm thấy tour nào phù hợp.");
       return;
     }
 
@@ -116,29 +127,32 @@ const Calendar = ({ id }) => {
 
   return (
     <div className="">
-      <div className="bg-yellow-100 p-5 rounded-md shadow-lg">
-        <h2 className="text-red-600 font-bold text-2xl">
+      <div className="bg-amber-100 p-5 rounded-md shadow-lg">
+        <h2 className="text-red-800 font-bold text-2xl">
           Lịch Trình và Giá Tour
         </h2>
 
-        <div className="bg-white p-5 rounded-md mt-6">
+        <div className="bg-white p-5 rounded-md mt-6 shadow-xl">
           {/* Header */}
           <div className="flex justify-between items-center mb-2">
-            <button onClick={handlePrev}>
-              <FaChevronLeft />
-            </button>
-
+            <div>
+              {canGoBack && (
+                <button onClick={handlePrev}>
+                  <FaChevronLeft />
+                </button>
+              )}
+            </div>
             <div className="flex items-center gap-1">
               {viewMode === "calendar" && (
                 <span
-                  className="font-bold cursor-pointer"
+                  className="font-semibold cursor-pointer"
                   onClick={() => setViewMode("month")}
                 >
                   {currentDate.format("MMMM").charAt(0).toUpperCase() +
                     currentDate.format("MMMM").slice(1)}
                   ,{" "}
                   <span
-                    className="font-bold cursor-pointer"
+                    className="font-semibold cursor-pointer"
                     onClick={() => setViewMode("month")}
                   >
                     {currentDate.year()}
@@ -147,7 +161,7 @@ const Calendar = ({ id }) => {
               )}
               {viewMode !== "year" && viewMode !== "calendar" && (
                 <span
-                  className="font-bold cursor-pointer"
+                  className="font-semibold cursor-pointer"
                   onClick={() => setViewMode("year")}
                 >
                   {currentDate.year()}
@@ -155,17 +169,24 @@ const Calendar = ({ id }) => {
               )}
             </div>
 
-            <button onClick={handleNext}>
-              <FaChevronRight />
-            </button>
+            <div>
+              <button onClick={handleNext}>
+                <FaChevronRight />
+              </button>
+            </div>
           </div>
 
           {/* Calendar */}
           {viewMode === "calendar" && (
             <div>
-              <div className="grid grid-cols-7 text-center mt-3 text-gray-700">
+              <div className="grid grid-cols-7 text-center mt-3 text-zinc-900">
                 {["CN", "T2", "T3", "T4", "T5", "T6", "T7"].map((day) => (
-                  <div key={day} className="font-bold">
+                  <div
+                    key={day}
+                    className={`font-semibold ${
+                      day === "CN" ? "text-red-700" : ""
+                    }`}
+                  >
                     {day}
                   </div>
                 ))}
@@ -176,22 +197,27 @@ const Calendar = ({ id }) => {
                   const isTourDate = tourDates[dateStr];
                   const isSelected = selectedDate === dateStr;
                   const isCurrentMonth = date.month() === currentDate.month();
+                  const isPastDate = date.isBefore(dayjs(), "day");
                   return (
                     <div
                       key={i}
-                      className={`h-16 w-16 flex flex-col items-center justify-center rounded-md cursor-pointer transition duration-300 
+                      className={`h-16 w-16 flex flex-col items-center justify-center rounded-md transition duration-300 
                         ${
-                          isTourDate ? "border border-red-500 text-red-500" : ""
+                          isTourDate
+                            ? "border border-[#A80F21] text-red-600 cursor-pointer hover:bg-[#A80F21] hover:text-white"
+                            : "cursor-default"
                         }
-                        ${isSelected ? "bg-red-700 text-white" : "bg-white"}
+                        ${isSelected ? "bg-[#A80F21] text-white" : "bg-white"}
                         ${!isCurrentMonth ? "text-gray-400" : "text-black"}`}
-                      onClick={() => isTourDate && toggleDateSelection(dateStr)}
+                      onClick={() =>
+                        !isPastDate &&
+                        isTourDate &&
+                        toggleDateSelection(dateStr)
+                      }
                     >
-                      <span className="text-sm font-semibold">
-                        {date.date()}
-                      </span>
+                      <span className="text-sm font-normal">{date.date()}</span>
                       {isTourDate && (
-                        <span className="text-xs font-medium">
+                        <span className="text-xs font-normal mt-1">
                           {tourDates[dateStr]}
                         </span>
                       )}
@@ -199,19 +225,25 @@ const Calendar = ({ id }) => {
                   );
                 })}
               </div>
+
+              <div className="flex flex-col gap-1 items-end mt-2 border-t pt-4 text-xs italic">
+                <p className="text-[#9FC43A]">* Màu xanh lá: ngày khởi hành giá tốt nhất</p>
+                <p className="text-red-500">* Màu đỏ: ngày khởi hành giá cao điểm</p>
+                <p className="text-zinc-400">* Giá hiển thị trên 1 khách</p>
+              </div>
             </div>
           )}
 
           {/* Month and Year View */}
           {viewMode === "month" && (
-            <div className="grid grid-cols-4 gap-2 mt-2">
+            <div className="grid grid-cols-4 gap-10 mt-2">
               {months.map((month, index) => (
                 <div
                   key={index}
-                  className={`px-3 py-8 text-center rounded-[50%] cursor-pointer transition hover:bg-gray-200 ${
+                  className={`px-3 py-7 text-center rounded-[50%] cursor-pointer transition  ${
                     currentDate.month() === index
-                      ? "bg-blue-600 text-white hover:bg-blue-600"
-                      : ""
+                      ? "bg-blue-600 text-white hover:bg-blue-500"
+                      : "hover:bg-gray-100 hover:text-black"
                   }`}
                   onClick={() => {
                     setCurrentDate(currentDate.month(index));
@@ -225,14 +257,14 @@ const Calendar = ({ id }) => {
           )}
 
           {viewMode === "year" && (
-            <div className="grid grid-cols-4 gap-2 mt-2">
+            <div className="grid grid-cols-4 gap-10 mt-2">
               {years.map((year) => (
                 <div
                   key={year}
-                  className={`px-6 py-8 text-center rounded-[50%] cursor-pointer transition hover:bg-gray-200 ${
+                  className={`py-7 text-center rounded-[50%] cursor-pointer transition  ${
                     currentDate.year() === year
-                      ? "bg-blue-600 text-white hover:bg-blue-600"
-                      : ""
+                      ? "bg-blue-600 text-white hover:bg-blue-500"
+                      : "hover:bg-gray-100 hover:text-black"
                   }`}
                   onClick={() => {
                     setCurrentDate(currentDate.year(year));
@@ -250,7 +282,7 @@ const Calendar = ({ id }) => {
         {viewMode === "calendar" && (
           <button
             onClick={handleBooking}
-            className="bg-orange-500 text-white font-bold w-full mt-4 py-4 rounded hover:bg-orange-600"
+            className="bg-[#F79321] text-white font-bold w-full mt-4 py-4 rounded hover:bg-orange-500"
           >
             Đặt Tour
           </button>

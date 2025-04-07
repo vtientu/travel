@@ -1,40 +1,20 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
-import { TourService } from "../../services/API/tour.service";
-import { TravelTourService } from "../../services/API/travel_tour.service";
 
-export default function TourCard() {
-  const [tours, setTours] = useState([]);
-  const [travelTours, setTravelTours] = useState([]);
+export default function TourCard({ tours = [], travelTours = [] }) {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 6;
   const navigate = useNavigate();
 
-  useEffect(() => {
-    TourService.getTours()
-      .then((response) => {
-        setTours(response.data.data);
-      })
-      .catch((error) => console.error("Error fetching tours data:", error));
-  }, []);
+  const filteredTours = Array.isArray(tours) ? tours : [];
 
-  useEffect(() => {
-    TravelTourService.getTravelTours()
-      .then((response) => {
-        setTravelTours(response.data.travelTours);
-      })
-      .catch((error) =>
-        console.error("Error fetching travel tours data:", error)
-      );
-  }, []);
-
-  if (!Array.isArray(tours) || tours.length === 0) {
-    return <div>Loading...</div>;
+  if (filteredTours.length === 0) {
+    return <div className="text-center text-gray-600 py-10">Không có tour nào phù hợp.</div>;
   }
 
-  const totalPages = Math.ceil(tours.length / itemsPerPage);
-  const paginatedTours = tours.slice(
+  const totalPages = Math.ceil(filteredTours.length / itemsPerPage);
+  const paginatedTours = filteredTours.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
@@ -44,9 +24,9 @@ export default function TourCard() {
       <div>
         {paginatedTours.map((tour) => {
           const tourDates = travelTours
-            .filter((travelTour) => travelTour.tour_id === tour.id)
-            .map((travelTour) =>
-              new Date(travelTour.start_day).toLocaleDateString("vi-VN")
+            .filter((tt) => tt.tour_id === tour.id)
+            .map((tt) =>
+              new Date(tt.start_time).toLocaleDateString("vi-VN")
             );
 
           return (
@@ -58,11 +38,10 @@ export default function TourCard() {
               <div className="w-1/3 relative">
                 <img
                   src={
-                    tour.image ||
-                    "https://dummyimage.com/300x200/ddd/000&text=No+Image"
+                    tour.album?.[0] || "https://dummyimage.com/300x200/ddd/000&text=No+Image"
                   }
                   alt="Tour"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover rounded-l-lg shadow-md cursor-pointer hover:scale-105 transition-transform duration-300"
                 />
                 <span className="absolute bottom-2 left-2 bg-black text-white text-xs px-2 py-1 rounded">
                   Tiết kiệm
@@ -71,7 +50,10 @@ export default function TourCard() {
 
               {/* Nội dung Tour */}
               <div className="w-2/3 p-4 flex flex-col justify-between">
-                <h3 className="text-lg font-semibold text-gray-900">
+                <h3
+                  className="text-lg font-semibold text-gray-900 cursor-pointer hover:text-red-600"
+                  onClick={() => navigate(`/tour/${tour.id}`)}
+                >
                   {tour.name_tour}
                 </h3>
 
@@ -83,7 +65,7 @@ export default function TourCard() {
                   <p>
                     <strong>Khởi hành:</strong>{" "}
                     <span className="text-red-600 font-bold">
-                      {tour.startLocation.name_location}
+                      {tour.startLocation?.name_location || "Không rõ"}
                     </span>
                   </p>
                   <p>
@@ -102,22 +84,25 @@ export default function TourCard() {
                   <span className="text-sm font-semibold">Ngày khởi hành:</span>
                   <div className="flex space-x-2 overflow-x-auto">
                     <AiOutlineArrowLeft className="w-6 h-4 text-gray-600 cursor-pointer" />
-                    {tourDates.map((date, index) => (
-                      <span
-                        key={index}
-                        className="px-2 py-1 border border-red-500 text-red-500 rounded text-xs"
-                      >
-                        {date}
-                      </span>
-                    ))}
+                    {tourDates.length > 0 ? (
+                      tourDates.map((date, index) => (
+                        <span
+                          key={index}
+                          className="px-2 py-1 border border-red-500 text-red-500 rounded text-xs"
+                        >
+                          {date}
+                        </span>
+                      ))
+                    ) : (
+                      <span className="text-gray-500 text-xs">Chưa có lịch</span>
+                    )}
                     <AiOutlineArrowRight className="w-6 h-4 text-gray-600 cursor-pointer" />
                   </div>
                 </div>
 
                 <div className="flex justify-between items-center">
                   <span className="text-lg font-bold text-red-600">
-                    Giá từ: {Number(tour.price_tour).toLocaleString("vi-VN")}{" "}
-                    VNĐ
+                    Giá từ: {Number(tour.price_tour).toLocaleString("vi-VN")} VNĐ
                   </span>
                   <button
                     className="bg-red-600 text-white text-sm py-2 px-4 rounded hover:bg-red-700"

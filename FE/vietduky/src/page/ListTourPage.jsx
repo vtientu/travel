@@ -4,19 +4,45 @@ import HeaderCard from "@/components/ListTour/HeaderCard";
 import SearchBar from "@/components/ListTour/SearchBar";
 import TourFilter from "@/components/ListTour/TourFilter";
 import TourCard from "@/components/TourCard/TourCard";
+import { TourService } from "@/services/API/tour.service";
+import { TravelTourService } from "@/services/API/travel_tour.service";
+import { use, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function ListTour() {
+  const [tours, setTours] = useState([]);
+  const [travelTours, setTravelTours] = useState([]);
+  const [filteredTours, setFilteredTours] = useState([]);
+
+  useEffect(() => {
+    const fetchTours = async () => {
+      try {
+        const toursResponse = await TourService.getTours();
+        setTours(toursResponse.data.data);
+      } catch (error) {
+        console.error("Error fetching tours data:", error);
+      }
+    };
+
+    const fetchTravelTours = async () => {
+      try {
+        const travelToursResponse = await TravelTourService.getTravelTours();
+        setTravelTours(travelToursResponse.data.travelTours);
+      } catch (error) {
+        console.error("Error fetching travel tours data:", error);
+      }
+    };
+
+    fetchTours();
+    fetchTravelTours();
+  }, []);
+
+  const handleFilter = (tours) => {
+    setFilteredTours(tours);
+  };
+
   return (
-    <div
-      className="bg-white"
-      style={{
-        backgroundImage: "url('/Image/Background.png')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        width: "100%",
-        minHeight: "100vh",
-      }}
-    >
+    <div className="bg-white">
       {/* Header */}
       <Header />
       <HeaderCard />
@@ -27,14 +53,20 @@ export default function ListTour() {
         </h2>
         <div className="flex flex-col md:flex-row gap-6 mt-6">
           {/* Bộ lọc bên trái */}
-          <TourFilter />
+          <TourFilter
+            tours={tours}
+            travelTours={travelTours}
+            onFilter={handleFilter}
+          />
           {/* Danh sách Tour */}
           <div className="w-full md:w-3/4">
             {/* Ô tìm kiếm */}
-            <SearchBar />
+            <SearchBar tours={tours} travelTours={travelTours} />
             {/* Danh sách Tour */}
             <div className="mt-4 space-y-4">
-              <TourCard />
+              {/* {filteredTours.map((tour) => ( */}
+                <TourCard tours={tours} />
+              {/* ))} */}
             </div>
           </div>
         </div>

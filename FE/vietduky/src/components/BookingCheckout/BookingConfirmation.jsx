@@ -4,7 +4,9 @@ import { TourService } from "@/services/API/tour.service";
 import { TravelTourService } from "@/services/API/travel_tour.service";
 import { formatDate } from "@/utils/dateUtil";
 import React, { useEffect, useState } from "react";
-import Modal from "react-modal"; // Import Modal từ react-modal
+import Modal from "react-modal";
+
+// Import Modal từ react-modal
 
 // Thiết lập mặc định cho Modal
 Modal.setAppElement("#root");
@@ -64,6 +66,7 @@ const BookingConfirmation = ({ bookingData }) => {
 
   // console.log("tour", travelTour);
   console.log("QR", qrSrc);
+  console.log("Booking", booking);
 
   return (
     <>
@@ -172,21 +175,57 @@ const BookingConfirmation = ({ bookingData }) => {
         overlayClassName={"fixed inset-0 bg-black bg-opacity-50 z-10"}
         className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-0"
       >
-        <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full text-center z-40">
-          <h3 className="text-lg font-bold mb-4 text-[#a80f21]">
-            Quét mã QR để thanh toán
-          </h3>
-          <img
-            src={qrSrc}
-            alt="QR Code"
-            className=" rounded-lg shadow-md mx-auto"
-          />
-          <button
-            onClick={() => setIsQRModalOpen(false)}
-            className="mt-4 px-4 py-2 bg-gray-300 text-gray-800 font-bold rounded-lg hover:bg-gray-400"
-          >
-            Đóng
-          </button>
+        <div className="bg-white p-6 rounded-md shadow-lg text-center z-40">
+          <div className="flex flex-col">
+            <div className="text-left">
+              <p className="text-zinc-900 font-bold">Thanh toán chuyến đi</p>
+              <p className="text-zinc-500 text-xs">
+                Khách hàng xem thông tin đơn hàng và quét mã QR
+              </p>
+            </div>
+            <div className="flex mt-4 gap-6">
+              <div className="w-2/5 bg-gray-50 rounded p-4 shadow-md">
+                <div className="flex flex-col text-left mt-4 gap-6">
+                  <div>
+                    <p className="text-zinc-800 text-lg font-semibold">Thông tin đơn hàng</p>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <p className="text-zinc-500 text-sm font-semibold">Số tiền thanh toán</p>
+                    <p className="text-red-800 text-lg font-semibold">{booking?.data?.total_cost.toLocaleString("vi-VN")} VND</p>
+                  </div>
+                  <div>
+                    <p className="text-zinc-500 text-sm font-semibold">Giá trị đơn hàng</p>
+                    <p className="text-zinc-900text-lg font-semibold">{booking?.data?.total_cost.toLocaleString("vi-VN")} VND</p>
+                  </div>
+                  <div>
+                    <p className="text-zinc-500 text-sm font-semibold">Phí giao dịch</p>
+                    <p className="text-zinc-900 text-lg font-semibold">0 VND</p>
+                  </div>
+                  <div>
+                    <p className="text-zinc-500 text-sm font-semibold">Mã đơn hàng</p>
+                    <p className="text-zinc-900 text-lg font-semibold">xxxxx</p>
+                  </div>
+                  <div>
+                    <p className="text-zinc-500 text-sm font-semibold">Nhà cung cấp</p>
+                    <p className="text-zinc-900 font-semibold">VietDuKy</p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col items-center justify-between mt-4 mb-2 w-3/5">
+                <img
+                  src={qrSrc}
+                  alt="QR Code"
+                  className=" rounded-lg mx-auto"
+                />
+                <button
+                  onClick={() => setIsQRModalOpen(false)}
+                  className="mt-4 px-4 py-2 bg-gray-200 text-gray-500 rounded-md hover:bg-gray-400"
+                >
+                  Hủy thanh toán
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </Modal>
     </>
