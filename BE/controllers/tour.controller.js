@@ -119,6 +119,8 @@ exports.getTourById = async (req, res) => {
       services: tourData.Services || [],
       activities: tourData.TourActivities || [],
       feedbacks: tourData.Feedbacks || [],
+      discount_services: tourData.DiscountServices || [],
+
     };
     delete formattedTour.Services;
     delete formattedTour.TourActivities;
@@ -307,14 +309,14 @@ exports.getTourActivities = async (req, res) => {
       });
     }
 
-    // Lấy danh sách hoạt động
-    const activities = await TourActivities.findAll({
-      where: {
-        tour_id: tourId,
-      },
-      order: [["day", "ASC"]], // Sắp xếp theo ngày tăng dần
-      attributes: ["id", "day", "title", "description", "detail"],
-    });
+        // Lấy danh sách hoạt động
+        const activities = await TourActivities.findAll({
+            where: {
+                tour_id: tourId,
+            },
+            order: [["day", "ASC"]], // Sắp xếp theo ngày tăng dần
+            attributes: ["id", "day", "title", "description", "detail", "image"],
+        });
 
     res.json({
       message: "Lấy danh sách hoạt động thành công!",

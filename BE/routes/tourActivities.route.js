@@ -15,5 +15,19 @@ router.post(
     uploadTourActivities.single("image"),
     tourActivitiesController.createTourActivities
 );
+router.put(
+    "/update/:id",
+    // authenticateUser,
+    // authenticateAdmin,
+    uploadTourActivities.single("image"),
+    tourActivitiesController.updateTourActivities
+);  
+router.delete(
+    "/delete/:id",
+    // authenticateUser,
+    // authenticateAdmin,
+    tourActivitiesController.deleteTourActivities
+);
+
 
 module.exports = router;
