@@ -79,7 +79,7 @@ export default function ExpireTour() {
   const navigate = useNavigate();
 
   return (
-    <div className="bg-[#FEEEC759]">
+    <div className="bg-white">
       <div className="py-10 w-4/5 mx-auto relative p-6 ">
         <div className="flex flex-col">
           <p className="text-3xl font-bold text-[#A80F21]">Ưu đãi phút chót</p>

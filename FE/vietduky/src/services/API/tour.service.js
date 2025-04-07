@@ -44,4 +44,16 @@ export const TourService = {
             },
         });
     },
+    getTourByLocationId: (locationId) => {
+        return restClient({
+            url: `tour/get-by-location-id/${locationId}`,
+            method: "GET",
+        });
+    },
+    getTourByTopicId: (topicId) => {
+        return restClient({
+            url: `tour/get-by-topic-id/${topicId}`,
+            method: "GET",
+        });
+    },
 };

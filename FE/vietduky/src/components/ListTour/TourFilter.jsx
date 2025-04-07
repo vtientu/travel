@@ -1,23 +1,44 @@
 import { useState } from "react";
 import { Card } from "react-bootstrap";
+import axios from 'axios';
 
 export default function TourFilter({ onFilter }) {
   const [budget, setBudget] = useState(null);
   const [departure, setDeparture] = useState("Tất cả");
   const [destination, setDestination] = useState("Tất cả");
   const [date, setDate] = useState("");
-  const [tourType, setTourType] = useState(null); // Dòng tour
-  const [tourTheme, setTourTheme] = useState(null); // Chủ đề tour
+  const [tourType, setTourType] = useState(null);
+  const [tourTheme, setTourTheme] = useState(null);
 
-  const handleApplyFilter = () => {
-    onFilter({
+  const handleApplyFilter = async () => {
+    // Tạo đối tượng filter
+    const filters = {
       budget,
-      departure,
-      destination,
+      departure: departure !== "Tất cả" ? departure : undefined,
+      destination: destination !== "Tất cả" ? destination : undefined,
       date,
       tourType,
       tourTheme,
-    });
+    };
+
+    // Gọi API tìm kiếm tour
+    try {
+      const response = await axios.get('http://localhost:3000/api/tour/search', {
+        params: {
+          start: filters.departure,
+          end: filters.destination,
+          date: filters.date,
+          priceRange: budget ? budget.toLowerCase().replace(/ /g, '') : undefined,
+          typeId: filters.tourType,
+          topicId: filters.tourTheme,
+        },
+      });
+
+      // Gọi callback để xử lý dữ liệu tour
+      onFilter(response.data.data.tours);
+    } catch (error) {
+      console.error("Error fetching tours:", error);
+    }
   };
 
   const renderButtonGroup = (options, selected, setSelected) =>

@@ -12,11 +12,7 @@ import { useNavigate } from "react-router-dom";
 export default function ListTour() {
   const [tours, setTours] = useState([]);
   const [travelTours, setTravelTours] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
   const [filteredTours, setFilteredTours] = useState([]);
-
-  const itemsPerPage = 6;
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchTours = async () => {
@@ -41,41 +37,8 @@ export default function ListTour() {
     fetchTravelTours();
   }, []);
 
-  const handleFilter = (filters) => {
-    const { budget, departure, destination, date, tourType } = filters;
-
-    let result = tours;
-
-    if (budget) {
-      result = result.filter((tour) => {
-        const price = tour.price || 0;
-        if (budget === "Dưới 5 triệu") return price < 5000000;
-        if (budget === "Từ 5 - 10 triệu")
-          return price >= 5000000 && price <= 10000000;
-        if (budget === "Từ 10 - 20 triệu")
-          return price > 10000000 && price <= 20000000;
-        if (budget === "Trên 20 triệu") return price > 20000000;
-        return true;
-      });
-    }
-
-    if (departure !== "Tất cả") {
-      result = result.filter((tour) => tour.departure?.includes(departure));
-    }
-
-    if (destination !== "Tất cả") {
-      result = result.filter((tour) => tour.destination?.includes(destination));
-    }
-
-    if (date) {
-      result = result.filter((tour) => tour.startDate?.startsWith(date));
-    }
-
-    if (tourType) {
-      result = result.filter((tour) => tour.type?.includes(tourType));
-    }
-
-    setFilteredTours(result);
+  const handleFilter = (tours) => {
+    setFilteredTours(tours);
   };
 
   return (
@@ -102,7 +65,7 @@ export default function ListTour() {
             {/* Danh sách Tour */}
             <div className="mt-4 space-y-4">
               {/* {filteredTours.map((tour) => ( */}
-              <TourCard tours={tours} travelTours={travelTours} />
+                <TourCard tours={tours} />
               {/* ))} */}
             </div>
           </div>

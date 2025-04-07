@@ -3,26 +3,36 @@ import Header from "../components/Header/Header";
 import ExpireTour from "../components/Landing/ExpireTour/ExpireTour.jsx";
 import FeaturedTour from "../components/Landing/FeaturedTour.jsx";
 import LocationVN from "../components/Landing/LocationVN.jsx";
-import TopicTour from "../components/Landing/TopicTour.jsx";
+import TopicTour from "../components/Landing/TopicTour/TopicTour.jsx";
 import VacationTour from "../components/Landing/VacationTour.jsx";
 import SearchTour from "../components/SearchTour/SearchTour";
 import FavouriteTour from "@/components/Landing/FavouriteTour/FavouriteTour";
 import PreferentialTour from "@/components/Landing/PreferentialTour/PreferentialTour";
 import PromotionSection from "@/components/Landing/PromotionSection";
 import TopTours from "@/components/Landing/TopTour/TopTour";
+import { TopicService } from "@/services/API/topic.service";
+import { TourService } from "@/services/API/tour.service";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function LayoutLandingPage() {
+  const navigate = useNavigate();
+  const [topics, setTopics] = useState([]);
+
+  useEffect(() => {
+    const fetchTopic = async () => {
+      try {
+        const response = await TopicService.getTopic();
+        setTopics(response.data.data);
+      } catch (error) {
+        console.error("Error fetching topic:", error);
+      }
+    };
+    fetchTopic();
+  }, []);
+
   return (
-    <div
-      className="bg-white"
-      style={{
-        // backgroundImage: "url('/Image/Background.png')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        width: "100%",
-        minHeight: "100vh",
-      }}
-    >
+    <div className="bg-white">
       {/* Header */}
       <Header />
 
@@ -40,21 +50,43 @@ export default function LayoutLandingPage() {
       </div>
 
       {/* Tour nổi bật */}
-      <TopTours />
+      {/* <TopTours /> */}
 
       {/* Chương trình khuyến mại */}
-      <PromotionSection />
+      {/* <PromotionSection /> */}
 
       {/* Tour ưu đãi đặc biệt */}
-      <PreferentialTour />
+      {/* <PreferentialTour /> */}
 
       {/* Chương trình khuyến mại */}
       <ExpireTour />
 
       {/* Tour du lịch được yêu thích nhất */}
-      <FavouriteTour />
+      {/* <FavouriteTour /> */}
 
       {/*Topic Tour*/}
+      {topics.map(
+        (topic, index) =>
+          topic.active && (
+            <div
+              key={topic.id}
+              className={`${index % 2 === 0 ? 'bg-[#FEEEC759]' : 'bg-white'}`}
+            >
+              <TopicTour topic={topic} />
+            </div>
+          )
+      )}
+
+      {/* Tour du lịch hành hương */}
+      {/* <TopicTour /> */}
+
+      {/* Tour du lịch nghỉ dưỡng */}
+      {/* <TopicTour /> */}
+
+      {/* Tour du lịch khám phá */}
+      {/* <TopicTour /> */}
+
+      {/* Tour du lịch trải nghiệm */}
       {/* <TopicTour /> */}
 
       {/*Vacation Tour*/}
