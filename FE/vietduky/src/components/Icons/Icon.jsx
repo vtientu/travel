@@ -45,6 +45,7 @@ import PlaneFly from "@/assets/icons/plane-fly.svg";
 import Place from "@/assets/icons/place.svg";
 import Bus from "@/assets/icons/bus.svg";
 import Coupon from "@/assets/icons/coupon.svg";
+import IconChecklistRed from "@/assets/icons/ico-checklist-red.svg";
 
 const Icons = {
   Sidebar: barChartIcon,
@@ -94,6 +95,7 @@ const Icons = {
   Place: Place,
   Bus: Bus,
   Coupon: Coupon,
+  IconChecklistRed: IconChecklistRed,
 };
 
 export default Icons;

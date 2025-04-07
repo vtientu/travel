@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import PreferentialTourCard from "./PreferentialTourCard";
 import React from "react";
 
@@ -83,6 +84,8 @@ const tours = [
 ];
 
 const PreferentialTour = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="bg-white">
       <div className="py-10 w-4/5 mx-auto relative p-6 ">
@@ -102,7 +105,7 @@ const PreferentialTour = () => {
           ))}
         </div>
         <div className="text-center mt-9">
-          <button className="bg-white border border-red-500 text-red-500 px-10 py-3 font-semibold rounded-md hover:bg-red-500 hover:text-white transition duration-300">
+          <button onClick={() => navigate("/listTour")} className="bg-white border border-red-500 text-red-500 px-10 py-3 font-semibold rounded-md hover:bg-red-500 hover:text-white transition duration-300">
             Xem thêm Tours
           </button>
         </div>

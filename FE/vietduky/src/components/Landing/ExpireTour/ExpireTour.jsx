@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import ExpireTourCard from "./ExpireTourCard";
 
 const tours = [
@@ -75,6 +76,8 @@ const tours = [
   },
 ];
 export default function ExpireTour() {
+  const navigate = useNavigate();
+
   return (
     <div className="bg-[#FEEEC759]">
       <div className="py-10 w-4/5 mx-auto relative p-6 ">
@@ -93,7 +96,7 @@ export default function ExpireTour() {
           ))}
         </div>
         <div className="text-center mt-9">
-          <button className="bg-white border border-red-500 text-red-500 px-10 py-3 font-semibold rounded-md hover:bg-red-500 hover:text-white transition duration-300">
+          <button onClick={() => navigate("/listTour")} className="bg-white border border-red-500 text-red-500 px-10 py-3 font-semibold rounded-md hover:bg-red-500 hover:text-white transition duration-300">
             Xem thêm Tours
           </button>
         </div>
