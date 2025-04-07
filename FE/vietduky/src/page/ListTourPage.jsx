@@ -65,7 +65,7 @@ export default function ListTour() {
             {/* Danh sách Tour */}
             <div className="mt-4 space-y-4">
               {/* {filteredTours.map((tour) => ( */}
-                <TourCard tours={tours} />
+                <TourCard tours={tours} travelTours={travelTours}/>
               {/* ))} */}
             </div>
           </div>
