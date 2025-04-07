@@ -50,6 +50,7 @@ exports.createProgramDiscount = async (req, res) => {
       start_date,
       end_date,
     } = req.body;
+    const image = req.file ? req.file.path : null;
 
     const newDiscount = await ProgramDiscount.create({
       discount_name,
@@ -58,6 +59,7 @@ exports.createProgramDiscount = async (req, res) => {
       percent_discount,
       start_date,
       end_date,
+      image,
     });
 
     res.status(201).json({
