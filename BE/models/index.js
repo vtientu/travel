@@ -80,6 +80,10 @@ const ProgramDiscount = require("./programDiscount.model.js")(
 const Topic = require("./topic.model")(sequelize, Sequelize);
 const TourActivities = require("./tour_activities.model")(sequelize, Sequelize);
 const TourService = require("./tour_service.model")(sequelize, Sequelize);
+const TravelGuideLocation = require("./travelGuideLocation.model.js")(
+  sequelize,
+  Sequelize
+);
 // Mối quan hệ (Associations)
 //Payment/Booking
 Booking.hasMany(Payment, { foreignKey: "booking_id" });
@@ -251,6 +255,30 @@ Article.belongsTo(User, { foreignKey: "user_id", as: "author" });
 Directory.hasMany(Article, { foreignKey: "directory_id" });
 Article.belongsTo(Directory, { foreignKey: "directory_id", as: "directory" });
 
+//TravelGuide/TravelGuideLocation
+TravelGuide.hasMany(TravelGuideLocation, {
+  foreignKey: "travel_guide_id",
+});
+TravelGuideLocation.belongsTo(TravelGuide, {
+  foreignKey: "travel_guide_id",
+  as: "travelGuide",
+});
+
+//Location/TravelGuideLocation
+Location.hasMany(TravelGuideLocation, { foreignKey: "location_id" });
+TravelGuideLocation.belongsTo(Location, {
+  foreignKey: "location_id",
+  as: "location",
+});
+
+//TravelGuide/Location
+TravelGuide.belongsToMany(Location, {
+  through: TravelGuideLocation,
+  foreignKey: "travel_guide_id",
+  otherKey: "location_id",
+  as: "locations",
+});
+
 // Đối tượng `db` để chứa Sequelize và Models
 const db = {};
 db.sequelize = sequelize;
@@ -296,5 +324,6 @@ db.TourService = TourService;
 db.Topic = Topic;
 db.Article = Article;
 db.Directory = Directory;
+db.TravelGuideLocation = TravelGuideLocation;
 
 module.exports = db;
