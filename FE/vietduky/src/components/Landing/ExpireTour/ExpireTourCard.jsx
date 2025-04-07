@@ -6,8 +6,8 @@ const ExpireTourCard = ({
   title,
   duration,
   seatsLeft,
-  start_time,
-  end_time,
+  start_day,
+  end_day,
   originalPrice,
   discountPrice,
 }) => {
@@ -80,11 +80,11 @@ const ExpireTourCard = ({
       <div className="flex justify-between items-center text-blue-950 text-xs font-normal">
         <span className="text-blue-950 text-xs">
           Ngày khởi hành:
-          <span className="font-bold">{formatDate(start_time)}</span>
+          <span className="font-bold">{formatDate(start_day)}</span>
         </span>
         <span className="text-blue-950 text-xs">
           Ngày về:
-          <span className="font-bold">{formatDate(end_time)}</span>
+          <span className="font-bold">{formatDate(end_day)}</span>
         </span>
       </div>
 
