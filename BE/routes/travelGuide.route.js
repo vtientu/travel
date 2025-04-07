@@ -9,6 +9,12 @@ const {
 
 router.get("/", travelGuideController.getAllTravelGuides);
 router.get(
+  "/feedback/:travelGuideId",
+  authenticateStaff,
+  authenticateAdmin,
+  travelGuideController.getFeedbackByTravelGuide
+);
+router.get(
   "/:user_id",
   authenticateUser,
   travelGuideController.getTravelGuidesByUser
@@ -30,6 +36,13 @@ router.delete(
   authenticateUser,
   authenticateAdmin,
   travelGuideController.deleteTravelGuide
+);
+router.get(
+  "/tour/guide/:travelGuideId",
+  // authenticateUser,
+  // authenticateStaff,
+  // authenticateAdmin,
+  travelGuideController.getToursByTravelGuideLocation
 );
 
 module.exports = router;

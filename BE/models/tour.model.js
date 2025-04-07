@@ -44,7 +44,7 @@ module.exports = (sequelize, Sequelize) => {
                 allowNull: false,
             },
             album: {
-                type: Sequelize.STRING,
+                type: Sequelize.TEXT,
                 allowNull: false,
             },
             start_location: {

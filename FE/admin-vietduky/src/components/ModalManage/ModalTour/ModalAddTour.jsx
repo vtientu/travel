@@ -125,6 +125,7 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
       console.error("Lỗi API:", error.response?.data || error.message);
     }
   };
+
   const handleConfirm = () => {
     setIsConfirmModalOpen(false);
     handleCreateTour((id) => {
@@ -160,44 +161,23 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
               </h6>
 
               {/* Mã Tour */}
-              <label className="block mb-2 font-medium before:content-['*'] before:text-red-500 before:mr-1">
-                Mã Tour
-              </label>
-              <input
-                type="text"
-                name="name_tour"
-                className="w-full p-2 border rounded mb-4"
-                placeholder="Mã Tour"
-                disabled
-              />
+
+              <input type="text" name="name_tour" className="w-full p-2 border rounded mb-4 hidden" placeholder="Mã Tour" disabled/>
 
               {/* Tên Tour */}
               <label className="block mb-2 font-medium before:content-['*'] before:text-red-500 before:mr-1">
                 Tên Tour
               </label>
-              <input
-                type="text"
-                name="name_tour"
-                className="w-full p-2 border rounded mb-4 "
-                placeholder="Nhập tên tour"
-                value={tourData.name_tour}
-                onChange={handleChange}
-                required
-              />
+              <input type="text" name="name_tour" className="w-full p-2 border rounded mb-4 " placeholder="Nhập tên tour" value={tourData.name_tour} onChange={handleChange} required/>
 
               <div className="flex items-center gap-4">
+
                 {/* Điểm khởi hành */}
                 <div>
                   <label className="block mb-2 font-medium before:content-['*'] before:text-red-500 before:mr-1">
                     Điểm khởi hành
                   </label>
-                  <select
-                    name="start_location"
-                    className="w-[250px] p-2 border rounded text-gray-600"
-                    value={tourData.start_location}
-                    onChange={handleChange}
-                    required
-                  >
+                  <select name="start_location" className="w-[250px] p-2 border rounded text-gray-600" value={tourData.start_location} onChange={handleChange} required>
                     <option value="" disabled>
                       Chọn điểm khởi hành
                     </option>
@@ -217,13 +197,7 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
                   <label className="block mb-2 font-medium before:content-['*'] before:text-red-500 before:mr-1">
                     Điểm đến
                   </label>
-                  <select
-                    name="end_location"
-                    className="w-[250px] p-2 border rounded text-gray-600"
-                    value={tourData.end_location}
-                    onChange={handleChange}
-                    required
-                  >
+                  <select name="end_location" className="w-[250px] p-2 border rounded text-gray-600" value={tourData.end_location} onChange={handleChange} required>
                     <option value="" disabled>
                       Chọn điểm đến
                     </option>
@@ -240,29 +214,13 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
               <label className="block mb-2 font-medium before:content-['*'] before:text-red-500 before:mr-1">
                 Số ngày
               </label>
-              <input
-                type="number"
-                name="day_number"
-                className="w-full p-2 border rounded mb-4"
-                placeholder="Nhập số ngày"
-                value={tourData.day_number}
-                onChange={handleChange}
-                required
-              />
+              <input type="number" name="day_number" className="w-full p-2 border rounded mb-4" placeholder="Nhập số ngày" value={tourData.day_number} onChange={handleChange} required/>
 
               {/* Giá tour */}
               <label className="block mb-2 font-medium before:content-['*'] before:text-red-500 before:mr-1">
                 Giá tour
               </label>
-              <input
-                type="number"
-                name="price_tour"
-                className="w-full p-2 border rounded mb-4"
-                placeholder="Nhập giá tour"
-                value={tourData.price_tour}
-                onChange={handleChange}
-                required
-              />
+              <input type="number" name="price_tour" className="w-full p-2 border rounded mb-4" placeholder="Nhập giá tour" value={tourData.price_tour} onChange={handleChange} required/>
 
               {/* loại Tour */}
               <label className="block mb-2 font-medium before:content-['*'] before:text-red-500 before:mr-1">
@@ -339,30 +297,41 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
               >
                 {previewImages.length > 0 ? (
                     <div className="flex gap-2 overflow-x-auto">
-                      {previewImages.map((src, index) => (
-                          <div key={index} className="relative group">
-                            <img
-                                src={src}
-                                alt={`Ảnh ${index + 1}`}
-                                className="h-36 w-auto object-cover rounded"
-                            />
-                            <button
-                                type="button"
-                                className="absolute top-1 right-1 bg-black bg-opacity-50 text-white rounded px-1 text-xs hidden group-hover:block"
-                                onClick={() => {
-                                  setPreviewImages((prev) =>
-                                      prev.filter((_, i) => i !== index)
-                                  );
-                                  setTourData((prev) => ({
-                                    ...prev,
-                                    album: prev.album.filter((_, i) => i !== index),
-                                  }));
-                                }}
-                            >
-                              ✕
-                            </button>
-                          </div>
-                      ))}
+                      {previewImages.slice(0, 3).map((src, index) => {
+                        const remaining = previewImages.length - 3;
+                        return (
+                            <div key={index} className="relative group">
+                              <img
+                                  src={src}
+                                  alt={`Ảnh ${index + 1}`}
+                                  className="h-36 w-auto object-cover rounded"
+                              />
+
+                              {/* Hiển thị lớp phủ +n nếu là ảnh thứ 3 và còn ảnh dư */}
+                              {index === 2 && remaining > 0 && (
+                                  <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center text-white text-xl font-bold rounded">
+                                    +{remaining}
+                                  </div>
+                              )}
+
+                              {/* Nút xoá ảnh */}
+                              <button
+                                  type="button"
+                                  className="absolute top-1 right-1 bg-black bg-opacity-50 text-white rounded px-1 text-xs hidden group-hover:block"
+                                  onClick={(e) => {
+                                    e.stopPropagation(); // ✅ Ngăn lan truyền sự kiện ra ngoài
+                                    setPreviewImages((prev) => prev.filter((_, i) => i !== index));
+                                    setTourData((prev) => ({
+                                      ...prev,
+                                      album: prev.album.filter((_, i) => i !== index),
+                                    }));
+                                  }}
+                              >
+                                ✕
+                              </button>
+                            </div>
+                        );
+                      })}
                     </div>
                 ) : (
                     <span>Kéo & thả ảnh Tour tại đây (.png .jpg .jpeg)</span>
@@ -376,6 +345,7 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
                   className="hidden"
                   onChange={handleFileChange}
               />
+
             </div>
 
             {/* Cột phải */}
@@ -385,27 +355,17 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
                 <label className="block mb-2 font-medium">
                   Mô tả hành trình
                 </label>
-                <TextEditor
-                  value={tourData.activity_description}
-                  onChange={handleEditorChange}
-                />
+                <TextEditor value={tourData.activity_description} onChange={handleEditorChange}/>
               </div>
             </div>
           </div>
 
           {/* Button Actions */}
           <div className="flex justify-end gap-4 mt-4">
-            <button
-                type="button"
-                className="bg-gray-300 px-4 py-2 rounded-md"
-                onClick={onClose}
-            >
+            <button type="button" className="bg-gray-300 px-4 py-2 rounded-md" onClick={onClose}>
               Hủy
             </button>
-            <button
-                type="submit"
-                className="bg-red-700 text-white px-4 py-2 rounded-md"
-            >
+            <button type="submit" className="bg-red-700 text-white px-4 py-2 rounded-md">
               Tạo Tour mới
             </button>
           </div>
