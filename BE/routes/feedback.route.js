@@ -7,13 +7,31 @@ const {
   authenticateStaff,
 } = require("../middleware/authMiddleware");
 
-router.get("/:userId", authenticateUser, feedbackController.getFeedbackByUser);
-router.post("/create", authenticateUser, feedbackController.createFeedback);
-router.put("/update/:id",
-  authenticateUser, authenticateAdmin, feedbackController.updateFeedback);
+router.get(
+  "/:customerId",
+  authenticateUser,
+  feedbackController.getFeedbackByCustomer
+);
+router.post(
+  "/create/tour",
+  authenticateUser,
+  feedbackController.createFeedbackForTour
+);
+router.post(
+  "/create/travel-guide",
+  authenticateUser,
+  feedbackController.createFeedbackForTravelGuide
+);
+router.put(
+  "/update/:id",
+  authenticateUser,
+  authenticateAdmin,
+  feedbackController.updateFeedback
+);
 router.delete(
   "/delete/:id",
-  authenticateUser, authenticateAdmin,
+  authenticateUser,
+  authenticateAdmin,
   feedbackController.deleteFeedback
 );
 

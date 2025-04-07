@@ -8,6 +8,9 @@ const TourActivities = db.TourActivities;
 const Service = db.Service;
 const TourService = db.TourService;
 const Topic = db.Topic;
+const Feedback = db.Feedback;
+const User = db.User;
+const Customer = db.Customer;
 
 // Lấy danh sách tất cả Tour
 // exports.getAllTours = async (req, res) => {
@@ -64,6 +67,7 @@ exports.getAllTours = async (req, res) => {
 };
 
 //Lấy thông tin Tour theo ID
+// Lấy thông tin Tour theo ID
 exports.getTourById = async (req, res) => {
   try {
     const tourId = req.params.id;
@@ -88,6 +92,17 @@ exports.getTourById = async (req, res) => {
           attributes: ["id", "day", "title", "description", "detail", "image"],
           order: [["day", "ASC"]],
         },
+        {
+          model: Feedback,
+          attributes: ["rating", "description_feedback", "feedback_date"],
+          include: [
+            {
+              model: Customer,
+              attributes: ["first_name", "last_name"],
+              as: "customer",
+            },
+          ],
+        },
       ],
     });
 
@@ -103,6 +118,7 @@ exports.getTourById = async (req, res) => {
       ...tourData,
       services: tourData.Services || [],
       activities: tourData.TourActivities || [],
+      feedbacks: tourData.Feedbacks || [],
     };
     delete formattedTour.Services;
     delete formattedTour.TourActivities;
@@ -119,6 +135,7 @@ exports.getTourById = async (req, res) => {
     });
   }
 };
+
 exports.searchTour = async (req, res) => {
   try {
     const {
