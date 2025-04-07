@@ -1,4 +1,3 @@
-// src/services/API/activity_tour.service.js
 import restClient from "../restClient";
 import { StorageService } from "../storage/StorageService";
 
@@ -7,7 +6,6 @@ function getAuthHeaders() {
     return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
-// Gửi 1 hoạt động tour
 export function createTourActivity(formData) {
     return restClient({
         url: "tour-activities/create",
@@ -15,12 +13,23 @@ export function createTourActivity(formData) {
         data: formData,
         headers: {
             ...getAuthHeaders(),
-            "Content-Type": "multipart/form-data",
         },
     })
         .then((res) => res.data)
         .catch((err) => {
             console.error("❌ Lỗi tạo hoạt động tour:", err.response?.data || err);
+            throw err;
+        });
+}
+
+export function getActivitiesByTourId(tourId) {
+    return restClient({
+        url: `tour/${tourId}/activities`,
+        method: "GET",
+    })
+        .then((res) => res.data.data.activities)
+        .catch((err) => {
+            console.error("Lỗi khi lấy activity:", err);
             throw err;
         });
 }
