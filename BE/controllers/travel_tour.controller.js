@@ -275,3 +275,34 @@ exports.updateTravelTour = async (req, res) => {
     });
   }
 };
+
+// Đóng Tour tự động khi đủ số lượng người đăng ký
+exports.closeTourWhenFull = async (req, res) => {
+  try {
+    const travelTourId = req.params.id;
+
+    const travelTour = await TravelTour.findByPk(travelTourId);
+    if (!travelTour) {
+      return res.status(404).json({ message: "Không tìm thấy tour!" });
+    }
+
+    if (travelTour.current_people >= travelTour.max_people) {
+      travelTour.active = false;
+      await travelTour.save();
+
+      res.status(200).json({
+        message: "Tour đã được đóng vì đã đủ số lượng người đăng ký!",
+        data: travelTour,
+      });
+    } else {
+      res.status(400).json({
+        message: "Tour chưa đủ số lượng người đăng ký để đóng.",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: "Lỗi khi đóng tour",
+      error: error.message,
+    });
+  }
+};

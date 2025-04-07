@@ -120,7 +120,6 @@ exports.getTourById = async (req, res) => {
       activities: tourData.TourActivities || [],
       feedbacks: tourData.Feedbacks || [],
       discount_services: tourData.DiscountServices || [],
-
     };
     delete formattedTour.Services;
     delete formattedTour.TourActivities;
@@ -309,14 +308,14 @@ exports.getTourActivities = async (req, res) => {
       });
     }
 
-        // Lấy danh sách hoạt động
-        const activities = await TourActivities.findAll({
-            where: {
-                tour_id: tourId,
-            },
-            order: [["day", "ASC"]], // Sắp xếp theo ngày tăng dần
-            attributes: ["id", "day", "title", "description", "detail", "image"],
-        });
+    // Lấy danh sách hoạt động
+    const activities = await TourActivities.findAll({
+      where: {
+        tour_id: tourId,
+      },
+      order: [["day", "ASC"]], // Sắp xếp theo ngày tăng dần
+      attributes: ["id", "day", "title", "description", "detail", "image"],
+    });
 
     res.json({
       message: "Lấy danh sách hoạt động thành công!",
@@ -417,7 +416,6 @@ exports.createTour = async (req, res) => {
       price_tour,
       day_number,
       rating_tour,
-      max_people,
       activity_description,
       start_location,
       end_location,
@@ -463,7 +461,6 @@ exports.createTour = async (req, res) => {
       !price_tour ||
       !day_number ||
       !rating_tour ||
-      !max_people ||
       !activity_description ||
       !start_location ||
       !end_location ||
@@ -500,7 +497,6 @@ exports.createTour = async (req, res) => {
       price_tour: Number(price_tour),
       day_number: Number(day_number),
       rating_tour: Number(rating_tour),
-      max_people: Number(max_people),
       activity_description,
       album,
       start_location: Number(start_location),
@@ -604,8 +600,6 @@ exports.updateTourById = async (req, res) => {
       tour.day_number = req.body.day_number;
     if (req.body.rating_tour !== undefined)
       tour.rating_tour = req.body.rating_tour;
-    if (req.body.max_people !== undefined)
-      tour.max_people = req.body.max_people;
     if (req.body.activity_description !== undefined)
       tour.activity_description = req.body.activity_description;
     if (req.body.start_location !== undefined)

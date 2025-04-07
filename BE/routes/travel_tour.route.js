@@ -30,10 +30,15 @@ router.delete(
 );
 router.get(
   "/tour/:id",
-  // authenticateAdmin,
-  // authenticateUser,
+  authenticateAdmin,
+  authenticateUser,
   travelTourController.getTravelTourByTourId
 );
-// router.post("/insert-sample", tourController.insertSampleData);
+
+router.post(
+  "/close/:id",
+  authenticateAdmin,
+  travelTourController.closeTourWhenFull
+);
 
 module.exports = router;
