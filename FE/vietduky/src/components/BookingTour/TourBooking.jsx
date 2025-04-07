@@ -73,8 +73,11 @@ const TourBooking = ({
 
   const totalPrice =
     ((formData?.number_adult +
-      formData?.number_children
-      + formData?.number_toddler || 0) * travelTourData?.price_tour + roomCost)/1000;
+      formData?.number_children +
+      formData?.number_toddler || 0) *
+      travelTourData?.price_tour +
+      roomCost) /
+    1000;
 
   // const calculateTotalPrice = (formData, roomCost, travelTourData) => {
   //   const numberAdult = formData?.number_adult || 0;
@@ -120,7 +123,6 @@ const TourBooking = ({
   // const totalPrice = calculateTotalPrice(formData, roomCost, travelTourData);
 
   console.log("Tổng tiền:", totalPrice);
-  
 
   useEffect(() => {
     setFormData((prev) => ({
@@ -188,7 +190,7 @@ const TourBooking = ({
           <div className="flex">
             <div className="flex-1 pr-4">
               <div className="text-sm font-semibold mb-3">
-                Ngày đi - {travelTourData?.start_time}
+                Ngày đi - {travelTourData?.start_day}
               </div>
               <div className="flex justify-between text-sm font-semibold mb-2">
                 <span>06:30</span>
@@ -210,7 +212,7 @@ const TourBooking = ({
             </div>
             <div className="flex-1 border-l-2 border-gray-200 pl-4">
               <div className="text-sm font-semibold mb-3">
-                Ngày về - {travelTourData?.end_time}
+                Ngày về - {travelTourData?.end_day}
               </div>
               <div className="flex justify-between text-sm font-semibold mb-2">
                 <span>00:00</span>

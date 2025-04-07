@@ -6,8 +6,8 @@ const tours = [
     id: 1,
     image: "/images/tour1.jpg",
     title: "Tour Côn Đảo 2N2Đ bằng Xe Giường Nằm + Tàu Cao Tốc",
-    start_time: "2023-10-01",
-    end_time: "2023-10-05",
+    start_day: "2023-10-01",
+    end_day: "2023-10-05",
     timeLeft: "2 Ngày 3 Giờ",
     duration: "5 Ngày 4 Đêm",
     seatsLeft: 14,
@@ -19,8 +19,8 @@ const tours = [
     id: 2,
     image: "/images/tour1.jpg",
     title: "Tour Côn Đảo 2N2Đ bằng Xe Giường Nằm + Tàu Cao Tốc",
-    start_time: "2023-10-01",
-    end_time: "2023-10-05",
+    start_day: "2023-10-01",
+    end_day: "2023-10-05",
     timeLeft: "2 Ngày 3 Giờ",
     duration: "5 Ngày 4 Đêm",
     seatsLeft: 14,
@@ -32,8 +32,8 @@ const tours = [
     id: 3,
     image: "/images/tour1.jpg",
     title: "Tour Côn Đảo 2N2Đ bằng Xe Giường Nằm + Tàu Cao Tốc",
-    start_time: "2023-10-01",
-    end_time: "2023-10-05",
+    start_day: "2023-10-01",
+    end_day: "2023-10-05",
     timeLeft: "2 Ngày 3 Giờ",
     duration: "5 Ngày 4 Đêm",
     seatsLeft: 14,
@@ -45,8 +45,8 @@ const tours = [
     id: 4,
     image: "/images/tour1.jpg",
     title: "Tour Côn Đảo 2N2Đ bằng Xe Giường Nằm + Tàu Cao Tốc",
-    start_time: "2023-10-01",
-    end_time: "2023-10-05",
+    start_day: "2023-10-01",
+    end_day: "2023-10-05",
     timeLeft: "2 Ngày 3 Giờ",
     duration: "5 Ngày 4 Đêm",
     seatsLeft: 14,
@@ -58,8 +58,8 @@ const tours = [
     id: 5,
     image: "/images/tour1.jpg",
     title: "Tour Côn Đảo 2N2Đ bằng Xe Giường Nằm + Tàu Cao Tốc",
-    start_time: "2023-10-01",
-    end_time: "2023-10-05",
+    start_day: "2023-10-01",
+    end_day: "2023-10-05",
     timeLeft: "2 Ngày 3 Giờ",
     duration: "5 Ngày 4 Đêm",
     seatsLeft: 14,
@@ -71,8 +71,8 @@ const tours = [
     id: 6,
     image: "/images/tour1.jpg",
     title: "Tour Côn Đảo 2N2Đ bằng Xe Giường Nằm + Tàu Cao Tốc",
-    start_time: "2023-10-01",
-    end_time: "2023-10-05",
+    start_day: "2023-10-01",
+    end_day: "2023-10-05",
     timeLeft: "2 Ngày 3 Giờ",
     duration: "5 Ngày 4 Đêm",
     seatsLeft: 14,
@@ -96,7 +96,6 @@ const PreferentialTour = () => {
         <div className="flex flex-wrap justify-between gap-12 mt-6 mx-auto">
           {tours.map((tour) => (
             <div className="relative box-border" key={tour.id}>
-              
               <PreferentialTourCard {...tour} />
             </div>
           ))}

@@ -42,8 +42,8 @@ const Calendar = ({ id }) => {
         }
 
         const formattedTourDates = tour.reduce((acc, tour) => {
-          if (tour.start_time) {
-            const dateStr = dayjs(tour.start_time).format("YYYY-MM-DD");
+          if (tour.start_day) {
+            const dateStr = dayjs(tour.start_day).format("YYYY-MM-DD");
             acc[dateStr] = tour.price_tour.toLocaleString("vi-VN");
           }
           return acc;
@@ -73,9 +73,12 @@ const Calendar = ({ id }) => {
   });
 
   const handlePrev = () => {
-    if (viewMode === "calendar") setCurrentDate(currentDate.subtract(1, "month"));
-    else if (viewMode === "month") setCurrentDate(currentDate.subtract(1, "year"));
-    else if (viewMode === "year") setCurrentDate(currentDate.subtract(16, "year"));
+    if (viewMode === "calendar")
+      setCurrentDate(currentDate.subtract(1, "month"));
+    else if (viewMode === "month")
+      setCurrentDate(currentDate.subtract(1, "year"));
+    else if (viewMode === "year")
+      setCurrentDate(currentDate.subtract(16, "year"));
   };
 
   const handleNext = () => {
@@ -99,8 +102,8 @@ const Calendar = ({ id }) => {
       return;
     }
 
-    const selectedTours = travelTourData.filter((tour) =>
-      selectedDate === dayjs(tour.start_time).format("YYYY-MM-DD")
+    const selectedTours = travelTourData.filter(
+      (tour) => selectedDate === dayjs(tour.start_day).format("YYYY-MM-DD")
     );
 
     if (selectedTours.length === 0) {
@@ -177,14 +180,20 @@ const Calendar = ({ id }) => {
                     <div
                       key={i}
                       className={`h-16 w-16 flex flex-col items-center justify-center rounded-md cursor-pointer transition duration-300 
-                        ${isTourDate ? "border border-red-500 text-red-500" : ""}
+                        ${
+                          isTourDate ? "border border-red-500 text-red-500" : ""
+                        }
                         ${isSelected ? "bg-red-700 text-white" : "bg-white"}
                         ${!isCurrentMonth ? "text-gray-400" : "text-black"}`}
                       onClick={() => isTourDate && toggleDateSelection(dateStr)}
                     >
-                      <span className="text-sm font-semibold">{date.date()}</span>
+                      <span className="text-sm font-semibold">
+                        {date.date()}
+                      </span>
                       {isTourDate && (
-                        <span className="text-xs font-medium">{tourDates[dateStr]}</span>
+                        <span className="text-xs font-medium">
+                          {tourDates[dateStr]}
+                        </span>
                       )}
                     </div>
                   );
@@ -239,7 +248,10 @@ const Calendar = ({ id }) => {
 
         {/* Button */}
         {viewMode === "calendar" && (
-          <button onClick={handleBooking} className="bg-orange-500 text-white font-bold w-full mt-4 py-4 rounded hover:bg-orange-600">
+          <button
+            onClick={handleBooking}
+            className="bg-orange-500 text-white font-bold w-full mt-4 py-4 rounded hover:bg-orange-600"
+          >
             Đặt Tour
           </button>
         )}

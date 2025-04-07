@@ -58,12 +58,12 @@ const BookingConfirmation = ({ bookingData }) => {
     return `${randomLetters}${timestamp}`;
   };
 
-  const qrSrc = `https://img.vietqr.io/image/mbbank-0868884528-compact2.jpg?amount=${bookingData?.total_cost}&addInfo=start${generateAddInfo()}end&accountName=VietDuKy`;
+  const qrSrc = `https://img.vietqr.io/image/mbbank-0868884528-compact2.jpg?amount=${
+    bookingData?.total_cost
+  }&addInfo=start${generateAddInfo()}end&accountName=VietDuKy`;
 
   // console.log("tour", travelTour);
   console.log("QR", qrSrc);
-  
-  
 
   return (
     <>
@@ -107,7 +107,7 @@ const BookingConfirmation = ({ bookingData }) => {
         <div className="flex">
           <div className="flex-1 pr-4">
             <div className="text-sm font-semibold mb-3">
-              Ngày đi - {travelTour?.start_time}
+              Ngày đi - {travelTour?.start_day}
             </div>
             <div className="flex justify-between text-sm font-semibold mb-2">
               <span>06:30</span>
@@ -129,7 +129,7 @@ const BookingConfirmation = ({ bookingData }) => {
           </div>
           <div className="flex-1 border-l-2 border-gray-200 pl-4">
             <div className="text-sm font-semibold mb-3">
-              Ngày về - {travelTour?.end_time}
+              Ngày về - {travelTour?.end_day}
             </div>
             <div className="flex justify-between text-sm font-semibold mb-2">
               <span>00:00</span>
@@ -173,8 +173,14 @@ const BookingConfirmation = ({ bookingData }) => {
         className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-0"
       >
         <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full text-center z-40">
-          <h3 className="text-lg font-bold mb-4 text-[#a80f21]">Quét mã QR để thanh toán</h3>
-          <img src={qrSrc} alt="QR Code" className=" rounded-lg shadow-md mx-auto" />
+          <h3 className="text-lg font-bold mb-4 text-[#a80f21]">
+            Quét mã QR để thanh toán
+          </h3>
+          <img
+            src={qrSrc}
+            alt="QR Code"
+            className=" rounded-lg shadow-md mx-auto"
+          />
           <button
             onClick={() => setIsQRModalOpen(false)}
             className="mt-4 px-4 py-2 bg-gray-300 text-gray-800 font-bold rounded-lg hover:bg-gray-400"

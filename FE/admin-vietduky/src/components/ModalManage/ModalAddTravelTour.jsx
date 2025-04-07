@@ -8,8 +8,8 @@ export default function ModalAddTravelTour({ tourId, onClose, onAddSuccess }) {
   const [loading, setLoading] = useState(false);
   const [travelTourData, setTravelTourData] = useState({
     tour_id: tourId,
-    start_time: new Date(),
-    end_time: new Date(),
+    start_day: new Date(),
+    end_day: new Date(),
     max_people: "",
     price_tour: "",
   });
@@ -35,8 +35,8 @@ export default function ModalAddTravelTour({ tourId, onClose, onAddSuccess }) {
 
     const formattedData = {
       ...travelTourData,
-      start_time: travelTourData.start_time.toISOString().split("T")[0],
-      end_time: travelTourData.end_time.toISOString().split("T")[0],
+      start_day: travelTourData.start_day.toISOString().split("T")[0],
+      end_day: travelTourData.end_day.toISOString().split("T")[0],
       max_people: parseInt(travelTourData.max_people, 10),
       price_tour: parseFloat(travelTourData.price_tour),
     };
@@ -65,11 +65,19 @@ export default function ModalAddTravelTour({ tourId, onClose, onAddSuccess }) {
     event.stopPropagation();
   };
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-[9999]" onClick={handleWrapperClick}>
-      <div className="bg-white p-6 rounded-lg shadow-lg w-[500px] max-h-[90vh] overflow-auto relative" onClick={handleModalClick}>
+    <div
+      className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-[9999]"
+      onClick={handleWrapperClick}
+    >
+      <div
+        className="bg-white p-6 rounded-lg shadow-lg w-[500px] max-h-[90vh] overflow-auto relative"
+        onClick={handleModalClick}
+      >
         <form onSubmit={handleSubmit}>
           <h2 className="text-lg font-semibold">Thêm lịch khởi hành</h2>
-          <h6 className="text-sm mb-4">Quản trị viên thêm lịch khởi hành vào Tour</h6>
+          <h6 className="text-sm mb-4">
+            Quản trị viên thêm lịch khởi hành vào Tour
+          </h6>
 
           <div className="flex items-center gap-4 mt-4">
             <div>
@@ -77,11 +85,11 @@ export default function ModalAddTravelTour({ tourId, onClose, onAddSuccess }) {
                 Ngày khởi hành <span className="text-red-500">*</span>
               </label>
               <DatePicker
-                selected={travelTourData.start_time}
-                onChange={(date) => handleDateChange(date, "start_time")}
+                selected={travelTourData.start_day}
+                onChange={(date) => handleDateChange(date, "start_day")}
                 selectsStart
-                startDate={travelTourData.start_time}
-                endDate={travelTourData.end_time}
+                startDate={travelTourData.start_day}
+                endDate={travelTourData.end_day}
                 dateFormat="yyyy-MM-dd"
                 className="w-[200px] p-2 border rounded text-gray-500"
               />
@@ -94,12 +102,12 @@ export default function ModalAddTravelTour({ tourId, onClose, onAddSuccess }) {
                 Ngày về <span className="text-red-500">*</span>
               </label>
               <DatePicker
-                selected={travelTourData.end_time}
-                onChange={(date) => handleDateChange(date, "end_time")}
+                selected={travelTourData.end_day}
+                onChange={(date) => handleDateChange(date, "end_day")}
                 selectsEnd
-                startDate={travelTourData.start_time}
-                endDate={travelTourData.end_time}
-                minDate={travelTourData.start_time}
+                startDate={travelTourData.start_day}
+                endDate={travelTourData.end_day}
+                minDate={travelTourData.start_day}
                 dateFormat="yyyy-MM-dd"
                 className="w-[200px] p-2 border rounded text-gray-500"
               />
@@ -133,7 +141,11 @@ export default function ModalAddTravelTour({ tourId, onClose, onAddSuccess }) {
           />
 
           <div className="flex justify-end gap-4 mt-4">
-            <button type="button" className="bg-gray-300 px-4 py-2 rounded" onClick={onClose}>
+            <button
+              type="button"
+              className="bg-gray-300 px-4 py-2 rounded"
+              onClick={onClose}
+            >
               Hủy
             </button>
             <button

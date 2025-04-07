@@ -6,8 +6,8 @@ const PreferentialTourCard = ({
   title,
   duration,
   seatsLeft,
-  start_time,
-  end_time,
+  start_day,
+  end_day,
   type_tour,
   originalPrice,
   discountPrice,
@@ -50,11 +50,11 @@ const PreferentialTourCard = ({
       <div className="flex justify-between items-center text-blue-950 text-xs font-normal">
         <span>
           Ngày khởi hành:
-          <span className="font-bold"> {formatDate(start_time)}</span>
+          <span className="font-bold"> {formatDate(start_day)}</span>
         </span>
         <span>
           Ngày về:
-          <span className="font-bold"> {formatDate(end_time)}</span>
+          <span className="font-bold"> {formatDate(end_day)}</span>
         </span>
       </div>
       {/* Số lượng chỗ ngồi */}

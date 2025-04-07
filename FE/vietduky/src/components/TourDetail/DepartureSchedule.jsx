@@ -46,8 +46,8 @@ export default function DepartureSchedule({ id }) {
                 key={index}
                 className={`border-t ${index % 2 ? "bg-gray-100" : ""}`}
               >
-                <td className="py-2">{formatDayDMY(tour.start_time)}</td>
-                <td className="py-2">{formatDayDMY(tour.end_time)}</td>
+                <td className="py-2">{formatDayDMY(tour.start_day)}</td>
+                <td className="py-2">{formatDayDMY(tour.end_day)}</td>
                 <td className="py-2">{tour.max_people}</td>
                 <td className="py-2 text-right font-bold text-red-600">
                   {tour.price_tour.toLocaleString("vi-VN")} VNĐ
