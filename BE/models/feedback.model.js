@@ -7,11 +7,15 @@ module.exports = (sequelize, Sequelize) => {
         autoIncrement: true,
         primaryKey: true,
       },
-      user_id: {
+      customer_id: {
         type: Sequelize.INTEGER,
         allowNull: true,
       },
       tour_id: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
+      travel_guide_id: {
         type: Sequelize.INTEGER,
         allowNull: true,
       },
