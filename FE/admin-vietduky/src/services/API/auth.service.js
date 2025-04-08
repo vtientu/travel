@@ -1,4 +1,5 @@
-import restClient, { StorageService } from "../restClient";
+import restClient from "../restClient";
+import { StorageService } from "../storage/StorageService";
 
 export async function login(email, password) {
   return restClient({
@@ -10,5 +11,3 @@ export async function login(email, password) {
     }
   });
 }
-
-StorageService.setToken(token);

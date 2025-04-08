@@ -6,13 +6,14 @@ const {
   authenticateUser,
   authenticateAdmin,
   authenticateStaff,
+  checkRoles,
 } = require("../middleware/authMiddleware");
 
 router.get("/", ArticleController.getAllArticles);
 router.get("/:directory_id", ArticleController.getArticlesByDirectory);
 router.post(
   "/create",
-  authenticateAdmin,
+  checkRoles(["admin", "staff"]),
   uploadAlbumPost.single("album_post"),
   ArticleController.createArticle
 );
