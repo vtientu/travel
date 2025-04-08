@@ -9,7 +9,7 @@ export default function Sidebar({ isCollapsed }) {
   const location = useLocation();
 
   const menuItems = [
-    { id: 1, name: "Thống kê", icon: Icons.Sidebar, path: "/#" },
+    { id: 1, name: "Thống kê", icon: Icons.Sidebar, path: "/dashboard" },
     {
       id: 2,
       name: "Quản lý Tour",
