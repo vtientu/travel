@@ -1,48 +1,47 @@
 const db = require("../models");
 const TravelTour = db.TravelTour;
+const Tour = db.Tour;
 
 //Lấy tất cả dữ liệu trong bảng travel tour
 exports.getAllTravelTours = async (req, res) => {
   try {
-    const filter = req.params.filter;
-    // if (filter == 'about') {
-    //   const travelTours = await TravelTour.findAll({
-    //     where: {
-    //       status: 1,
-    //       start_day: {
-    //         [Op.lt]: new Date()
-    //       }
-    //     }
-    //   });
+    const { status } = req.query;
+    
+    // Tạo điều kiện where
+    const whereCondition = {};
+    if (status !== undefined) {
+      whereCondition.status = status;
+    }
 
-    // }
-    // if (filter == 'now') {
-    //   const travelTours = await TravelTour.findAll({
-    //     where: {
-    //       status: 1,
-    //       start_day: {
-    //         [Op.lt]: new Date()
-    //       }
-    //     }
-    //   });
-    // }
-    // if (filter == 'finish') {
-    //   const travelTours = await TravelTour.findAll({
-    //     where: {
-    //       status: 2,
-    //       end_day: {
-    //         [Op.lt]: new Date()
-    //       }
-    //     }
-    //   });
-    // }
-    // else {
-    //   const travelTours = await TravelTour.findAll();
-    // }
-    const travelTours = await TravelTour.findAll();
-    res.json({ travelTours });
+    const travelTours = await TravelTour.findAll({
+      where: whereCondition,
+      include: [{
+        model: Tour,
+        as: 'Tour',
+        // attributes: ['id', 'name_tour', 'price_tour', 'day_number', 'rating_tour', 'max_people', 'image']
+      }],
+      order: [['start_day', 'ASC']]
+    });
+
+    // Format lại dữ liệu trả về
+    const formattedTravelTours = travelTours.map(travelTour => {
+      const travelTourData = travelTour.get({ plain: true });
+      return {
+        ...travelTourData,
+        tour: travelTourData.Tour || null
+      };
+    });
+
+    res.json({
+      message: "Lấy danh sách tour thành công!",
+      data: formattedTravelTours
+    });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("Error:", error);
+    res.status(500).json({
+      message: "Lỗi khi lấy danh sách tour!",
+      error: error.message
+    });
   }
 };
 
@@ -132,6 +131,8 @@ exports.createTravelTour = async (req, res) => {
       end_time_close,
       children_price,
       toddler_price,
+      status: 0,
+      active: 1,
     };
     const Tour = await db.Tour.findByPk(tour_id);
     if (!Tour) {

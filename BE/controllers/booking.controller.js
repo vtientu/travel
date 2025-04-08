@@ -541,3 +541,48 @@ exports.getLatestBooking = async (req, res) => {
     });
   }
 };
+
+exports.getBookingByUserId = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const bookings = await Booking.findAll({
+      where: { user_id: userId }, 
+      include: [
+        { model: User, attributes: ["id", "email", "avatar"] },
+        { 
+          model: TravelTour, 
+          attributes: ["id", "tour_id", "start_day", "end_day", "status"],
+          include: [{
+            model: Tour,
+            as: 'Tour',
+            attributes: ['id', 'name_tour', 'album']
+          }]
+        },
+      ],
+    }); 
+
+    // Format lại dữ liệu trả về
+    const formattedBookings = bookings.map(booking => {
+      const bookingData = booking.get({ plain: true });
+      return {
+        ...bookingData,
+        travel_tour: {
+          ...bookingData.TravelTour,
+          tour: bookingData.TravelTour.Tour || null
+        }
+      };
+    });
+
+    res.status(200).json({
+      message: "Lấy booking thành công!",
+      data: formattedBookings,
+    });
+  } catch (error) {
+    res.status(500).json({  
+      message: "Lỗi khi lấy booking!",
+      error: error.message,
+    });
+  }
+};
+
+

@@ -421,6 +421,7 @@ exports.createTour = async (req, res) => {
       end_location,
       available_month,
       service_ids,
+      passport
     } = req.body;
     const travel_tours = req.body.travel_tours
       ? JSON.parse(req.body.travel_tours)
@@ -503,6 +504,7 @@ exports.createTour = async (req, res) => {
       end_location: Number(end_location),
       available_month,
       code_tour,
+      passport: passport ? 1 : 0,
     };
 
     const newTour = await Tour.create(tourData);

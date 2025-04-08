@@ -7,7 +7,7 @@ module.exports = (sequelize, Sequelize) => {
         autoIncrement: true,
         primaryKey: true,
       },
-      tour_id: {
+      topic_id: {
         type: Sequelize.INTEGER,
         allowNull: true,
       },

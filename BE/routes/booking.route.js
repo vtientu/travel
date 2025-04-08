@@ -36,5 +36,11 @@ router.get(
     authenticateUser,
     BookingController.getLatestBooking
 );
+router.get(
+    "/user/:id",
+    // authenticateUser,
+    BookingController.getBookingByUserId
+);
+
 
 module.exports = router;
