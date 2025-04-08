@@ -20,16 +20,7 @@ export default function DetailTourPage() {
   const { id } = useParams();
 
   return (
-    <div
-      className="bg-white"
-      style={{
-        // backgroundImage: "url('/Image/Background.png')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        width: "100%",
-        minHeight: "100vh",
-      }}
-    >
+    <div className="bg-white">
       <Header />
       <div className="container mx-auto py-8 px-4">
         <TourDescription id={id} />

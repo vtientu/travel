@@ -43,8 +43,8 @@ const Calendar = ({ id }) => {
         }
 
         const formattedTourDates = tour.reduce((acc, tour) => {
-          if (tour.start_time) {
-            const dateStr = dayjs(tour.start_time).format("YYYY-MM-DD");
+          if (tour.start_day) {
+            const dateStr = dayjs(tour.start_day).format("YYYY-MM-DD");
             acc[dateStr] =
               (tour.price_tour / 1000).toLocaleString("vi-VN") + "k";
           }
@@ -114,7 +114,7 @@ const Calendar = ({ id }) => {
     }
 
     const selectedTours = travelTourData.filter(
-      (tour) => selectedDate === dayjs(tour.start_time).format("YYYY-MM-DD")
+      (tour) => selectedDate === dayjs(tour.start_day).format("YYYY-MM-DD")
     );
 
     if (selectedTours.length === 0) {
@@ -124,6 +124,9 @@ const Calendar = ({ id }) => {
 
     navigate("/booking/" + id, { state: { selectedTours, id } });
   };
+
+  console.log("travel Tour", travelTourData);
+  
 
   return (
     <div className="">

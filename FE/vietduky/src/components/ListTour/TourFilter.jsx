@@ -1,147 +1,175 @@
-import { useState } from "react";
-import { Card } from "react-bootstrap";
-import axios from 'axios';
+import React, { useState } from "react";
 
-export default function TourFilter({ onFilter }) {
-  const [budget, setBudget] = useState(null);
+const TourFilter = ({ onFilter, locations, typeTours, activeTopics }) => {
+  const [selectedBudget, setSelectedBudget] = useState("");
   const [departure, setDeparture] = useState("Tất cả");
   const [destination, setDestination] = useState("Tất cả");
   const [date, setDate] = useState("");
-  const [tourType, setTourType] = useState(null);
-  const [tourTheme, setTourTheme] = useState(null);
+  const [tourType, setTourType] = useState("");
+  const [tourTheme, setTourTheme] = useState("");
 
-  const handleApplyFilter = async () => {
-    // Tạo đối tượng filter
-    const filters = {
-      budget,
-      departure: departure !== "Tất cả" ? departure : undefined,
-      destination: destination !== "Tất cả" ? destination : undefined,
-      date,
-      tourType,
-      tourTheme,
-    };
+  const budgetOptions = [
+    "Dưới 5 triệu",
+    "Từ 5 - 10 triệu",
+    "Từ 10 - 20 triệu",
+    "Trên 20 triệu",
+  ];
 
-    // Gọi API tìm kiếm tour
-    try {
-      const response = await axios.get('http://localhost:3000/api/tour/search', {
-        params: {
-          start: filters.departure,
-          end: filters.destination,
-          date: filters.date,
-          priceRange: budget ? budget.toLowerCase().replace(/ /g, '') : undefined,
-          typeId: filters.tourType,
-          topicId: filters.tourTheme,
-        },
-      });
+  const tourTypes = typeTours.map((type) => type.name_type);
+  const tourThemes = activeTopics.map((topic) => topic.name);  
 
-      // Gọi callback để xử lý dữ liệu tour
-      onFilter(response.data.data.tours);
-    } catch (error) {
-      console.error("Error fetching tours:", error);
-    }
+  const handleBudgetClick = (option) => {
+    setSelectedBudget(option === selectedBudget ? "" : option);
   };
 
-  const renderButtonGroup = (options, selected, setSelected) =>
-    options.map((item) => (
-      <button
-        key={item}
-        className={`border rounded-lg px-4 py-2 whitespace-nowrap ${
-          selected === item
-            ? "bg-red-600 text-white"
-            : "bg-white text-gray-700 hover:bg-gray-100"
-        }`}
-        onClick={() => setSelected(item)}
-      >
-        {item}
-      </button>
-    ));
+  const handleTourTypeClick = (type) => {
+    const selected = typeTours.find(t => t.name_type === type);
+    setTourType(selected ? selected.id : "");
+  };
+  
+  const handleTourThemeClick = (theme) => {
+    const selected = activeTopics.find(t => t.name === theme);
+    setTourTheme(selected ? selected.id : "");
+  };
+
+  // Lọc locations để loại bỏ địa điểm khởi hành
+  const filteredDestinations = locations.filter(location => location.name_location !== departure);
 
   return (
-    <div>
-      <Card className="p-4 w-80 bg-white shadow-lg bg-opacity-60 rounded-lg space-y-4">
-        {/* Ngân sách */}
-        <div>
-          <h3 className="text-lg font-semibold mb-2">Ngân sách:</h3>
-          <div className="grid grid-cols-2 gap-2">
-            {renderButtonGroup(
-              ["Dưới 5 triệu", "Từ 5 - 10 triệu", "Từ 10 - 20 triệu", "Trên 20 triệu"],
-              budget,
-              setBudget
-            )}
-          </div>
+    <div className="w-full max-w-[350px] rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+      {/* Ngân sách */}
+      <div className="mb-4">
+        <h3 className="text-sm font-medium mb-2">Ngân sách:</h3>
+        <div className="flex flex-wrap gap-2">
+          {budgetOptions.map((option) => (
+            <button
+              key={option}
+              onClick={() => handleBudgetClick(option)}
+              className={`px-3 py-1 rounded-full border text-sm ${
+                selectedBudget === option
+                  ? "bg-primary text-white border-primary"
+                  : "bg-white text-gray-600 border-gray-300"
+              }`}
+            >
+              {option}
+            </button>
+          ))}
         </div>
+      </div>
 
-        {/* Điểm khởi hành */}
-        <div>
-          <h3 className="text-lg font-semibold mb-2">Điểm khởi hành</h3>
-          <select
-            className="w-full p-2 border rounded"
-            value={departure}
-            onChange={(e) => setDeparture(e.target.value)}
-          >
-            <option value="Tất cả">Tất cả</option>
-            <option value="Hà Nội">Hà Nội</option>
-            <option value="Hồ Chí Minh">Hồ Chí Minh</option>
-          </select>
-        </div>
-
-        {/* Điểm đến */}
-        <div>
-          <h3 className="text-lg font-semibold mb-2">Điểm đến</h3>
-          <select
-            className="w-full p-2 border rounded"
-            value={destination}
-            onChange={(e) => setDestination(e.target.value)}
-          >
-            <option value="Tất cả">Tất cả</option>
-            <option value="Đà Nẵng">Đà Nẵng</option>
-            <option value="Nha Trang">Nha Trang</option>
-          </select>
-        </div>
-
-        {/* Ngày đi */}
-        <div>
-          <h3 className="text-lg font-semibold mb-2">Ngày đi</h3>
-          <input
-            type="date"
-            className="w-full p-2 border rounded"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-          />
-        </div>
-
-        {/* Dòng Tour */}
-        <div>
-          <h3 className="text-lg font-semibold mb-2">Dòng Tour</h3>
-          <div className="grid grid-cols-2 gap-2">
-            {renderButtonGroup(
-              ["Cao cấp", "Tiêu chuẩn", "Tiết kiệm", "Giá tốt"],
-              tourType,
-              setTourType
-            )}
-          </div>
-        </div>
-
-        {/* Chủ đề Tour */}
-        <div>
-          <h3 className="text-lg font-semibold mb-2">Tour theo chủ đề</h3>
-          <div className="grid grid-cols-2 gap-2">
-            {renderButtonGroup(
-              ["Gia đình", "Honeymoon", "Mạo hiểm", "Nghỉ dưỡng"],
-              tourTheme,
-              setTourTheme
-            )}
-          </div>
-        </div>
-
-        {/* Nút áp dụng */}
-        <button
-          onClick={handleApplyFilter}
-          className="w-full bg-red-600 text-white text-lg py-3 rounded-lg hover:bg-red-800 transition duration-200"
+      {/* Điểm khởi hành */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium mb-1">Điểm khởi hành</label>
+        <select
+          value={departure}
+          onChange={(e) => setDeparture(e.target.value)}
+          className="w-full border rounded-md px-3 py-2 text-sm"
         >
-          Áp dụng
-        </button>
-      </Card>
+          <option>Tất cả</option>
+          {locations.map((location) => (
+            <option key={location.id} value={location.name_location}>
+              {location.name_location}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Điểm đến */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium mb-1">Điểm đến</label>
+        <select
+          value={destination}
+          onChange={(e) => setDestination(e.target.value)}
+          className="w-full border rounded-md px-3 py-2 text-sm"
+        >
+          <option>Tất cả</option>
+          {filteredDestinations.map((location) => (
+            <option key={location.id} value={location.name_location}>
+              {location.name_location}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Ngày đi */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium mb-1">Ngày đi</label>
+        <input
+          type="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          className="w-full border rounded-md px-3 py-2 text-sm"
+        />
+      </div>
+
+      {/* Dòng tour */}
+      <div className="mb-4">
+        <div className="flex justify-between items-center mb-2">
+          <h3 className="text-sm font-medium">Dòng Tour</h3>
+          {tourType && (
+            <button
+              onClick={() => setTourType("")}
+              className="text-red-500 text-xs underline"
+            >
+              Xóa
+            </button>
+          )}
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {tourTypes.map((type) => (
+            <button
+              key={type}
+              onClick={() => handleTourTypeClick(type)}
+              className={`px-3 py-1 rounded-full border text-sm ${
+                tourType === type
+                  ? "bg-primary text-white border-primary"
+                  : "bg-white text-gray-600 border-gray-300"
+              }`}
+            >
+              {type}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Chủ đề */}
+      <div className="mb-4">
+        <h3 className="text-sm font-medium mb-2">Tours theo chủ đề</h3>
+        <div className="flex flex-col gap-2">
+          {tourThemes.map((theme) => (
+            <button
+              key={theme}
+              onClick={() => handleTourThemeClick(theme)}
+              className={`w-full text-left px-3 py-2 rounded-md text-sm border ${
+                tourTheme === theme
+                  ? "bg-primary text-white border-primary"
+                  : "bg-white text-gray-700 border-gray-300"
+              }`}
+            >
+              {theme}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Nút áp dụng */}
+      <button
+        onClick={() =>
+          onFilter({
+            departure,
+            destination,
+            date,
+            priceRange: selectedBudget,
+            tourType,
+            tourTheme,
+          })
+        }
+        className="w-full mt-4 bg-primary text-white py-2 rounded-md text-sm font-semibold"
+      >
+        Áp dụng
+      </button>
     </div>
   );
-}
+};
+
+export default TourFilter;

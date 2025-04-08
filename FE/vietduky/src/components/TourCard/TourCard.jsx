@@ -10,7 +10,11 @@ export default function TourCard({ tours = [], travelTours = [] }) {
   const filteredTours = Array.isArray(tours) ? tours : [];
 
   if (filteredTours.length === 0) {
-    return <div className="text-center text-gray-600 py-10">Không có tour nào phù hợp.</div>;
+    return (
+      <div className="text-center text-gray-600 py-10">
+        Không có tour nào phù hợp...
+      </div>
+    );
   }
 
   const totalPages = Math.ceil(filteredTours.length / itemsPerPage);
@@ -25,9 +29,7 @@ export default function TourCard({ tours = [], travelTours = [] }) {
         {paginatedTours.map((tour) => {
           const tourDates = travelTours
             .filter((tt) => tt.tour_id === tour.id)
-            .map((tt) =>
-              new Date(tt.start_time).toLocaleDateString("vi-VN")
-            );
+            .map((tt) => new Date(tt.start_day).toLocaleDateString("vi-VN"));
 
           return (
             <div
@@ -38,7 +40,8 @@ export default function TourCard({ tours = [], travelTours = [] }) {
               <div className="w-1/3 relative">
                 <img
                   src={
-                    tour.album?.[0] || "https://dummyimage.com/300x200/ddd/000&text=No+Image"
+                    tour.album?.[0] ||
+                    "https://dummyimage.com/300x200/ddd/000&text=No+Image"
                   }
                   alt="Tour"
                   className="w-full h-full object-cover rounded-l-lg shadow-md cursor-pointer hover:scale-105 transition-transform duration-300"
@@ -94,7 +97,9 @@ export default function TourCard({ tours = [], travelTours = [] }) {
                         </span>
                       ))
                     ) : (
-                      <span className="text-gray-500 text-xs">Chưa có lịch</span>
+                      <span className="text-gray-500 text-xs">
+                        Chưa có lịch
+                      </span>
                     )}
                     <AiOutlineArrowRight className="w-6 h-4 text-gray-600 cursor-pointer" />
                   </div>
@@ -102,7 +107,8 @@ export default function TourCard({ tours = [], travelTours = [] }) {
 
                 <div className="flex justify-between items-center">
                   <span className="text-lg font-bold text-red-600">
-                    Giá từ: {Number(tour.price_tour).toLocaleString("vi-VN")} VNĐ
+                    Giá từ: {Number(tour.price_tour).toLocaleString("vi-VN")}{" "}
+                    VNĐ
                   </span>
                   <button
                     className="bg-red-600 text-white text-sm py-2 px-4 rounded hover:bg-red-700"
