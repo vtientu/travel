@@ -49,13 +49,27 @@ exports.getAllTravelTours = async (req, res) => {
 exports.getTravelTourById = async (req, res) => {
   try {
     const travelTourId = req.params.id;
-    const travelTour = await TravelTour.findByPk(travelTourId);
+    const travelTour = await TravelTour.findByPk(travelTourId, {
+      include: [{
+        model: Tour,
+        as: 'Tour',
+      }]
+    });
 
     if (!travelTour) {
       return res.status(404).json({ message: "Không tìm thấy tour du lịch!" });
     }
 
-    res.json(travelTour);
+    // Format lại dữ liệu trả về
+    const formattedTravelTour = {
+      ...travelTour.get({ plain: true }),
+      tour: travelTour.Tour || null
+    };
+
+    res.json({
+      message: "Lấy thông tin tour du lịch thành công!",
+      data: formattedTravelTour
+    });
   } catch (error) {
     res.status(500).json({
       message: "Lỗi khi lấy thông tin tour du lịch với id=" + req.params.id,
