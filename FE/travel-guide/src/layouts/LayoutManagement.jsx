@@ -19,7 +19,7 @@ export default function LayoutManagement({ children, title }) {
         <HeaderManage toggleSidebar={toggleSidebar} title={title} />
 
         {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto bg-[#f5f6fa] p-4">
+        <div className="flex-1 overflow-y-auto bg-[#f5f6fa] p-4 flex flex-col">
           {children}
         </div>
       </div>

@@ -8,7 +8,7 @@ const { Op } = require("sequelize");
 exports.getAllTravelTours = async (req, res) => {
   try {
     const { status } = req.query;
-    
+
     // Tạo điều kiện where
     const whereCondition = {};
     if (status !== undefined) {
@@ -58,12 +58,12 @@ exports.getTravelTourById = async (req, res) => {
         include: [
           {
             model: Location,
-            as: 'StartLocation',
+            as: 'startLocation',
             attributes: ['id', 'name_location']
           },
           {
             model: Location,
-            as: 'EndLocation',
+            as: 'endLocation',
             attributes: ['id', 'name_location']
           }
         ]
@@ -79,7 +79,7 @@ exports.getTravelTourById = async (req, res) => {
       ...travelTour.get({ plain: true }),
       tour: {
         ...travelTour.Tour.get({ plain: true }),
-        start_location: travelTour.Tour.StartLocation || null,
+        start_location: travelTour.Tour.s || null,
         end_location: travelTour.Tour.EndLocation || null
       }
     };
@@ -304,7 +304,7 @@ exports.updateTravelTour = async (req, res) => {
     if (end_time_close !== undefined)
       travelTour.end_time_close = end_time_close;
     if (children_price !== undefined) travelTour.children_price = children_price;
-    if (toddler_price !== undefined) travelTour.toddler_price = toddler_price;  
+    if (toddler_price !== undefined) travelTour.toddler_price = toddler_price;
     await travelTour.save();
     res.json({
       message: "Cập nhật tour du lịch thành công!",
@@ -351,8 +351,8 @@ exports.closeTourWhenFull = async (req, res) => {
 
 exports.getListTravelTourForGuide = async (req, res) => {
   try {
-    const { 
-      page = 1, 
+    const {
+      page = 1,
       limit = 10,
       start_location_id,
       end_location_id,
@@ -413,7 +413,7 @@ exports.getListTravelTourForGuide = async (req, res) => {
     });
 
     if (!travelTours || travelTours.length === 0) {
-      return res.status(404).json({ 
+      return res.status(404).json({
         message: "Không tìm thấy tour du lịch!",
         data: {
           totalItems: 0,

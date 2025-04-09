@@ -3,12 +3,7 @@
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 
-export default function TravelTourPendingModal({
-  tourId,
-  title,
-  onClose,
-  open,
-}) {
+export default function TravelTourPendingModal({ title, onClose, open }) {
   // Dummy data — bạn có thể fetch theo tourId ở đây
   const [schedules] = useState([
     {

@@ -47,7 +47,7 @@ export const fetchTours = async () => {
 
 export const fetchTypeTours = async () => {
   try {
-    const response = await getTypeTours();    
+    const response = await getTypeTours();
     return Array.isArray(response) ? response : [];
   } catch (error) {
     console.error("Lỗi khi lấy dữ liệu từ API", error);

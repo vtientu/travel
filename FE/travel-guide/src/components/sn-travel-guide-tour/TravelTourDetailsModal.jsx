@@ -65,7 +65,7 @@ const TravelTourDetailsModal = ({ scheduleId, onClose, open }) => {
             <input
               disabled
               className="w-full border px-3 py-2 rounded mt-1"
-              value={`${data?.availableSeats}/${data?.totalSeats}`}
+              value={`${data?.availableSeats || 0}/${data?.totalSeats || 0}`}
             />
           </div>
           <div>
@@ -81,7 +81,8 @@ const TravelTourDetailsModal = ({ scheduleId, onClose, open }) => {
             <textarea
               disabled
               className="w-full border px-3 py-2 rounded mt-1"
-              value={data?.note || "Không có ghi chú nào"}
+              value={data?.note}
+              placeholder="Không có ghi chú nào"
             />
           </div>
         </div>

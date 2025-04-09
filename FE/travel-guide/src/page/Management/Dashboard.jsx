@@ -61,7 +61,7 @@ const Dashboard = () => {
         const response = await getGuideTourByUserId(1);
 
         if (response.data) {
-          setTravelTours(response.data);
+          setTravelTours(response.data.items);
         } else {
           console.log(response.message);
         }

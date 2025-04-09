@@ -22,6 +22,8 @@ import ManagementCategory from "./page/Management/ManagementCategory.jsx";
 import GoogleAuthCallback from "./components/GoogleAuthCallBack.jsx";
 import Dashboard from "./page/Management/Dashboard.jsx";
 import TravelGuideTour from "./page/Management/TravelGuideTour.jsx";
+import DepartureSchedulePage from "./page/Management/DepartureSchedulePage.jsx";
+import TravelTourPendingPage from "./page/Management/TravelTourPendingPage.jsx";
 
 function App() {
   return (
@@ -36,6 +38,15 @@ function App() {
 
         <Route path={"/dashboard"} element={<Dashboard />} />
         <Route path={"/travel-guide-tour"} element={<TravelGuideTour />} />
+        <Route
+          path={"/departure-schedule"}
+          element={<DepartureSchedulePage />}
+        />
+        <Route
+          path={"/travel-tour-pending"}
+          element={<TravelTourPendingPage />}
+        />
+
         {/*<Route path={'/forgot-password'}/>*/}
 
         <Route path={"/managementLocation"} element={<ManagementLocation />} />

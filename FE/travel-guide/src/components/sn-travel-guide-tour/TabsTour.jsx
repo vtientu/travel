@@ -9,8 +9,8 @@ export default function TabsTour({ tabs, value, onChange }) {
             onClick={() => onChange(tab.value)}
             className={`px-4 py-2 text-sm font-medium border-b-2 transition-all duration-200 ${
               value === tab.value
-                ? "border-blue-500 text-blue-600"
-                : "border-transparent text-gray-500 hover:text-blue-500"
+                ? "border-[#D32F44] text-[#D32F44]"
+                : "border-transparent text-gray-500 hover:text-[#D32F44]"
             }`}
           >
             {tab.label}

@@ -3,10 +3,8 @@
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
-import TravelTourDetailsModal from "./TravelTourDetailsModal";
 
 export default function TourScheduleModal({ tourId, title, onClose, open }) {
-  const [openDetailsModal, setOpenDetailsModal] = useState(false);
   // Dummy data — bạn có thể fetch theo tourId ở đây
   const [schedules] = useState([
     {
@@ -104,12 +102,6 @@ export default function TourScheduleModal({ tourId, title, onClose, open }) {
           </div>
         </div>
       </div>
-      <TravelTourDetailsModal
-        tourId="tour123"
-        open={openDetailsModal}
-        title="Tour HCM 4N3Đ: Hà Nội – Đà Nẵng – Sơn Trà – Bà Nà Hills – Hội An"
-        onClose={() => setOpenDetailsModal(false)}
-      />
     </>
   );
 }
