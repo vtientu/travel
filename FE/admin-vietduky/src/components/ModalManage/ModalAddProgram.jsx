@@ -5,7 +5,7 @@ import {createTourActivity} from "../../services/API/activity_tour.service.js";
 export default function ModalAddProgram({ tour, onClose, onAddTravelTour }) {
     const [submittedPrograms, setSubmittedPrograms] = useState([]);
     const [programs, setPrograms] = useState([
-        { day: "", title: "", description: "", image: null, preview: null },
+        { day: "", title: "", description: "", detail: "", image: null, preview: null },
     ]);
 
     const handleChange = (index, field, value) => {
@@ -19,6 +19,8 @@ export default function ModalAddProgram({ tour, onClose, onAddTravelTour }) {
         updated[index].image = file;
         updated[index].preview = file ? URL.createObjectURL(file) : null;
         setPrograms(updated);
+        console.log("FILE GỬI:", programs.image);
+
     };
 
     const handleRemoveImage = (index) => {
@@ -78,7 +80,7 @@ export default function ModalAddProgram({ tour, onClose, onAddTravelTour }) {
                 formData.append("day", dayNumber);
                 formData.append("title", prog.title);
                 formData.append("description", prog.description);
-                formData.append("detail", prog.day); // giữ nguyên nếu cần ghi detail
+                formData.append("detail", prog.detail);
                 formData.append("image", prog.image);
 
                 console.log(`📤 Gửi chương trình ngày ${dayNumber}`);
@@ -92,7 +94,7 @@ export default function ModalAddProgram({ tour, onClose, onAddTravelTour }) {
 
             alert("Tạo chương trình tour thành công!");
             setSubmittedPrograms((prev) => [...prev, ...submitted]);
-            setPrograms([{ day: "", title: "", description: "", image: null, preview: null }]);
+            setPrograms([{ day: "", title: "", description: "", detail: "", image: null, preview: null }]);
             onAddTravelTour(submitted);
         } catch (error) {
             console.error("🔥 Lỗi từ backend:", error.response?.data || error);
@@ -141,7 +143,8 @@ export default function ModalAddProgram({ tour, onClose, onAddTravelTour }) {
                             <tr>
                                 <th className="p-2">Ngày</th>
                                 <th className="p-2">Tiêu đề</th>
-                                <th className="p-2">Mô tả chi tiết</th>
+                                <th className="p-2">Mô tả</th>
+                                <th className="p-2">Chi tiết</th>
                                 <th className="p-2">Ảnh</th>
                                 <th className="p-2">Xóa</th>
                             </tr>
@@ -188,24 +191,29 @@ export default function ModalAddProgram({ tour, onClose, onAddTravelTour }) {
                                             />
                                         </td>
                                         <td className="p-2">
-                        <textarea
-                            placeholder="Mô tả chi tiết"
-                            value={prog.description}
-                            onChange={(e) =>
-                                handleChange(idx, "description", e.target.value)
-                            }
-                            rows={2}
-                            className="w-full px-2 py-1 border rounded"
-                            required
-                        />
+                                            <textarea
+                                                placeholder="Mô tả chi tiết"
+                                                value={prog.description}
+                                                onChange={(e) =>
+                                                    handleChange(idx, "description", e.target.value)} rows={2}
+                                                className="w-full px-2 py-1 border rounded"
+                                                required
+                                            />
+                                        </td>
+                                        <td className="p-2">
+                                            <textarea
+                                                placeholder="Chi tiết"
+                                                value={prog.detail}
+                                                onChange={(e) =>
+                                                    handleChange(idx, "detail", e.target.value)} rows={2}
+                                                className="w-full px-2 py-1 border rounded"/>
                                         </td>
                                         <td className="p-2">
                                             <input
                                                 type="file"
                                                 accept="image/*"
                                                 onChange={(e) =>
-                                                    handleImageChange(idx, e.target.files[0])
-                                                }
+                                                    handleImageChange(idx, e.target.files[0])}
                                                 className="w-full text-sm"
                                             />
                                             {prog.preview && (

@@ -6,7 +6,10 @@ import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { useEffect, useState } from "react";
 import ModalAddTravelTour from "../../components/ModalManage/ModalAddTravelTour";
 import { MdDelete, MdEdit } from "react-icons/md";
-import { deleteTravelTour, getTravelTour } from "../../services/API/travel_tour.service";
+import {
+  deleteTravelTour,
+  getTravelTour,
+} from "../../services/API/travel_tour.service";
 
 export default function ManagementTravelTour() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -137,8 +140,8 @@ export default function ManagementTravelTour() {
               {travelTours.map((travelTour) => (
                 <tr key={travelTour.id} className="border-t">
                   <td className=" p-2">{travelTour.tour_id}</td>
-                  <td className=" p-2">{formatDate(travelTour.start_time)}</td>
-                  <td className=" p-2">{formatDate(travelTour.end_time)}</td>
+                  <td className=" p-2">{formatDate(travelTour.start_day)}</td>
+                  <td className=" p-2">{formatDate(travelTour.end_day)}</td>
                   <td className=" p-2">{travelTour.max_people}</td>
                   <td className=" p-2">{travelTour.price_tour}</td>
                   <td className="flex justify-end p-2 relative">
@@ -154,7 +157,7 @@ export default function ManagementTravelTour() {
                     {openDropdown === travelTour.id && (
                       <div className="absolute right-0 mt-2 w-48 bg-white shadow-md rounded-md z-10">
                         <button className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left">
-                          <MdEdit className="mr-2 text-gray-700" /> 
+                          <MdEdit className="mr-2 text-gray-700" />
                           Cập nhật hành trình
                         </button>
                         <button

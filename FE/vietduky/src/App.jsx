@@ -29,10 +29,10 @@ function App() {
         newestOnTop={false}
         closeOnClick={false}
         rtl={false}
-        pauseOnFocusLoss
+        pauseOnFocusLoss={false}
         draggable
         pauseOnHover
-        theme="dark"
+        theme="colored"
         transition={Bounce}
       />
       <Routes>

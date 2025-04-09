@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import { useRef } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "../styles/TextEditor.css";
@@ -22,7 +22,7 @@ const TextEditor = ({ value, onChange }) => {
   };
 
   return (
-    <div className="text-editor w-full border rounded-lg shadow bg-white">
+    <div className="text-editor w-full border rounded-lg bg-white">
       {/* Custom Toolbar */}
       <div id="custom-toolbar">
         <button className="ql-undo" onClick={handleUndo}>
@@ -52,7 +52,7 @@ const TextEditor = ({ value, onChange }) => {
       </div>
 
       {/* Quill Editor */}
-      <ReactQuill className="h-[500px]"
+      <ReactQuill className="h-[100px] rounded-xl"
         ref={quillRef}
         value={value}
         onChange={onChange}
@@ -61,7 +61,7 @@ const TextEditor = ({ value, onChange }) => {
             container: "#custom-toolbar",
           },
         }}
-        placeholder="Nhập số lượng người"
+        placeholder="Nhập chính sách và điều khoản"
       />
     </div>
   );

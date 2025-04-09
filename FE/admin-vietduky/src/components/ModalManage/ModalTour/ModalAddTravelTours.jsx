@@ -5,8 +5,8 @@ import { useLocation } from "react-router-dom";
 export default function TestModal({ onClose, onAddTravelTour }) {
   const [loading, setLoading] = useState(false);
   const [travelTourData, setTravelTourData] = useState({
-    start_time: new Date().toISOString().split("T")[0], // Định dạng YYYY-MM-DD
-    end_time: new Date().toISOString().split("T")[0],
+    start_day: new Date().toISOString().split("T")[0], // Định dạng YYYY-MM-DD
+    end_day: new Date().toISOString().split("T")[0],
     max_people: "",
     price_tour: "",
   });
@@ -15,15 +15,15 @@ export default function TestModal({ onClose, onAddTravelTour }) {
   const searchParams = new URLSearchParams(location.search);
 
   useEffect(() => {
-    const start_time = searchParams.get("start_time");
-    const end_time = searchParams.get("end_time");
+    const start_day = searchParams.get("start_day");
+    const end_day = searchParams.get("end_day");
     const max_people = searchParams.get("max_people");
     const price_tour = searchParams.get("price_tour");
 
-    if (start_time && end_time && max_people && price_tour) {
+    if (start_day && end_day && max_people && price_tour) {
       const newTravelTour = {
-        start_time,
-        end_time,
+        start_day,
+        end_day,
         max_people: parseInt(max_people, 10),
         price_tour: parseInt(price_tour, 10),
       };
@@ -34,7 +34,6 @@ export default function TestModal({ onClose, onAddTravelTour }) {
       }));
     }
   }, [location.search]); // Chạy lại khi query string thay đổi
-
 
   // Cập nhật state khi nhập dữ liệu
   const handleChange = (e) => {
@@ -50,8 +49,8 @@ export default function TestModal({ onClose, onAddTravelTour }) {
     e.preventDefault();
     e.stopPropagation();
     const newTravelTour = {
-      start_time: travelTourData.start_time,
-      end_time: travelTourData.end_time,
+      start_day: travelTourData.start_day,
+      end_day: travelTourData.end_day,
       max_people: travelTourData.max_people,
       price_tour: travelTourData.price_tour,
     };
@@ -65,7 +64,9 @@ export default function TestModal({ onClose, onAddTravelTour }) {
       <div className="bg-white p-6 rounded-lg shadow-lg w-[500px] max-h-[90vh] overflow-auto relative">
         <form onSubmit={handleSubmit}>
           <h2 className="text-lg font-semibold">Thêm lịch khởi hành</h2>
-          <h6 className="text-sm mb-4">Quản trị viên thêm lịch khởi hành vào Tour</h6>
+          <h6 className="text-sm mb-4">
+            Quản trị viên thêm lịch khởi hành vào Tour
+          </h6>
 
           <div className="flex items-center gap-4 mt-4">
             {/* Ngày khởi hành */}
@@ -75,8 +76,8 @@ export default function TestModal({ onClose, onAddTravelTour }) {
               </label>
               <input
                 type="date"
-                name="start_time"
-                value={travelTourData.start_time}
+                name="start_day"
+                value={travelTourData.start_day}
                 onChange={handleChange}
                 className="w-[200px] p-2 border rounded text-gray-500"
                 required
@@ -92,8 +93,8 @@ export default function TestModal({ onClose, onAddTravelTour }) {
               </label>
               <input
                 type="date"
-                name="end_time"
-                value={travelTourData.end_time}
+                name="end_day"
+                value={travelTourData.end_day}
                 onChange={handleChange}
                 className="w-[200px] p-2 border rounded text-gray-500"
                 required
@@ -131,7 +132,11 @@ export default function TestModal({ onClose, onAddTravelTour }) {
 
           {/* Button Actions */}
           <div className="flex justify-end gap-4 mt-4">
-            <button type="button" className="bg-gray-300 px-4 py-2 rounded" onClick={onClose}>
+            <button
+              type="button"
+              className="bg-gray-300 px-4 py-2 rounded"
+              onClick={onClose}
+            >
               Hủy
             </button>
             <button

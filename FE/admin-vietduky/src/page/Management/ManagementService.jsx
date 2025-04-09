@@ -88,7 +88,9 @@ export default function ManagementService() {
                             <tr key={service.id} className="border-t">
                                 <td className="p-2">{service.name_service}</td>
                                 <td className="p-2">{service.description_service}</td>
-                                <td className="p-2">{service.price_service.toLocaleString()} VNĐ</td>
+                                <td className="p-2">
+                                    {(service.price_service ?? 0).toLocaleString()} VNĐ
+                                </td>
                                 <td className="p-2 text-right">...</td>
                             </tr>
                         ))

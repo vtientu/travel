@@ -1,4 +1,4 @@
-import Banner from "../../assets/images/Banner.png";
+import Banner from "../../assets/images/banner-landing.png";
 import Icons from "../Icons/Icon";
 import { LocationService } from "@/services/API/location.service";
 import { useState, useEffect, useRef } from "react";
@@ -60,7 +60,7 @@ export default function SearchTour() {
 
       {/* Search Box */}
       <div className="absolute w-full bg-[rgba(0,0,0,0.3)] shadow-md rounded mx-auto bottom-20 left-1/4 transform -translate-x-1/4 max-w-5xl z-10">
-        <div className="flex flex-col justify-center text-left p-4 text-white">
+        <div className="flex flex-col justify-center text-left p-10 text-white">
           <h2 className="text-5xl font-bold leading-10">Thế giới tour trong tay bạn</h2>
           <p className="text-xl font-normal leading-snug mt-2">Phục vụ tận tâm, giá siêu ưu đãi</p>
         </div>

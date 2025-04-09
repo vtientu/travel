@@ -46,6 +46,10 @@ module.exports = (sequelize, Sequelize) => {
                 type: Sequelize.STRING,
                 allowNull: true,
             },
+            topic_id: {
+                type: Sequelize.INTEGER,
+                allowNull: true,
+            },
         },
         {
             tableName: "voucher", // Tên bảng trong MySQL

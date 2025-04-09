@@ -1,5 +1,5 @@
-
 // import { login } from "../../services/API/auth.service";
+import { login } from "../../services/API/auth.service";
 import AuthProviders from "../AuthProviders/AuthProviders";
 import { useState } from "react";
 export default function LoginForm() {
@@ -16,6 +16,23 @@ export default function LoginForm() {
   //   }
   // };
 
+  const handleLogin = async () => {
+    try {
+      const response = await login(username, password); // Gọi API đăng nhập
+      if (response.status === 200) { // Kiểm tra nếu đăng nhập thành công
+        alert("Đăng nhập thành công!" + response.data);
+        // Lưu thông tin người dùng vào localStorage hoặc sessionStorage nếu cần
+        localStorage.setItem("user", JSON.stringify(response.data));
+        localStorage.setItem("access_token", response.data.access_token);
+        // Chuyển hướng đến trang quản lý tour
+        window.location.href = "/managementTour";
+      } else {
+        alert("Đăng nhập thất bại: " + response.data.message);
+      }
+    } catch (error) {
+      alert("Đăng nhập thất bại: " + (error.response ? error.response.data.message : error.message));
+    }
+  };
   return (
     <div className="  w-[400px]">
       <h2 className="text-2xl font-semibold text-center mb-4">
@@ -66,7 +83,7 @@ export default function LoginForm() {
 
       {/* Login Button */}
       <button
-        // onClick={handleLogin}
+        onClick={handleLogin}
         className="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition"
       >
         Đăng nhập

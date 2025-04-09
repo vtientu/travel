@@ -53,7 +53,7 @@ export default function Header() {
           <a href="/" className="hover:underline text-white">
             Trang Chủ
           </a>
-          <a href="#" className="hover:underline text-white">
+          <a href="/listTour" className="hover:underline text-white">
             Du lịch trọn gói
           </a>
           <a href="#" className="hover:underline text-white">

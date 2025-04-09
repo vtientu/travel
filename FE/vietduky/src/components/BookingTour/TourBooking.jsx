@@ -4,6 +4,7 @@ import { BookingService } from "@/services/API/booking.service";
 import { TourService } from "@/services/API/tour.service";
 import React, { use, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const TourBooking = ({
   formData,
@@ -46,19 +47,19 @@ const TourBooking = ({
 
   const handleBooking = async () => {
     if (!formData) {
-      alert("Vui lòng nhập đầy đủ thông tin trước khi đặt tour.");
+      toast.error("Vui lòng nhập đầy đủ thông tin trước khi đặt tour.");
       return;
     }
 
     if (!Array.isArray(formData.passengers)) {
-      alert("Danh sách hành khách không hợp lệ!");
+      toast.error("Danh sách hành khách không hợp lệ!");
       return;
     }
 
     try {
       const response = await BookingService.createBooking(formData);
 
-      alert("Đặt tour thành công!");
+      toast.success("Đặt tour thành công!");
 
       // Ghi dữ liệu vào localStorage
       localStorage.setItem("bookingResult", JSON.stringify(response));
@@ -67,14 +68,17 @@ const TourBooking = ({
       navigate("/bookingConfirm");
     } catch (error) {
       console.error("Booking failed:", error);
-      alert("Đặt tour thất bại. Vui lòng thử lại!");
+      toast.error("Đặt tour thất bại. Vui lòng thử lại!");
     }
   };
 
   const totalPrice =
     ((formData?.number_adult +
-      formData?.number_children
-      + formData?.number_toddler || 0) * travelTourData?.price_tour + roomCost)/1000;
+      formData?.number_children +
+      formData?.number_toddler || 0) *
+      travelTourData?.price_tour +
+      roomCost) /
+    1000;
 
   // const calculateTotalPrice = (formData, roomCost, travelTourData) => {
   //   const numberAdult = formData?.number_adult || 0;
@@ -120,7 +124,6 @@ const TourBooking = ({
   // const totalPrice = calculateTotalPrice(formData, roomCost, travelTourData);
 
   console.log("Tổng tiền:", totalPrice);
-  
 
   useEffect(() => {
     setFormData((prev) => ({
@@ -188,7 +191,7 @@ const TourBooking = ({
           <div className="flex">
             <div className="flex-1 pr-4">
               <div className="text-sm font-semibold mb-3">
-                Ngày đi - {travelTourData?.start_time}
+                Ngày đi - {travelTourData?.start_day}
               </div>
               <div className="flex justify-between text-sm font-semibold mb-2">
                 <span>06:30</span>
@@ -210,7 +213,7 @@ const TourBooking = ({
             </div>
             <div className="flex-1 border-l-2 border-gray-200 pl-4">
               <div className="text-sm font-semibold mb-3">
-                Ngày về - {travelTourData?.end_time}
+                Ngày về - {travelTourData?.end_day}
               </div>
               <div className="flex justify-between text-sm font-semibold mb-2">
                 <span>00:00</span>

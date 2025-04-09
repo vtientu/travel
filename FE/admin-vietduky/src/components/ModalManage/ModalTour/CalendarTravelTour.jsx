@@ -107,8 +107,8 @@ export default function CalendarTravelTour({
           const isCurrentMonth = isSameMonth(day, currentMonth);
 
           const toursInDay = filteredTours.filter((tour) => {
-            const start = parseISO(tour.start_time);
-            const end = parseISO(tour.end_time);
+            const start = parseISO(tour.start_day);
+            const end = parseISO(tour.end_day);
             return isWithinInterval(day, { start, end });
           });
 
@@ -134,8 +134,8 @@ export default function CalendarTravelTour({
                     return <div key={lineIdx} className="h-[20px] w-full" />; // giữ chỗ
                   }
 
-                  const start = parseISO(tourAtLine.start_time);
-                  const end = parseISO(tourAtLine.end_time);
+                  const start = parseISO(tourAtLine.start_day);
+                  const end = parseISO(tourAtLine.end_day);
                   const tourInfo = tours.find(
                     (t) => t.id === tourAtLine.tour_id
                   );

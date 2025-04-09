@@ -15,6 +15,11 @@ module.exports = (sequelize, Sequelize) => {
                 type: Sequelize.INTEGER,
                 allowNull: true,
             },
+            status: {
+                type: Sequelize.INTEGER, // 0: Chưa duyệt, 1: Đã duyệt, 2: Từ chối
+                allowNull: true,
+                defaultValue: 0,
+            },
         },
         {
             tableName: "guide_tour",

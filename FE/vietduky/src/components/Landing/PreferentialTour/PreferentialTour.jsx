@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import PreferentialTourCard from "./PreferentialTourCard";
 import React from "react";
 
@@ -6,8 +7,8 @@ const tours = [
     id: 1,
     image: "/images/tour1.jpg",
     title: "Tour Côn Đảo 2N2Đ bằng Xe Giường Nằm + Tàu Cao Tốc",
-    start_time: "2023-10-01",
-    end_time: "2023-10-05",
+    start_day: "2023-10-01",
+    end_day: "2023-10-05",
     timeLeft: "2 Ngày 3 Giờ",
     duration: "5 Ngày 4 Đêm",
     seatsLeft: 14,
@@ -19,8 +20,8 @@ const tours = [
     id: 2,
     image: "/images/tour1.jpg",
     title: "Tour Côn Đảo 2N2Đ bằng Xe Giường Nằm + Tàu Cao Tốc",
-    start_time: "2023-10-01",
-    end_time: "2023-10-05",
+    start_day: "2023-10-01",
+    end_day: "2023-10-05",
     timeLeft: "2 Ngày 3 Giờ",
     duration: "5 Ngày 4 Đêm",
     seatsLeft: 14,
@@ -32,8 +33,8 @@ const tours = [
     id: 3,
     image: "/images/tour1.jpg",
     title: "Tour Côn Đảo 2N2Đ bằng Xe Giường Nằm + Tàu Cao Tốc",
-    start_time: "2023-10-01",
-    end_time: "2023-10-05",
+    start_day: "2023-10-01",
+    end_day: "2023-10-05",
     timeLeft: "2 Ngày 3 Giờ",
     duration: "5 Ngày 4 Đêm",
     seatsLeft: 14,
@@ -45,8 +46,8 @@ const tours = [
     id: 4,
     image: "/images/tour1.jpg",
     title: "Tour Côn Đảo 2N2Đ bằng Xe Giường Nằm + Tàu Cao Tốc",
-    start_time: "2023-10-01",
-    end_time: "2023-10-05",
+    start_day: "2023-10-01",
+    end_day: "2023-10-05",
     timeLeft: "2 Ngày 3 Giờ",
     duration: "5 Ngày 4 Đêm",
     seatsLeft: 14,
@@ -58,8 +59,8 @@ const tours = [
     id: 5,
     image: "/images/tour1.jpg",
     title: "Tour Côn Đảo 2N2Đ bằng Xe Giường Nằm + Tàu Cao Tốc",
-    start_time: "2023-10-01",
-    end_time: "2023-10-05",
+    start_day: "2023-10-01",
+    end_day: "2023-10-05",
     timeLeft: "2 Ngày 3 Giờ",
     duration: "5 Ngày 4 Đêm",
     seatsLeft: 14,
@@ -71,8 +72,8 @@ const tours = [
     id: 6,
     image: "/images/tour1.jpg",
     title: "Tour Côn Đảo 2N2Đ bằng Xe Giường Nằm + Tàu Cao Tốc",
-    start_time: "2023-10-01",
-    end_time: "2023-10-05",
+    start_day: "2023-10-01",
+    end_day: "2023-10-05",
     timeLeft: "2 Ngày 3 Giờ",
     duration: "5 Ngày 4 Đêm",
     seatsLeft: 14,
@@ -83,6 +84,8 @@ const tours = [
 ];
 
 const PreferentialTour = () => {
+  const navigate = useNavigate();
+
   return (
     <div className="bg-white">
       <div className="py-10 w-4/5 mx-auto relative p-6 ">
@@ -96,13 +99,12 @@ const PreferentialTour = () => {
         <div className="flex flex-wrap justify-between gap-12 mt-6 mx-auto">
           {tours.map((tour) => (
             <div className="relative box-border" key={tour.id}>
-              
               <PreferentialTourCard {...tour} />
             </div>
           ))}
         </div>
         <div className="text-center mt-9">
-          <button className="bg-white border border-red-500 text-red-500 px-10 py-3 font-semibold rounded-md hover:bg-red-500 hover:text-white transition duration-300">
+          <button onClick={() => navigate("/listTour")} className="bg-white border border-red-500 text-red-500 px-10 py-3 font-semibold rounded-md hover:bg-red-500 hover:text-white transition duration-300">
             Xem thêm Tours
           </button>
         </div>

@@ -6,6 +6,7 @@ import "swiper/css/navigation";
 import image from "../../../assets/images/TopTour.png";
 import TopTourCard from "./TopTourCard";
 import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
+import { useNavigate } from "react-router-dom";
 
 const tours = [
   {
@@ -74,6 +75,7 @@ const TopTours = () => {
   const swiperRef = useRef(null);
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
+  const navigate = useNavigate();
 
   const handleSlideChange = (swiper) => {
     setIsBeginning(swiper.isBeginning);
@@ -162,7 +164,10 @@ const TopTours = () => {
       </div>
 
       <div className="text-center mt-1">
-        <button className="bg-red-500 border border-red-500 text-white px-10 py-3 font-semibold rounded-md hover:bg-white hover:text-red-500 transition duration-300 shadow-lg">
+        <button
+          onClick={() => navigate("/listTour")}
+          className="bg-red-500 border border-red-500 text-white px-10 py-3 font-semibold rounded-md hover:bg-white hover:text-red-500 transition duration-300 shadow-lg"
+        >
           Xem thêm Tours
         </button>
       </div>

@@ -36,6 +36,15 @@ const formatDate = (date) => {
   }).format(new Date(date));
 };
 
+// Format thời gian
+const formatTime = (time) => {
+  const timeRegex = /^([0-9]{2}):([0-9]{2}):([0-9]{2})$/;
+  if (timeRegex.test(time)) {
+    return time.slice(0, 5);
+  }
+  return "00:00";
+};
+
 // Hàm gửi email xác nhận
 const sendConfirmationEmail = (userEmail, bookingDetails) => {
   const {
@@ -44,15 +53,28 @@ const sendConfirmationEmail = (userEmail, bookingDetails) => {
     travelTour,
     name_tour,
     total_cost,
-    start_time,
-    end_time,
+    start_day,
+    end_day,
+    start_time_depart,
+    end_time_depart,
+    start_time_close,
+    end_time_close,
   } = bookingDetails;
   const { price_tour } = travelTour;
 
+  // Format tiền
   const formattedPriceTour = formatCurrency(price_tour);
   const formattedTotalCost = formatCurrency(total_cost);
-  const formattedStartDate = formatDate(start_time);
-  const formattedEndDate = formatDate(end_time);
+
+  // Format ngày tháng
+  const formattedStartDate = formatDate(start_day);
+  const formattedEndDate = formatDate(end_day);
+
+  // Format thời gian
+  const formattedStartTimeDepart = formatTime(start_time_depart);
+  const formattedEndTimeDepart = formatTime(end_time_depart);
+  const formattedStartTimeClose = formatTime(start_time_close);
+  const formattedEndTimeClose = formatTime(end_time_close);
 
   const mailOptions = {
     from: '"Việt Du Ký" <titi2024hd@gmail.com>',
@@ -71,6 +93,16 @@ const sendConfirmationEmail = (userEmail, bookingDetails) => {
             <li>Ngày kết thúc: ${formattedEndDate}</li>
             <li>Giá tour: ${formattedPriceTour} VND</li>
             <li>Tổng chi phí: ${formattedTotalCost} VND</li>
+          </ul>
+          <p><strong>Ngày khởi hành Tour:</strong></p>
+          <ul>
+            <li>Thời gian khởi hành: ${formattedStartTimeDepart}</li>
+            <li>Thời gian kết thúc: ${formattedEndTimeDepart}</li>
+          </ul>
+          <p><strong>Ngày kết thúc Tour:</strong></p>
+          <ul>
+            <li>Thời gian khởi hành: ${formattedStartTimeClose}</li>
+            <li>Thời gian kết thúc: ${formattedEndTimeClose}</li>
           </ul>
           <p>Cảm ơn bạn đã đặt tour cùng chúng tôi!</p>
         </body>
@@ -95,7 +127,7 @@ exports.getAllBookings = async (req, res) => {
         { model: User, attributes: ["id", "email", "avatar"] },
         {
           model: TravelTour,
-          attributes: ["id", "tour_id", "start_time", "end_time", "price_tour"],
+          attributes: ["id", "tour_id", "start_day", "end_day", "price_tour"],
         },
         {
           model: RestaurantBooking,
@@ -154,7 +186,7 @@ exports.getBookingById = async (req, res) => {
         { model: User, attributes: ["id", "email", "avatar"] },
         {
           model: TravelTour,
-          attributes: ["id", "tour_id", "start_time", "end_time", "price_tour"],
+          attributes: ["id", "tour_id", "start_day", "end_day", "price_tour"],
         },
         {
           model: RestaurantBooking,
@@ -329,7 +361,8 @@ exports.createBooking = async (req, res) => {
       note,
       voucher_id,
     });
-    travelTour.current_people += number_adult + number_children + number_toddler;
+    travelTour.current_people +=
+      number_adult + number_children + number_toddler;
     await travelTour.save();
 
     //Gửi email xác nhận
@@ -339,8 +372,12 @@ exports.createBooking = async (req, res) => {
       name_tour: tour.name_tour,
       travelTour,
       total_cost,
-      start_time: travelTour.start_time,
-      end_time: travelTour.end_time,
+      start_day: travelTour.start_day,
+      end_day: travelTour.end_day,
+      start_time_depart: travelTour.start_time_depart,
+      end_time_depart: travelTour.end_time_depart,
+      start_time_close: travelTour.start_time_close,
+      end_time_close: travelTour.end_time_close,
     });
 
     // Xử lý danh sách passenger nếu có
@@ -452,7 +489,7 @@ exports.getLatestBooking = async (req, res) => {
         { model: User, attributes: ["id", "email", "avatar"] },
         {
           model: TravelTour,
-          attributes: ["id", "tour_id", "start_time", "end_time", "price_tour"],
+          attributes: ["id", "tour_id", "start_day", "end_day", "price_tour"],
         },
         {
           model: RestaurantBooking,
@@ -504,3 +541,48 @@ exports.getLatestBooking = async (req, res) => {
     });
   }
 };
+
+exports.getBookingByUserId = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const bookings = await Booking.findAll({
+      where: { user_id: userId }, 
+      include: [
+        { model: User, attributes: ["id", "email", "avatar"] },
+        { 
+          model: TravelTour, 
+          attributes: ["id", "tour_id", "start_day", "end_day", "status"],
+          include: [{
+            model: Tour,
+            as: 'Tour',
+            attributes: ['id', 'name_tour', 'album']
+          }]
+        },
+      ],
+    }); 
+
+    // Format lại dữ liệu trả về
+    const formattedBookings = bookings.map(booking => {
+      const bookingData = booking.get({ plain: true });
+      return {
+        ...bookingData,
+        travel_tour: {
+          ...bookingData.TravelTour,
+          tour: bookingData.TravelTour.Tour || null
+        }
+      };
+    });
+
+    res.status(200).json({
+      message: "Lấy booking thành công!",
+      data: formattedBookings,
+    });
+  } catch (error) {
+    res.status(500).json({  
+      message: "Lỗi khi lấy booking!",
+      error: error.message,
+    });
+  }
+};
+
+

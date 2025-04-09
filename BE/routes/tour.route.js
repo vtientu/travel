@@ -41,5 +41,9 @@ router.delete(
   authenticateAdmin,
   tourController.deleteTourById
 );
+router.get(
+  "/get-by-topic-id/:topicId",
+  tourController.getToursByTopicId
+);
 
 module.exports = router;
