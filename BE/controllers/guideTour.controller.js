@@ -3,6 +3,8 @@ const GuideTour = db.GuideTour;
 const TravelGuide = db.TravelGuide;
 const TravelTour = db.TravelTour;
 const Tour = db.Tour;
+const Location = db.Location;
+const { Op } = require("sequelize");
 
 // Lấy tất cả các tour mà một hướng dẫn viên tham gia bằng id
 exports.getGuideTours = async (req, res) => {
@@ -188,20 +190,87 @@ exports.rejectGuideTour = async (req, res) => {
 };
 exports.getGuideTourByUserId = async (req, res) => {
   try {
-    const userId = req.params.id; 
+    const userId = req.params.id;
+    const { 
+      page = 1, 
+      limit = 10,
+      start_location_id,
+      end_location_id,
+      name_tour,
+      start_day,
+      status,
+      upcoming
+    } = req.query;
 
-    const guideTours = await GuideTour.findAll({  
+    // Tạo điều kiện where cho Tour
+    const tourWhereCondition = {};
+    if (start_location_id) {
+      tourWhereCondition.start_location = start_location_id;
+    }
+    if (end_location_id) {
+      tourWhereCondition.end_location = end_location_id;
+    }
+    if (name_tour) {
+      tourWhereCondition.name_tour = {
+        [Op.like]: `%${name_tour}%`
+      };
+    }
+
+    // Tạo điều kiện where cho TravelTour
+    const travelTourWhereCondition = {};
+    if (start_day) {
+      travelTourWhereCondition.start_day = {
+        [Op.gte]: new Date(start_day)
+      };
+    }
+
+    // Filter theo status
+    if (status) {
+      travelTourWhereCondition.status = status;
+    }
+
+    // Filter tour sắp diễn ra (trong 7 ngày tới)
+    if (upcoming === 'true') {
+      const now = new Date();
+      const sevenDaysLater = new Date(now);
+      sevenDaysLater.setDate(now.getDate() + 7);
+      
+      travelTourWhereCondition.start_day = {
+        [Op.between]: [now, sevenDaysLater]
+      };
+    }
+
+    const offset = (page - 1) * limit;
+
+    const { count, rows: guideTours } = await GuideTour.findAndCountAll({  
       where: { travel_guide_id: userId },
       include: [
         {
           model: TravelTour,
           as: "travelTour",
+          where: travelTourWhereCondition,
           include: [{
             model: Tour,
             as: 'Tour',
+            where: tourWhereCondition,
+            include: [
+              {
+                model: Location,
+                as: 'startLocation',
+                attributes: ['id', 'name_location']
+              },
+              {
+                model: Location,
+                as: 'endLocation',
+                attributes: ['id', 'name_location']
+              }
+            ]
           }]
         },
       ],
+      limit: parseInt(limit),
+      offset: parseInt(offset),
+      order: [['createdAt', 'DESC']]
     });
 
     // Format lại dữ liệu trả về
@@ -211,16 +280,26 @@ exports.getGuideTourByUserId = async (req, res) => {
         ...guideTourData,
         travel_tour: {
           ...guideTourData.travelTour,
-          tour: guideTourData.travelTour.Tour || null
+          tour: {
+            ...guideTourData.travelTour.Tour,
+            start_location: guideTourData.travelTour.Tour.startLocation || null,
+            end_location: guideTourData.travelTour.Tour.endLocation || null
+          }
         }
       };
     });
 
     res.status(200).json({
       message: "Lấy danh sách tour của hướng dẫn viên thành công!",
-      data: formattedGuideTours,
+      data: {
+        totalItems: count,
+        totalPages: Math.ceil(count / limit),
+        currentPage: parseInt(page),
+        items: formattedGuideTours
+      }
     });
   } catch (error) {
+    console.error("Error:", error);
     res.status(500).json({  
       message: "Lỗi khi lấy danh sách tour của hướng dẫn viên!",
       error: error.message,
