@@ -21,6 +21,7 @@ import ManagementTourGuide from "./page/Management/ManagementUser/ManagementTour
 import ManagementCategory from "./page/Management/ManagementCategory.jsx";
 import GoogleAuthCallback from "./components/GoogleAuthCallBack.jsx";
 import Dashboard from "./page/Management/Dashboard.jsx";
+import TravelGuideTour from "./page/Management/TravelGuideTour.jsx";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
         </Route>
 
         <Route path={"/dashboard"} element={<Dashboard />} />
+        <Route path={"/travel-guide-tour"} element={<TravelGuideTour />} />
         {/*<Route path={'/forgot-password'}/>*/}
 
         <Route path={"/managementLocation"} element={<ManagementLocation />} />

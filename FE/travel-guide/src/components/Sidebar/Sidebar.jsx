@@ -12,14 +12,20 @@ export default function Sidebar({ isCollapsed }) {
     { id: 1, name: "Thống kê", icon: Icons.Sidebar, path: "/dashboard" },
     {
       id: 2,
-      name: "Quản lý Tour",
+      name: "Quản lý tour hướng dẫn",
       icon: Icons.TourIcon,
-      subItems: [
-        { id: 201, name: "Vị trí", path: "/managementLocation" },
-        { id: 202, name: "Chuyến du lịch", path: "/managementTour" },
-        { id: 203, name: "Chủ đề", path: "/managementTheme" },
-      ],
+      path: "/travel-guide-tour",
     },
+    // {
+    //   id: 2,
+    //   name: "Quản lý Tour",
+    //   icon: Icons.TourIcon,
+    //   subItems: [
+    //     { id: 201, name: "Vị trí", path: "/managementLocation" },
+    //     { id: 202, name: "Chuyến du lịch", path: "/managementTour" },
+    //     { id: 203, name: "Chủ đề", path: "/managementTheme" },
+    //   ],
+    // },
     {
       id: 3,
       name: "Quản lý khách sạn",
@@ -111,7 +117,7 @@ export default function Sidebar({ isCollapsed }) {
 
   return (
     <aside
-      className={`h-full bg-[#9A1B21] text-white p-4 transition-all duration-300 ${
+      className={`h-screen bg-[#9A1B21] text-white p-4 transition-all duration-300 ${
         isCollapsed ? "w-20" : "w-64"
       }`}
     >

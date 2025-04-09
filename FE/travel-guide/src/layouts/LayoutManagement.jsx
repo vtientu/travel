@@ -1,30 +1,28 @@
 import { useState } from "react";
 import Sidebar from "../components/Sidebar/Sidebar";
 import HeaderManage from "../components/HeaderManage/HeaderManage";
-
-export default function LayoutManagement({ children }) {
+export default function LayoutManagement({ children, title }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [selectedMenu, setSelectedMenu] = useState("Quản lý Tour");
 
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
   };
 
   return (
-    <div className="flex h-screen">
-      <Sidebar setSelectedMenu={setSelectedMenu} isCollapsed={isCollapsed} />
-
+    <div className="flex h-screen overflow-hidden">
+      {" "}
+      {/* full height screen */}
+      <Sidebar isCollapsed={isCollapsed} />
       {/* Main Content */}
-      <main className="flex-1">
+      <div className="flex-1 flex flex-col">
         {/* Header */}
-        <HeaderManage
-          toggleSidebar={toggleSidebar}
-          selectedMenu={selectedMenu}
-        />
+        <HeaderManage toggleSidebar={toggleSidebar} title={title} />
 
-        {/* Content */}
-        <div className="bg-[#f5f6fa] h-full w-full">{children}</div>
-      </main>
+        {/* Scrollable Content */}
+        <div className="flex-1 overflow-y-auto bg-[#f5f6fa] p-4">
+          {children}
+        </div>
+      </div>
     </div>
   );
 }

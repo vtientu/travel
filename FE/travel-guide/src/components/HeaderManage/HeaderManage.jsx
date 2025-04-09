@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
 import { FiSidebar, FiMoon, FiUser } from "react-icons/fi";
 import { IoMdNotificationsOutline } from "react-icons/io";
-import { IoIosArrowForward } from "react-icons/io";
 import { useLocation, useNavigate } from "react-router-dom";
 import { StorageService } from "../../services/storage/StorageService";
 
-export default function HeaderManage({ toggleSidebar, selectedMenu }) {
+export default function HeaderManage({ toggleSidebar, title }) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [user, setUser] = useState(null);
@@ -41,10 +40,8 @@ export default function HeaderManage({ toggleSidebar, selectedMenu }) {
           </span>
         ) : (
           <>
-            <span className="text-GrayishBlue font-medium">Quản lý</span>
             <span className="text-black font-medium flex items-center gap-1">
-              <IoIosArrowForward className="text-[12px] text-GrayishBlue opacity-70" />
-              {selectedMenu}
+              {title}
             </span>
           </>
         )}

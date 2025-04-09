@@ -12,15 +12,9 @@ import {
 } from "date-fns";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
-export default function CalendarTravelTour({
-  travelTours = [],
-  tourId,
-  tours = [],
-}) {
+export default function CalendarTravelTour({ travelTours = [], tours = [] }) {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const today = new Date();
-
-  const filteredTours = travelTours.filter((t) => t.tour_id === tourId);
 
   const start = startOfWeek(startOfMonth(currentMonth), { weekStartsOn: 1 });
   const end = endOfWeek(endOfMonth(currentMonth), { weekStartsOn: 1 });
@@ -35,7 +29,7 @@ export default function CalendarTravelTour({
   // Gán mỗi tour 1 dòng hiển thị
   const tourLineIndexMap = {};
   let nextLineIndex = 0;
-  filteredTours.forEach((tour) => {
+  travelTours.forEach((tour) => {
     if (!tourLineIndexMap[tour.id]) {
       tourLineIndexMap[tour.id] = nextLineIndex++;
     }
@@ -44,7 +38,7 @@ export default function CalendarTravelTour({
   return (
     <div className="w-full flex flex-col gap-4">
       <h2 className="text-2xl font-bold">Thống kê chi tiết</h2>
-      <div className="bg-white  border rounded-md p-4 overflow-auto relative">
+      <div className="bg-white  border rounded-2xl p-4 overflow-auto relative">
         <h2 className="font-semibold mb-5">Lịch trình sắp tới</h2>
         {/* Header */}
         <div className="flex justify-between items-center mb-3">
@@ -107,9 +101,9 @@ export default function CalendarTravelTour({
           {days.map((day, idx) => {
             const isCurrentMonth = isSameMonth(day, currentMonth);
 
-            const toursInDay = filteredTours.filter((tour) => {
-              const start = parseISO(tour.start_time);
-              const end = parseISO(tour.end_time);
+            const toursInDay = travelTours.filter((tour) => {
+              const start = parseISO(tour.travelTour.start_day);
+              const end = parseISO(tour.travelTour.end_day);
               return isWithinInterval(day, { start, end });
             });
 
@@ -135,8 +129,8 @@ export default function CalendarTravelTour({
                       return <div key={lineIdx} className="h-[20px] w-full" />; // giữ chỗ
                     }
 
-                    const start = parseISO(tourAtLine.start_time);
-                    const end = parseISO(tourAtLine.end_time);
+                    const start = parseISO(tourAtLine.travelTour.start_day);
+                    const end = parseISO(tourAtLine.travelTour.end_day);
                     const tourInfo = tours.find(
                       (t) => t.id === tourAtLine.tour_id
                     );
