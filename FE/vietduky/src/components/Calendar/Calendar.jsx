@@ -6,16 +6,20 @@ import { TourService } from "@/services/API/tour.service";
 import { TravelTourService } from "@/services/API/travel_tour.service";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { formatYMD } from "@/utils/dateUtil";
 
 dayjs.locale("vi");
 
-const Calendar = ({ id }) => {
+const Calendar = ({ id, initialSelectedDate }) => {
   const navigate = useNavigate();
   const [currentDate, setCurrentDate] = useState(dayjs());
   const [viewMode, setViewMode] = useState("calendar");
   const [tourDates, setTourDates] = useState({});
   const [travelTourData, setTravelTourData] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
+
+  // console.log(selectedDate);
+  // console.log(initialSelectedDate);
 
   useEffect(() => {
     const fetchTravelTours = async () => {
@@ -43,8 +47,8 @@ const Calendar = ({ id }) => {
         }
 
         const formattedTourDates = tour.reduce((acc, tour) => {
-          if (tour.start_time) {
-            const dateStr = dayjs(tour.start_time).format("YYYY-MM-DD");
+          if (tour.start_day) {
+            const dateStr = dayjs(tour.start_day).format("YYYY-MM-DD");
             acc[dateStr] =
               (tour.price_tour / 1000).toLocaleString("vi-VN") + "k";
           }
@@ -53,10 +57,13 @@ const Calendar = ({ id }) => {
 
         setTourDates(formattedTourDates);
 
-        // Tự động chọn ngày tour đầu tiên
-        const firstTourDate = Object.keys(formattedTourDates)[0];
-        if (firstTourDate) {
-          setSelectedDate(firstTourDate);
+        if (initialSelectedDate) {
+          setSelectedDate(formatYMD(initialSelectedDate));
+        } else {
+          const firstTourDate = Object.keys(formattedTourDates)[0];
+          if (firstTourDate) {
+            setSelectedDate(firstTourDate);
+          }
         }
       } catch (error) {
         console.error("Error fetching travel tour data:", error);
@@ -114,7 +121,7 @@ const Calendar = ({ id }) => {
     }
 
     const selectedTours = travelTourData.filter(
-      (tour) => selectedDate === dayjs(tour.start_time).format("YYYY-MM-DD")
+      (tour) => selectedDate === dayjs(tour.start_day).format("YYYY-MM-DD")
     );
 
     if (selectedTours.length === 0) {
@@ -124,6 +131,9 @@ const Calendar = ({ id }) => {
 
     navigate("/booking/" + id, { state: { selectedTours, id } });
   };
+
+  // console.log("travel Tour", travelTourData);
+  
 
   return (
     <div className="">

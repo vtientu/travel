@@ -4,6 +4,13 @@ export const formatDate = (dateString) => {
   return moment(dateString).format("DD/MM/YYYY");
 };
 
+export const formatYMD = (dateString) => {
+  const [day, month, year] = dateString.split('/').map(Number); // Tách và chuyển đổi thành số
+  const formattedDay = String(day).padStart(2, '0'); // Đảm bảo ngày có 2 chữ số
+  const formattedMonth = String(month).padStart(2, '0'); // Đảm bảo tháng có 2 chữ số
+  return `${year}-${formattedMonth}-${formattedDay}`; // Trả về định dạng yyyy-mm-dd
+};
+
 export const formatDayDMY = (dateString) => {
   const date = new Date(dateString);
   return date.toLocaleDateString("vi-VN", {

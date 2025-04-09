@@ -21,7 +21,7 @@ export default function TopicTour({ topic }) {
     fetchTours();
   }, [topic.id]);
 
-  console.log("topic", tours);
+  // console.log("topic", tours);
 
   return (
     <div className="bg-transparent">

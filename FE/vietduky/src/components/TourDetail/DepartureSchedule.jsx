@@ -53,9 +53,9 @@ export default function DepartureSchedule({ id }) {
                     }`}
                   >
                     <td className="py-4 px-2">
-                      {formatDayDMY(schedule.start_time)}
+                      {formatDayDMY(schedule.start_day)}
                     </td>
-                    <td className="py-4 px-2">{formatDayDMY(schedule.end_time)}</td>
+                    <td className="py-4 px-2">{formatDayDMY(schedule.end_day)}</td>
                     <td className="py-4 px-2">{schedule.max_people}</td>
                     <td className="py-4 px-2 text-right font-bold text-red-700">
                       {schedule.price_tour.toLocaleString("vi-VN")} VNĐ

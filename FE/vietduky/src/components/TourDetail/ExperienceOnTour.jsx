@@ -15,6 +15,7 @@ export default function ExperienceOnTour({ id }) {
   }, [id]);
 
   if (!tour) return <p>Đang tải dữ liệu...</p>;
+  
   return (
     <div className="col-span-2 bg-white shadow-lg bg-opacity-20 p-4 rounded-lg mt-4 border border-gray-300">
       <div className="mt-2 mb-6 flex items-center justify-between">

@@ -15,10 +15,6 @@ export default function TourProgram({ id }) {
       .catch((error) => console.error("Error fetching tour data:", error));
   }, [id]);
 
-  if (!activities || activities.length === 0) {
-    return <p className="text-gray-500">Đang tải dữ liệu...</p>;
-  }
-
   return (
     <div className="col-span-2 bg-white shadow-lg bg-opacity-20 p-4 rounded-lg mt-4 border border-gray-300">
       <div className="flex justify-between items-center mb-4">

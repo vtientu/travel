@@ -1,3 +1,4 @@
+import Icons from "../Icons/Icon";
 import { useState } from "react";
 import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
@@ -7,10 +8,17 @@ export default function TourCard({ tours = [], travelTours = [] }) {
   const itemsPerPage = 6;
   const navigate = useNavigate();
 
+  const [currentDateIndex, setCurrentDateIndex] = useState(0);
+  const maxVisibleDates = 4;
+
   const filteredTours = Array.isArray(tours) ? tours : [];
 
   if (filteredTours.length === 0) {
-    return <div className="text-center text-gray-600 py-10">Không có tour nào phù hợp.</div>;
+    return (
+      <div className="text-center text-gray-600 py-10">
+        Không có tour nào phù hợp...
+      </div>
+    );
   }
 
   const totalPages = Math.ceil(filteredTours.length / itemsPerPage);
@@ -19,15 +27,36 @@ export default function TourCard({ tours = [], travelTours = [] }) {
     currentPage * itemsPerPage
   );
 
+  // console.log("Tour", tours);
+  // console.log("Travel Tour", travelTours);
+
   return (
     <div>
       <div>
         {paginatedTours.map((tour) => {
           const tourDates = travelTours
             .filter((tt) => tt.tour_id === tour.id)
-            .map((tt) =>
-              new Date(tt.start_time).toLocaleDateString("vi-VN")
-            );
+            .map((tt) => new Date(tt.start_day).toLocaleDateString("vi-VN"));
+
+          // Di chuyển logic xử lý để sử dụng tourDates
+          const handlePrevClick = () => {
+            if (currentDateIndex > 0) {
+              setCurrentDateIndex((prev) => Math.max(prev - 1, 0));
+            }
+          };
+
+          const handleNextClick = () => {
+            if (currentDateIndex < tourDates.length - maxVisibleDates) {
+              setCurrentDateIndex((prev) =>
+                Math.min(prev + 1, tourDates.length - maxVisibleDates)
+              );
+            }
+          };
+
+          const handleDateClick = (date) => {
+            // Navigate to detail page with the selected date
+            navigate(`/tour/${tour.id}`, { state: { selectedDate: date } });
+          };
 
           return (
             <div
@@ -38,13 +67,14 @@ export default function TourCard({ tours = [], travelTours = [] }) {
               <div className="w-1/3 relative">
                 <img
                   src={
-                    tour.album?.[0] || "https://dummyimage.com/300x200/ddd/000&text=No+Image"
+                    tour.album?.[0] ||
+                    "https://dummyimage.com/300x200/ddd/000&text=No+Image"
                   }
                   alt="Tour"
                   className="w-full h-full object-cover rounded-l-lg shadow-md cursor-pointer hover:scale-105 transition-transform duration-300"
                 />
-                <span className="absolute bottom-2 left-2 bg-black text-white text-xs px-2 py-1 rounded">
-                  Tiết kiệm
+                <span className="absolute bottom-2 left-2 bg-red-800 text-white text-sm font-bold px-3 py-1 rounded">
+                  {tour.typeTour ? tour.typeTour.name_type : "Không rõ"}
                 </span>
               </div>
 
@@ -58,54 +88,79 @@ export default function TourCard({ tours = [], travelTours = [] }) {
                 </h3>
 
                 <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 mb-2">
-                  <p>
-                    <strong>Mã tour:</strong>{" "}
-                    <span className="font-bold">{tour.id}</span>
-                  </p>
-                  <p>
-                    <strong>Khởi hành:</strong>{" "}
-                    <span className="text-red-600 font-bold">
+                  <div className="flex items-center text-neutral-900">
+                    <img src={Icons.Coupon} className="mr-2" />
+                    <span>Mã tour:</span>{" "}
+                    <span className="font-semibold ml-2">
+                      {tour.code_tour || "Không rõ"}
+                    </span>
+                  </div>
+                  <div className="flex items-center text-neutral-900">
+                    <img src={Icons.Location1} className="mr-2" />
+                    <span>Khởi hành:</span>{" "}
+                    <span className="text-red-800 font-semibold ml-2">
                       {tour.startLocation?.name_location || "Không rõ"}
                     </span>
-                  </p>
-                  <p>
-                    <strong>Thời gian:</strong>{" "}
-                    <span className="font-bold">{tour.day_number} ngày</span>
-                  </p>
-                  <p>
-                    <strong>Dịch vụ:</strong>{" "}
-                    <span className="text-red-600 font-bold">
-                      Khách sạn tiêu chuẩn
+                  </div>
+                  <div className="flex items-center text-neutral-900">
+                    <img src={Icons.Clock} className="mr-2" />
+                    <span>Thời gian:</span>{" "}
+                    <span className="font-semibold ml-2">
+                      {tour.day_number} ngày {tour.day_number - 1} đêm
                     </span>
-                  </p>
+                  </div>
+                  <div className="flex items-center text-neutral-900">
+                    <span>Dịch vụ:</span>{" "}
+                    <span className="text-red-800 font-semibold ml-2">
+                      {tour.services?.length > 0
+                        ? tour.services
+                            .map((service) => service.name_service)
+                            .join(", ")
+                        : "Không rõ"}{" "}
+                    </span>
+                  </div>
                 </div>
 
                 <div className="flex items-center space-x-2 mb-4">
-                  <span className="text-sm font-semibold">Ngày khởi hành:</span>
-                  <div className="flex space-x-2 overflow-x-auto">
-                    <AiOutlineArrowLeft className="w-6 h-4 text-gray-600 cursor-pointer" />
-                    {tourDates.length > 0 ? (
-                      tourDates.map((date, index) => (
+                  <div className="flex items-center text-neutral-900">
+                    <img src={Icons.CalendarPre} className="mr-2" />
+                    <span>Ngày khởi hành:</span>
+                  </div>
+                  <div className="flex space-x-2 items-center overflow-x-auto">
+                    <AiOutlineArrowLeft
+                      className="w-6 h-4 text-gray-600 cursor-pointer"
+                      onClick={handlePrevClick}
+                    />
+                    {tourDates
+                      .slice(
+                        currentDateIndex,
+                        currentDateIndex + maxVisibleDates
+                      )
+                      .map((date, index) => (
                         <span
                           key={index}
-                          className="px-2 py-1 border border-red-500 text-red-500 rounded text-xs"
+                          onClick={() => handleDateClick(date)}
+                          className="px-2 py-1 border border-red-600 text-red-600 rounded text-xs cursor-pointer"
                         >
                           {date}
                         </span>
-                      ))
-                    ) : (
-                      <span className="text-gray-500 text-xs">Chưa có lịch</span>
-                    )}
-                    <AiOutlineArrowRight className="w-6 h-4 text-gray-600 cursor-pointer" />
+                      ))}
+                    <AiOutlineArrowRight
+                      className="w-6 h-4 text-gray-600 cursor-pointer"
+                      onClick={handleNextClick}
+                    />
                   </div>
                 </div>
 
                 <div className="flex justify-between items-center">
-                  <span className="text-lg font-bold text-red-600">
-                    Giá từ: {Number(tour.price_tour).toLocaleString("vi-VN")} VNĐ
+                  <span className="text-sm text-neutral-900">
+                    Giá từ:
+                    <p className="text-2xl text-red-800 font-bold">
+                      {Number(tour.price_tour).toLocaleString("vi-VN")} VNĐ
+                    </p>
                   </span>
                   <button
-                    className="bg-red-600 text-white text-sm py-2 px-4 rounded hover:bg-red-700"
+                    className="bg-[#A80F21] text-white text-sm py-2 px-4 rounded hover:bg-red-700"
                     onClick={() => navigate(`/tour/${tour.id}`)}
                   >
                     Xem chi tiết

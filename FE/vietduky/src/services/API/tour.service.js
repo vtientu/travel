@@ -56,4 +56,18 @@ export const TourService = {
             method: "GET",
         });
     },
+    searchTour: (params) => {
+        return restClient({
+          url: "tour/search",
+          method: "GET",
+          params: {
+            start: params.departure,
+            end: params.destination,
+            date: params.date,
+            priceRange: params.priceRange,
+            typeId: params.tourType,
+            topicId: params.tourTheme,
+          },
+        });
+      }
 };

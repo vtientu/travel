@@ -11,25 +11,16 @@ import TourInformation from "../components/TourDetail/TourInformation.jsx";
 import TourProgram from "../components/TourDetail/TourProgram.jsx";
 import Calendar from "@/components/Calendar/Calendar.jsx";
 import { useState } from "react";
-import DatePicker from "react-datepicker";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 
 export default function DetailTourPage() {
-  const [selectedDate, setSelectedDate] = useState("2025-02-28");
-  const [isOpen, setIsOpen] = useState(false);
   const { id } = useParams();
-
+  const location = useLocation();
+  const initialSelectedDate = location.state?.selectedDate; // Giá trị mặc định nếu không có
+  const [selectedDate, setSelectedDate] = useState(initialSelectedDate);  
+  
   return (
-    <div
-      className="bg-white"
-      style={{
-        // backgroundImage: "url('/Image/Background.png')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        width: "100%",
-        minHeight: "100vh",
-      }}
-    >
+    <div className="bg-white">
       <Header />
       <div className="container mx-auto py-8 px-4">
         <TourDescription id={id} />
@@ -57,7 +48,7 @@ export default function DetailTourPage() {
 
           {/* Bảng giá và Lịch trình */}
           <div className="col-span-4">
-            <Calendar id={id} />
+            <Calendar id={id} initialSelectedDate={initialSelectedDate}/>
           </div>
         </div>
 
