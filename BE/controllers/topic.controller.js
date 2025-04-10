@@ -81,11 +81,11 @@ exports.getTopicById = async (req, res) => {
 exports.updateTopic = async (req, res) => {
   try {
     const topicId = req.params.id;
-    const { name, description } = req.body;
+    const { name, description, active } = req.body;
 
     const topic = await Topic.findByPk(topicId);
 
-    if (!topic || !topic.active) {
+    if (!topic) {
       return res.status(404).json({
         message: "Không tìm thấy chủ đề!",
       });
@@ -93,6 +93,7 @@ exports.updateTopic = async (req, res) => {
 
     if (name) topic.name = name;
     if (description !== undefined) topic.description = description;
+    if (active !== undefined) topic.active = active;
 
     await topic.save();
 
@@ -115,14 +116,12 @@ exports.deleteTopic = async (req, res) => {
     const topicId = req.params.id;
     const topic = await Topic.findByPk(topicId);
 
-    if (!topic || !topic.active) {
+    if (!topic) {
       return res.status(404).json({
         message: "Không tìm thấy chủ đề!",
       });
     }
-
-    topic.active = false;
-    await topic.save();
+    await topic.destroy();
 
     res.json({
       message: "Xóa chủ đề thành công!",

@@ -225,7 +225,7 @@ exports.getBookingById = async (req, res) => {
     });
 
     if (!booking) {
-      return res.status(404).json({ message: "Booking not found!" });
+      return res.status(200).json({ message: "Không tìm thấy đơn hàng!" });
     }
 
     res.status(200).json({
@@ -329,7 +329,7 @@ exports.createBooking = async (req, res) => {
     // Kiểm tra tour có tồn tại không
     const travelTour = await TravelTour.findByPk(travel_tour_id);
     if (!travelTour) {
-      return res.status(404).json({
+      return res.status(200).json({
         message: "Tour không tồn tại!",
       });
     }
@@ -337,7 +337,7 @@ exports.createBooking = async (req, res) => {
     // Kiểm tra người dùng có tồn tại không
     const user = await User.findByPk(user_id);
     if (!user) {
-      return res.status(404).json({
+      return res.status(200).json({
         message: "Người dùng không tồn tại!",
       });
     }
@@ -433,7 +433,7 @@ exports.updateBooking = async (req, res) => {
 
     const booking = await Booking.findByPk(bookingId);
     if (!booking) {
-      return res.status(404).json({ message: "Booking not found!" });
+      return res.status(200).json({ message: "Booking not found!" });
     } 
     if (name) booking.name = name;
     if (phone) booking.phone = phone;
@@ -482,7 +482,7 @@ exports.deleteBooking = async (req, res) => {
 
     const booking = await Booking.findByPk(bookingId);
     if (!booking) {
-      return res.status(404).json({ message: "Không tìm thấy booking!" });
+      return res.status(200).json({ message: "Không tìm thấy booking!" });
     }
 
     await booking.destroy();
@@ -545,7 +545,7 @@ exports.getLatestBooking = async (req, res) => {
     });
 
     if (!latestBooking) {
-      return res.status(404).json({ message: "Không tìm thấy booking nào!" });
+      return res.status(200).json({ message: "Không tìm thấy booking nào!" });
     }
 
     res.status(200).json({
