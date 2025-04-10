@@ -7,9 +7,9 @@ export const FeedbackService = {
             method: "GET",
         });
     },
-    getFeedbackById: (id) => {
+    getFeedbackByUserId: (userId) => {
         return restClient({
-            url: `feedback/${id}`,
+            url: `feedback/${userId}`,
             method: "GET",
         });
     },

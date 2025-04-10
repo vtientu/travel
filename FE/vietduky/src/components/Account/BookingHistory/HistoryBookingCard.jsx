@@ -3,6 +3,8 @@ import { CalendarDays, User } from "lucide-react";
 import React, { useState } from "react";
 import { RiEditBoxLine } from "react-icons/ri";
 import RatingStars from "../Feedback/RatingStar";
+import { FeedbackService } from "@/services/API/feedback.service";
+import { toast } from "react-toastify";
 
 const HistoryBookingCard = ({ booking }) => {
   const [rating, setRating] = useState(0);
@@ -14,20 +16,28 @@ const HistoryBookingCard = ({ booking }) => {
     setIsModalOpen(false);
     setDescriptionFeedback("");
     setRating(0);
-  };  
+  };
 
-  const handleSubmitRating = () => {
-    const feedbackData = {
-      customer_id: booking.user_id,
-      tour_id: booking.TravelTour?.Tour?.id,
-      description_feedback: descriptionFeedback,
-      rating: rating,
-      feedback_date: new Date().toISOString().split("T")[0],
-    };
+  const feedbackData = {
+    user_id: booking.user_id,
+    tour_id: booking.TravelTour?.Tour?.id,
+    description_feedback: descriptionFeedback,
+    rating: rating,
+    feedback_date: new Date().toISOString().split("T")[0],
+  };
 
-    // Logic to submit the feedback
-    console.log("Submitted feedback:", feedbackData);
-    handleCloseModal();
+  console.log("Feedback Data:", feedbackData);
+  
+
+  const handleSubmitRating = async () => {
+    try {
+      await FeedbackService.createFeedbackTour(feedbackData);
+      toast.success("Đánh giá chuyến đi thành công!");
+    } catch (error) {
+      console.error("Lỗi khi đánh giá chuyến đi:", error);
+    } finally {
+      handleCloseModal();
+    }
   };
 
   return (

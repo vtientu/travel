@@ -74,8 +74,6 @@ export default function TourCard({ tours = [], travelTours = [] }) {
                   src={
                     tour.album?.[0] ||
                     "https://dummyimage.com/300x200/ddd/000&text=No+Image"
-                    tour.album?.[0] ||
-                    "https://dummyimage.com/300x200/ddd/000&text=No+Image"
                   }
                   alt="Tour"
                   className="w-full h-full object-cover rounded-l-lg shadow-md cursor-pointer hover:scale-105 transition-transform duration-300"

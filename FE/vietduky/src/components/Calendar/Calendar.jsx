@@ -49,8 +49,6 @@ const Calendar = ({ id, initialSelectedDate }) => {
         const formattedTourDates = tour.reduce((acc, tour) => {
           if (tour.start_day) {
             const dateStr = dayjs(tour.start_day).format("YYYY-MM-DD");
-          if (tour.start_day) {
-            const dateStr = dayjs(tour.start_day).format("YYYY-MM-DD");
             acc[dateStr] =
               (tour.price_tour / 1000).toLocaleString("vi-VN") + "k";
           }
@@ -123,7 +121,6 @@ const Calendar = ({ id, initialSelectedDate }) => {
     }
 
     const selectedTours = travelTourData.filter(
-      (tour) => selectedDate === dayjs(tour.start_day).format("YYYY-MM-DD")
       (tour) => selectedDate === dayjs(tour.start_day).format("YYYY-MM-DD")
     );
 

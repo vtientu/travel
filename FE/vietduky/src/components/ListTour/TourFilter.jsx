@@ -199,6 +199,3 @@ const TourFilter = ({ onFilter, locations, typeTours, activeTopics, initialDepar
 };
 
 export default TourFilter;
-};
-
-export default TourFilter;

@@ -28,31 +28,31 @@ const HeaderMenu = ({ handleSignout, user }) => {
         <div className="border-b border-gray-200"/>
         <button
           className="block w-full text-left px-4 py-2 hover:bg-gray-100 rounded-md"
-          onClick={() => navigate("/profile")}
+          onClick={() => navigate("/bookingHistory")}
         >
           Lịch sử đặt tour
         </button>
-        <button
+        {/* <button
           className="block w-full text-left px-4 py-2 hover:bg-gray-100 rounded-md"
           onClick={() => navigate("/profile")}
         >
           Mã khuyến mãi
-        </button>
+        </button> */}
         <button
           className="block w-full text-left px-4 py-2 hover:bg-gray-100 rounded-md"
-          onClick={() => navigate("/profile")}
+          onClick={() => navigate("/favorites")}
         >
           Danh sách yêu thích
         </button>
         <button
           className="block w-full text-left px-4 py-2 hover:bg-gray-100 rounded-md"
-          onClick={() => navigate("/profile")}
+          onClick={() => navigate("/reviews")}
         >
           Đánh giá
         </button>
         <button
           className="block w-full text-left px-4 py-2 hover:bg-gray-100 rounded-md"
-          onClick={() => navigate("/profile")}
+          onClick={() => navigate("/settings")}
         >
           Cấu hình hệ thống
         </button>

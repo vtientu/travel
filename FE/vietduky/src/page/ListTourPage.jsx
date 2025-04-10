@@ -6,8 +6,6 @@ import TourFilter from "@/components/ListTour/TourFilter";
 import TourCard from "@/components/TourCard/TourCard";
 import { LocationService } from "@/services/API/location.service";
 import { TopicService } from "@/services/API/topic.service";
-import { LocationService } from "@/services/API/location.service";
-import { TopicService } from "@/services/API/topic.service";
 import { TourService } from "@/services/API/tour.service";
 import { TravelTourService } from "@/services/API/travel_tour.service";
 import { TypeTourService } from "@/services/API/type_tour.service";
@@ -70,38 +68,8 @@ export default function ListTour() {
       }
     };
 
-    const fetchLocations = async () => {
-      try {
-        const locationsResponse = await LocationService.getAllLocations();
-        setLocations(locationsResponse.data);
-      } catch (error) {
-        console.error("Error fetching locations data:", error);
-      }
-    };
-
-    const fetchTourTypes = async () => {
-      try {
-        const tourTypesResponse = await TypeTourService.getTypeTour();
-        setTourTypes(tourTypesResponse.data);
-      } catch (error) {
-        console.error("Error fetching tour types data:", error);
-      }
-    };
-
-    const fetchTopics = async () => {
-      try {
-        const topicsResponse = await TopicService.getTopic();
-        setTopics(topicsResponse.data.data);
-      } catch (error) {
-        console.error("Error fetching topics data:", error);
-      }
-    };
-
     fetchTours();
     fetchTravelTours();
-    fetchLocations();
-    fetchTourTypes();
-    fetchTopics();
     fetchLocations();
     fetchTourTypes();
     fetchTopics();
