@@ -429,20 +429,37 @@ exports.createBooking = async (req, res) => {
 exports.updateBooking = async (req, res) => {
   try {
     const bookingId = req.params.id;
-    const { number_adult, number_children, total_cost, status } = req.body;
+    const { name, phone, email, address, note, passengers } = req.body;
 
     const booking = await Booking.findByPk(bookingId);
     if (!booking) {
       return res.status(404).json({ message: "Booking not found!" });
+    } 
+    if (name) booking.name = name;
+    if (phone) booking.phone = phone;
+    if (email) booking.email = email;
+    if (address) booking.address = address;
+    if (note) booking.note = note;
+    if (passengers && passengers.length > 0) {
+      const existingPassengers = await Passenger.findAll({
+        where: { booking_id: bookingId },
+      });
+      if (existingPassengers.length > 0) {
+        await Passenger.destroy({
+          where: { booking_id: bookingId },
+        });
+      }
+      for (let i = 0; i < passengers.length; i++) {
+        const newPassenger = await Passenger.create({
+          name: passengers[i].name,
+          birth_date: passengers[i].birth_date,
+          gender: passengers[i].gender,
+          phone_number: passengers[i].phone_number,
+          booking_id: bookingId,
+          passport_number: passengers[i].passport_number,
+        });
+      }
     }
-
-    if (number_adult != undefined)
-      booking.number_adult = number_adult || booking.number_adult;
-    if (number_children != undefined)
-      booking.number_children = number_children || booking.number_children;
-    if (total_cost != undefined)
-      booking.total_cost = total_cost || booking.total_cost;
-    if (status != undefined) booking.status = status || booking.status;
 
     await booking.save();
 
@@ -587,7 +604,7 @@ exports.getBookingByUserId = async (req, res) => {
 };
 exports.searchBooking = async (req, res) => {
   try {
-    const { keyword } = req.query;
+    const { keyword, travel_tour_id } = req.query
     const bookings = await Booking.findAll({
       where: {
         [Op.or]: [
@@ -596,6 +613,7 @@ exports.searchBooking = async (req, res) => {
           { phone: { [Op.like]: `%${keyword}%` } },
           { booking_code: { [Op.like]: `%${keyword}%` } },
         ],
+        travel_tour_id: travel_tour_id
       },
       include: [
         { model: User, attributes: ["id", "email", "avatar"] },
@@ -614,4 +632,20 @@ exports.searchBooking = async (req, res) => {
     });
   }
 };
-
+exports.getBookingByTravelTourId = async (req, res) => {
+  try {
+    const travelTourId = req.params.id;
+    const bookings = await Booking.findAll({
+      where: { travel_tour_id: travelTourId },
+    });
+    res.status(200).json({
+      message: "Lấy booking thành công!",
+      data: bookings,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Lỗi khi lấy booking!",
+      error: error.message,
+    });
+  }
+}
