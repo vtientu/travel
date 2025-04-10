@@ -63,3 +63,36 @@ exports.getPassengerByBookingId = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+exports.deletePassenger = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const passenger = await Passenger.findByPk(id);
+    if (!passenger) {
+      return res.status(404).json({ message: "Không tìm thấy hành khách" });
+    }
+    await passenger.destroy();
+    res.status(200).json({ message: "Hành khách đã được xóa" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+exports.updatePassenger = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, birth_date, gender, phone_number, passport_number } = req.body;
+    const passenger = await Passenger.findByPk(id);
+    if (!passenger) {
+      return res.status(404).json({ message: "Không tìm thấy hành khách" });
+    }
+    passenger.name = name;
+    passenger.birth_date = birth_date;
+    passenger.gender = gender;
+    passenger.phone_number = phone_number;
+    passenger.passport_number = passport_number;
+    await passenger.save();
+    res.status(200).json(passenger);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+}
+
