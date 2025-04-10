@@ -12,7 +12,7 @@ import {
 } from "date-fns";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
-export default function CalendarTravelTour({ travelTours = [], tours = [] }) {
+export default function CalendarTravelTour({ travelTours = [] }) {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const today = new Date();
 
@@ -37,9 +37,8 @@ export default function CalendarTravelTour({ travelTours = [], tours = [] }) {
 
   return (
     <div className="w-full flex flex-col gap-4">
-      <h2 className="text-2xl font-bold">Thống kê chi tiết</h2>
       <div className="bg-white  border rounded-2xl p-4 overflow-auto relative">
-        <h2 className="font-semibold mb-5">Lịch trình sắp tới</h2>
+        <h2 className="font-semibold mb-5">Lịch trình</h2>
         {/* Header */}
         <div className="flex justify-between items-center mb-3">
           <div className="flex items-center gap-2">
@@ -131,18 +130,18 @@ export default function CalendarTravelTour({ travelTours = [], tours = [] }) {
 
                     const start = parseISO(tourAtLine.travelTour.start_day);
                     const end = parseISO(tourAtLine.travelTour.end_day);
-                    const tourInfo = tours.find(
-                      (t) => t.id === tourAtLine.tour_id
-                    );
-                    const tourName = tourInfo?.name_tour || `#${tourAtLine.id}`;
+
+                    const tourName =
+                      tourAtLine?.travelTour?.Tour?.name_tour ||
+                      `#${tourAtLine.id}`;
                     const isStart =
                       format(day, "yyyy-MM-dd") === format(start, "yyyy-MM-dd");
                     const isEnd =
                       format(day, "yyyy-MM-dd") === format(end, "yyyy-MM-dd");
 
-                    let bg = "bg-blue-100 text-blue-700";
+                    let bg = "bg-blue-100 text-blue-700 hover:bg-blue-200";
                     if (today >= start && today <= end)
-                      bg = "bg-orange-100 text-orange-700";
+                      bg = "bg-orange-100 text-orange-700 hover:bg-orange-200";
                     if (today > end) bg = "bg-gray-300 text-gray-600";
 
                     const borderRadiusClass =
@@ -157,9 +156,9 @@ export default function CalendarTravelTour({ travelTours = [], tours = [] }) {
                     return (
                       <div
                         key={lineIdx}
-                        className={`h-[20px] w-full text-[11px] relative flex items-center ${bg} ${borderRadiusClass}`}
+                        className={`h-[20px] w-full text-[11px] relative flex items-center cursor-pointer ${bg} ${borderRadiusClass}`}
                         title={`#${tourAtLine.id} - ${
-                          tourAtLine.max_people
+                          tourAtLine?.travelTour?.max_people
                         } chỗ\n${format(start, "dd/MM")} → ${format(
                           end,
                           "dd/MM"
@@ -195,7 +194,8 @@ export default function CalendarTravelTour({ travelTours = [], tours = [] }) {
                         {isStart && (
                           <span className="truncate pl-4 z-10">
                             {" "}
-                            {tourName} - {tourAtLine.max_people} chỗ
+                            {tourName} - {tourAtLine?.travelTour?.max_people}{" "}
+                            chỗ
                           </span>
                         )}
                       </div>

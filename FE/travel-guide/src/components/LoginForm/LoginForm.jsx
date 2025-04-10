@@ -1,20 +1,41 @@
-
-// import { login } from "../../services/API/auth.service";
+import { login } from "../../services/API/auth.service";
 import AuthProviders from "../AuthProviders/AuthProviders";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 export default function LoginForm() {
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  // const handleLogin = async () => {
-  //   try {
-  //     const data = await login(username, password);
-  //     alert("Đăng nhập thành công!");
-  //     window.location.href = "/profile";
-  //   } catch (error) {
-  //     alert(error.message);
-  //   }
-  // };
+  const handleLogin = async () => {
+    try {
+      if (!username || !password) {
+        alert("Vui lòng nhập đủ thông tin");
+        return;
+      }
+      const response = await login(username, password);
+      if (response.status === 200) {
+        localStorage.setItem("access_token", response.data.access_token);
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            id: response.data.id,
+            email: response.data.email,
+            role: response.data.role_id,
+          })
+        );
+        navigate("/dashboard");
+      } else {
+        alert("Đăng nhập thất bại: " + response.data.message);
+      }
+    } catch (error) {
+      alert(
+        "Đăng nhập thất bại: " +
+          (error.response ? error.response.data.message : error.message)
+      );
+    }
+  };
 
   return (
     <div className="  w-[400px]">
@@ -66,7 +87,7 @@ export default function LoginForm() {
 
       {/* Login Button */}
       <button
-        // onClick={handleLogin}
+        onClick={handleLogin}
         className="w-full bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition"
       >
         Đăng nhập

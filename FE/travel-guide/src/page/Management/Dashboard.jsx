@@ -70,13 +70,20 @@ const Dashboard = () => {
       }
     };
     fetchTravelTours();
+
+    return () => {
+      setTravelTours([]);
+    };
   }, []);
 
   return (
     <LayoutManagement>
       <div className="h-full w-full p-5 gap-5 flex flex-col">
         <StaticSection />
-        <CalendarTravelTour travelTours={travelTours} />
+        <div className="w-full flex flex-col gap-4">
+          <h3 className="text-2xl font-bold">Thống kê chi tiết</h3>
+          <CalendarTravelTour travelTours={travelTours} />
+        </div>
         <Feedback feedbacks={DEFAULT_FEEDBACKS} />
         <div className="border-b border-gray-200" />
       </div>

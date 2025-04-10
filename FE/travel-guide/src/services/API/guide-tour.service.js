@@ -30,7 +30,7 @@ export const getTravelTourCanAccept = async (params) => {
 };
 
 // Lấy danh sách travel tour theo user id
-export const getGuideTourByUserId = async (userId, params) => {
+export const getGuideTourByUserId = async (userId, params = {}) => {
   try {
     const response = await restClient({
       url: `guide-tour/user/${userId}`,
