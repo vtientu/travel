@@ -3,6 +3,10 @@ import SearchDebounceInput from "../common/SearchDebouceInput";
 import AddCustomerInfoModal from "./AddCustomerInfoModal";
 import { useEffect, useState } from "react";
 import { getBookingById } from "../../services/API/booking.service";
+import {
+  STATUS_BOOKING_COLOR,
+  STATUS_BOOKING_TEXT,
+} from "../../constants/app.constant";
 const BookingDetailsModal = ({ booking, open, onClose }) => {
   const [openAddCustomerInfoModal, setOpenAddCustomerInfoModal] =
     useState(false);
@@ -12,12 +16,11 @@ const BookingDetailsModal = ({ booking, open, onClose }) => {
     const fetchBooking = async () => {
       const response = await getBookingById(booking.id);
       if (response.status === 200) {
-        setBookingDetail(response.data);
+        setBookingDetail(response.data.data);
       }
     };
     fetchBooking();
   }, [booking]);
-  console.log(bookingDetail);
 
   if (!open) return null;
 
@@ -97,7 +100,7 @@ const BookingDetailsModal = ({ booking, open, onClose }) => {
               </button>
             </div>
           </div>
-          <table className="w-full">
+          <table className="w-full flex-1">
             <thead>
               <tr>
                 <th>Họ và tên khách hàng</th>
@@ -117,13 +120,37 @@ const BookingDetailsModal = ({ booking, open, onClose }) => {
                   <td>{customer.birthday}</td>
                   <td>{customer.gender}</td>
                   <td>{customer.age}</td>
-                  <td>{customer.phone}</td>
-                  <td>{customer.cccd}</td>
+                  <td>{customer.phone_number}</td>
+                  <td>{customer.passport_number}</td>
                   <td>{customer.single_room}</td>
                 </tr>
               ))}
             </tbody>
           </table>
+          <div className="flex flex-row justify-between items-center">
+            <h2 className="text-xl font-semibold">
+              Trạng thái:{" "}
+              <span
+                className={`${STATUS_BOOKING_COLOR[bookingDetail?.status]}`}
+              >
+                {STATUS_BOOKING_TEXT[bookingDetail?.status]}
+              </span>
+            </h2>
+            <h2 className="text-xl font-semibold">
+              Tổng tiền{" "}
+              <span className="text-[#A80F21]">
+                {bookingDetail?.total_cost.toLocaleString("vi-VN")} VNĐ
+              </span>
+            </h2>
+          </div>
+          <div className="flex flex-row justify-end items-center gap-2">
+            <button className="border border-gray-300 px-4 py-2 rounded-md whitespace-nowrap">
+              Hủy
+            </button>
+            <button className="bg-[#A80F21] text-white px-4 py-2 rounded-md whitespace-nowrap">
+              Lưu thao tác
+            </button>
+          </div>
         </div>
       </div>
       <AddCustomerInfoModal

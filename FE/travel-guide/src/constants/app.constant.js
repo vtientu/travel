@@ -24,3 +24,14 @@ export const STATUS_BOOKING_TEXT = {
     [STATUS_BOOKING.COMPLETED]: "Đã hoàn tất",
     [STATUS_BOOKING.EXPIRED]: "Đã hết hạn",
 };
+
+export const STATUS_BOOKING_COLOR = {
+    [STATUS_BOOKING.NOT_PAID]: "text-yellow-600",
+    [STATUS_BOOKING.HALF_PAID]: "text-yellow-600",
+    [STATUS_BOOKING.PAID]: "text-green-600",
+    [STATUS_BOOKING.CANCELED]: "text-red-600",
+    [STATUS_BOOKING.REFUNDED]: "text-blue-600",
+    [STATUS_BOOKING.COMPLETED]: "text-green-600",
+    [STATUS_BOOKING.EXPIRED]: "text-red-600",
+};
+
