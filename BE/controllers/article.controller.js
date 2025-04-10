@@ -64,7 +64,10 @@ exports.createArticle = async (req, res) => {
   try {
     const { directory_id, user_id, alias, description } = req.body;
 
-    const album_post = req.file ? req.file.path : null;
+    const album_post =
+      req.files && req.files.length > 0
+        ? JSON.stringify(req.files.map((file) => file.path))
+        : null;
 
     // Tạo bài viết mới
     const data = {
@@ -95,7 +98,10 @@ exports.updateArticle = async (req, res) => {
     const { article_id } = req.params;
     const { directory_id, user_id, alias, description } = req.body;
 
-    const album_post = req.file ? req.file.path : null;
+    const album_post =
+      req.files && req.files.length > 0
+        ? JSON.stringify(req.files.map((file) => file.path))
+        : null;
 
     const article = await Article.findByPk(article_id);
 

@@ -14,13 +14,13 @@ router.get("/:directory_id", ArticleController.getArticlesByDirectory);
 router.post(
   "/create",
   checkRoles(["admin", "staff"]),
-  uploadAlbumPost.single("album_post"),
+  uploadAlbumPost.array("album_post", 10),
   ArticleController.createArticle
 );
 router.put(
   "/update/:article_id",
   authenticateAdmin,
-  uploadAlbumPost.single("album_post"),
+  uploadAlbumPost.array("album_post", 10),
   ArticleController.updateArticle
 );
 router.delete(
