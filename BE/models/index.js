@@ -140,9 +140,9 @@ Notification.belongsTo(NotificationType, { foreignKey: "type_id", as: "type" });
 Booking.hasMany(Notification, { foreignKey: "booking_id" });
 Notification.belongsTo(Booking, { foreignKey: "booking_id" });
 
-//Feedback/Customer
-Customer.hasMany(Feedback, { foreignKey: "customer_id" });
-Feedback.belongsTo(Customer, { foreignKey: "customer_id", as: "customer" });
+//Feedback/User
+User.hasMany(Feedback, { foreignKey: "user_id" });
+Feedback.belongsTo(User, { foreignKey: "user_id", as: "user" });
 
 //Feedback/TravelGuide
 TravelGuide.hasMany(Feedback, { foreignKey: "travel_guide_id" });
@@ -214,7 +214,7 @@ GuideTour.belongsTo(TravelTour, {
 
 //User/TravelGuide
 User.hasOne(TravelGuide, { foreignKey: "user_id" });
-TravelGuide.belongsTo(User, { foreignKey: "user_id" });
+TravelGuide.belongsTo(User, { foreignKey: "user_id", as: "user" });
 
 //Role/User
 Role.hasMany(User, { foreignKey: "role_id" });

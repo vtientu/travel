@@ -12,6 +12,7 @@ const Voucher = db.Voucher;
 const Passenger = db.Passenger;
 const nodemailer = require("nodemailer");
 const Tour = db.Tour;
+const { Op } = require("sequelize");
 
 //Cấu hình nodemailer
 const transporter = nodemailer.createTransport({
@@ -584,5 +585,33 @@ exports.getBookingByUserId = async (req, res) => {
     });
   }
 };
+exports.searchBooking = async (req, res) => {
+  try {
+    const { keyword } = req.query;
+    const bookings = await Booking.findAll({
+      where: {
+        [Op.or]: [
+          { name: { [Op.like]: `%${keyword}%` } },
+          { email: { [Op.like]: `%${keyword}%` } },
+          { phone: { [Op.like]: `%${keyword}%` } },
+          { booking_code: { [Op.like]: `%${keyword}%` } },
+        ],
+      },
+      include: [
+        { model: User, attributes: ["id", "email", "avatar"] },
+        { model: TravelTour },
+      ],
+    }); 
 
+    res.status(200).json({
+      message: "Tìm kiếm booking thành công!",
+      data: bookings,
+    });
+  } catch (error) {
+    res.status(500).json({  
+      message: "Lỗi khi tìm kiếm booking!",
+      error: error.message,
+    });
+  }
+};
 

@@ -19,6 +19,11 @@ export default function TourCard({ tours = [], travelTours = [] }) {
         Không có tour nào phù hợp...
       </div>
     );
+    return (
+      <div className="text-center text-gray-600 py-10">
+        Không có tour nào phù hợp...
+      </div>
+    );
   }
 
   const totalPages = Math.ceil(filteredTours.length / itemsPerPage);
@@ -67,6 +72,8 @@ export default function TourCard({ tours = [], travelTours = [] }) {
               <div className="w-1/3 relative">
                 <img
                   src={
+                    tour.album?.[0] ||
+                    "https://dummyimage.com/300x200/ddd/000&text=No+Image"
                     tour.album?.[0] ||
                     "https://dummyimage.com/300x200/ddd/000&text=No+Image"
                   }

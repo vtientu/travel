@@ -8,6 +8,11 @@ const {
 } = require("../middleware/authMiddleware");
 
 router.get("/", BookingController.getAllBookings);
+
+router.get(
+    "/search",
+    BookingController.searchBooking
+);
 router.get(
     "/:id",
     authenticateUser,

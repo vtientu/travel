@@ -30,4 +30,8 @@ router.get("/user/:id",
   // authenticateUser, 
   // authenticateAdmin, 
   GuideTourController.getGuideTourByUserId);
+router.get("/travel-tour/:travelTourId", 
+  // authenticateUser, 
+  // authenticateAdmin, 
+  GuideTourController.getTravelTourDetailForGuide);
 module.exports = router;

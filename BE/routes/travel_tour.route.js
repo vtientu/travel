@@ -8,6 +8,7 @@ const {
 } = require("../middleware/authMiddleware");
 
 router.get("/", travelTourController.getAllTravelTours);
+router.get("/guide", travelTourController.getListTravelTourForGuide);
 // router.get("/:id", authenticateUser, travelTourController.getTravelTourById);
 router.get("/:id", travelTourController.getTravelTourById);
 router.post(
@@ -40,5 +41,6 @@ router.post(
   authenticateAdmin,
   travelTourController.closeTourWhenFull
 );
+
 
 module.exports = router;

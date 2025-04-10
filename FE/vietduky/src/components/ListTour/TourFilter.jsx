@@ -77,6 +77,22 @@ const TourFilter = ({ onFilter, locations, typeTours, activeTopics, initialDepar
           ))}
         </select>
       </div>
+      {/* Điểm khởi hành */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium mb-1">Điểm khởi hành</label>
+        <select
+          value={departure}
+          onChange={(e) => setDeparture(e.target.value)}
+          className="w-full border rounded-md px-3 py-2 text-sm"
+        >
+          <option>Tất cả</option>
+          {locations.map((location) => (
+            <option key={location.id} value={location.name_location}>
+              {location.name_location}
+            </option>
+          ))}
+        </select>
+      </div>
 
       {/* Điểm đến */}
       <div className="mb-4">
@@ -95,6 +111,16 @@ const TourFilter = ({ onFilter, locations, typeTours, activeTopics, initialDepar
         </select>
       </div>
 
+      {/* Ngày đi */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium mb-1">Ngày đi</label>
+        <input
+          type="date"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+          className="w-full border rounded-md px-3 py-2 text-sm"
+        />
+      </div>
       {/* Ngày đi */}
       <div className="mb-4">
         <label className="block text-sm font-medium mb-1">Ngày đi</label>
@@ -170,6 +196,9 @@ const TourFilter = ({ onFilter, locations, typeTours, activeTopics, initialDepar
       </button>
     </div>
   );
+};
+
+export default TourFilter;
 };
 
 export default TourFilter;
