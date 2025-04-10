@@ -214,7 +214,7 @@ GuideTour.belongsTo(TravelTour, {
 
 //User/TravelGuide
 User.hasOne(TravelGuide, { foreignKey: "user_id" });
-TravelGuide.belongsTo(User, { foreignKey: "user_id" });
+TravelGuide.belongsTo(User, { foreignKey: "user_id", as: "user" });
 
 //Role/User
 Role.hasMany(User, { foreignKey: "role_id" });

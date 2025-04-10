@@ -1,5 +1,5 @@
 module.exports = (sequelize, Sequelize) => {
-    const Booking = sequelize.define(
+    return sequelize.define(
         "Booking",
         {
             id: {
@@ -84,6 +84,4 @@ module.exports = (sequelize, Sequelize) => {
             timestamps: true, // Không dùng createdAt và updatedAt
         }
     );
-
-    return Booking;
 };
