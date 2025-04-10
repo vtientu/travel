@@ -1,5 +1,6 @@
 const db = require("../models");
 const Topic = db.Topic;
+const Tour = db.Tour;
 
 // Tạo chủ đề mới
 exports.createTopic = async (req, res) => {
@@ -10,6 +11,12 @@ exports.createTopic = async (req, res) => {
     if (!name) {
       return res.status(400).json({
         message: "Vui lòng nhập tên chủ đề!",
+      });
+    }
+    const existingTopic = await Topic.findOne({ where: { name } });
+    if (existingTopic) {
+      return res.status(400).json({
+        message: "Chủ đề đã tồn tại!",
       });
     }
 
@@ -81,11 +88,11 @@ exports.getTopicById = async (req, res) => {
 exports.updateTopic = async (req, res) => {
   try {
     const topicId = req.params.id;
-    const { name, description } = req.body;
+    const { name, description, active } = req.body;
 
     const topic = await Topic.findByPk(topicId);
 
-    if (!topic || !topic.active) {
+    if (!topic) {
       return res.status(404).json({
         message: "Không tìm thấy chủ đề!",
       });
@@ -93,6 +100,7 @@ exports.updateTopic = async (req, res) => {
 
     if (name) topic.name = name;
     if (description !== undefined) topic.description = description;
+    if (active !== undefined) topic.active = active;
 
     await topic.save();
 
@@ -115,14 +123,12 @@ exports.deleteTopic = async (req, res) => {
     const topicId = req.params.id;
     const topic = await Topic.findByPk(topicId);
 
-    if (!topic || !topic.active) {
+    if (!topic) {
       return res.status(404).json({
         message: "Không tìm thấy chủ đề!",
       });
     }
-
-    topic.active = false;
-    await topic.save();
+    await topic.destroy();
 
     res.json({
       message: "Xóa chủ đề thành công!",
@@ -135,3 +141,27 @@ exports.deleteTopic = async (req, res) => {
     });
   }
 };
+exports.addTourToTopic = async (req, res) => {
+  try {
+    const { topicId, tourIds } = req.body;
+    const topic = await Topic.findByPk(topicId);
+    if (!topic) {
+      return res.status(500).json({ message: "Không tìm thấy chủ đề!" });
+    }
+    const tours = await Tour.findAll({
+      where: { id: tourIds },
+    });
+    if (tours.length !== tourIds.length) {
+      return res.status(500).json({ message: "Không tìm thấy tour!" });
+    }
+    await topic.addTours(tours);
+    res.status(200).json({ message: "Thêm tour vào chủ đề thành công!" });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({
+      message: "Lỗi khi thêm tour vào chủ đề!",
+      error: error.message,
+    });
+  }
+};
+

@@ -16,7 +16,7 @@ exports.getGuideTours = async (req, res) => {
     const travelGuide = await TravelGuide.findByPk(travel_guide_id);
     if (!travelGuide) {
       return res
-        .status(404)
+        .status(200)
         .json({ message: "Không tìm thấy hướng dẫn viên!" });
     }
 
@@ -36,7 +36,7 @@ exports.getGuideTours = async (req, res) => {
 
     if (guideTours.length === 0) {
       return res
-        .status(404)
+        .status(200)
         .json({ message: "Không tìm thấy tour nào cho hướng dẫn viên này!" });
     }
 
@@ -60,14 +60,14 @@ exports.addGuideToTour = async (req, res) => {
     const travelTour = await TravelTour.findByPk(travel_tour_id);
     if (!travelTour) {
       return res
-        .status(404)
+        .status(200)
         .json({ message: "Không tìm thấy lịch khởi hành!" });
     }
 
     const travelGuide = await TravelGuide.findByPk(travel_guide_id);
     if (!travelGuide) {
       return res
-        .status(404)
+        .status(200)
         .json({ message: "Không tìm thấy hướng dẫn viên!" });
     }
 
@@ -97,7 +97,7 @@ exports.removeGuideFromTour = async (req, res) => {
     const guideTour = await GuideTour.findByPk(guideTourId);
     if (!guideTour) {
       return res
-        .status(404)
+        .status(200)
         .json({ message: "Không tìm thấy hướng dẫn viên trong tour!" });
     }
 
@@ -121,19 +121,19 @@ exports.approveGuideTour = async (req, res) => {
     const guideTour = await GuideTour.findByPk(guideTourId);  
     if (!guideTour) {
       return res
-        .status(404)
+        .status(200)
         .json({ message: "Không tìm thấy hướng dẫn viên trong tour!" });
     }
     const travelGuide = await TravelGuide.findByPk(guideTour.travel_guide_id);
     if (!travelGuide) {
       return res
-        .status(404)
+        .status(200)
         .json({ message: "Không tìm thấy hướng dẫn viên!" });
     }
     const travelTour = await TravelTour.findByPk(guideTour.travel_tour_id);
     if (!travelTour) {
       return res
-        .status(404)
+        .status(200)
         .json({ message: "Không tìm thấy lịch khởi hành!" });
     }
     if (travelTour.status === 0) {
@@ -164,13 +164,13 @@ exports.rejectGuideTour = async (req, res) => {
     const guideTour = await GuideTour.findByPk(guideTourId);  
     if (!guideTour) {
       return res
-        .status(404)
+        .status(200)
         .json({ message: "Không tìm thấy hướng dẫn viên trong tour!" });
     }
     const travelTour = await TravelTour.findByPk(guideTour.travel_tour_id);
     if (!travelTour) {
       return res
-        .status(404)
+        .status(200)
         .json({ message: "Không tìm thấy lịch khởi hành!" });
     }
     if (travelTour.status === 1) {
@@ -336,7 +336,7 @@ exports.getTravelTourDetailForGuide = async (req, res) => {
     });
 
     if (!travelTour) {
-      return res.status(404).json({ message: "Không tìm thấy tour du lịch!" });
+      return res.status(200).json({ message: "Không tìm thấy tour du lịch!" });
     }
     
     // Lấy thông tin hướng dẫn viên của tour

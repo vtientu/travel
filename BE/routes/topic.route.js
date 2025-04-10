@@ -16,9 +16,17 @@ router.get("/", topicController.getAllTopics);
 router.get("/:id", topicController.getTopicById);
 
 // Cập nhật thông tin topic
-router.put("/:id", authenticateUser, authenticateAdmin, topicController.updateTopic);
+router.put("/:id",
+    // authenticateUser,
+    // authenticateAdmin,
+    topicController.updateTopic);
 
 // Xóa topic    
-router.delete("/:id", authenticateUser, authenticateAdmin, topicController.deleteTopic);
+router.delete("/:id",
+    // authenticateUser,
+    // authenticateAdmin,
+    topicController.deleteTopic);
+
+router.post("/add-tour", topicController.addTourToTopic);
 
 module.exports = router; 

@@ -10,7 +10,6 @@ const TourService = db.TourService;
 const Topic = db.Topic;
 const Feedback = db.Feedback;
 const User = db.User;
-const Customer = db.Customer;
 
 // Lấy danh sách tất cả Tour
 // exports.getAllTours = async (req, res) => {
@@ -97,9 +96,8 @@ exports.getTourById = async (req, res) => {
           attributes: ["rating", "description_feedback", "feedback_date"],
           include: [
             {
-              model: Customer,
-              attributes: ["first_name", "last_name"],
-              as: "customer",
+              model: User,
+              as: "user",
             },
           ],
         },
@@ -421,7 +419,7 @@ exports.createTour = async (req, res) => {
       end_location,
       available_month,
       service_ids,
-      passport
+      passport,
     } = req.body;
     const travel_tours = req.body.travel_tours
       ? JSON.parse(req.body.travel_tours)
@@ -749,63 +747,63 @@ exports.getTourByLocationId = async (req, res) => {
 
 // Lấy danh sách tour theo chủ đề
 exports.getToursByTopicId = async (req, res) => {
-    try {
-        const topicId = req.params.topicId;
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 10;
-        const offset = (page - 1) * limit;
+  try {
+    const topicId = req.params.topicId;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const offset = (page - 1) * limit;
 
-        const {count, rows: tours} = await Tour.findAndCountAll({
-            where: {topic_id: topicId},
-            include: [
-                {model: Location, as: "startLocation"},
-                {model: Location, as: "endLocation"},
-                {
-                    model: Service,
-                    as: "Services",
-                    through: {attributes: []},
-                    attributes: [
-                        "id",
-                        "name_service",
-                        "description_service",
-                        "price_service",
-                    ],
-                },
-                {model: TypeTour, as: "typeTour"},
-            ],
-            limit,
-            offset,
-        });
+    const { count, rows: tours } = await Tour.findAndCountAll({
+      where: { topic_id: topicId },
+      include: [
+        { model: Location, as: "startLocation" },
+        { model: Location, as: "endLocation" },
+        {
+          model: Service,
+          as: "Services",
+          through: { attributes: [] },
+          attributes: [
+            "id",
+            "name_service",
+            "description_service",
+            "price_service",
+          ],
+        },
+        { model: TypeTour, as: "typeTour" },
+      ],
+      limit,
+      offset,
+    });
 
-        if (!tours || tours.length === 0) {
-            return res.status(404).json({
-                message: "Không tìm thấy tour nào cho chủ đề này!",
-            });
-        }
-
-        // Định dạng lại dữ liệu để dễ sử dụng hơn
-        const formattedTours = tours.map((tour) => {
-            const tourData = tour.get({plain: true});
-            return {
-                ...tourData,
-                services: tourData.Services || [],
-            };
-        });
-
-        res.json({
-            message: "Lấy danh sách tour thành công!",
-            data: {
-                totalTours: count,
-                totalPages: Math.ceil(count / limit),
-                currentPage: page,
-                tours: formattedTours,
-            },
-        });
-    } catch (error) {
-        console.error("Error:", error);
-        res.status(500).json({
-            message: "Lỗi khi lấy danh sách tour theo chủ đề!",
-            error: error.message,
-        });
+    if (!tours || tours.length === 0) {
+      return res.status(404).json({
+        message: "Không tìm thấy tour nào cho chủ đề này!",
+      });
     }
+
+    // Định dạng lại dữ liệu để dễ sử dụng hơn
+    const formattedTours = tours.map((tour) => {
+      const tourData = tour.get({ plain: true });
+      return {
+        ...tourData,
+        services: tourData.Services || [],
+      };
+    });
+
+    res.json({
+      message: "Lấy danh sách tour thành công!",
+      data: {
+        totalTours: count,
+        totalPages: Math.ceil(count / limit),
+        currentPage: page,
+        tours: formattedTours,
+      },
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({
+      message: "Lỗi khi lấy danh sách tour theo chủ đề!",
+      error: error.message,
+    });
+  }
 };

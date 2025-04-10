@@ -29,7 +29,10 @@ router.post(
     // authenticateUser,
     BookingController.createBooking
 );
-router.put("/update/:id", authenticateUser, authenticateStaff, BookingController.updateBooking);
+router.put("/update/:id", 
+    // authenticateUser, 
+    // authenticateStaff, 
+    BookingController.updateBooking);
 router.delete(
     "/cancel/:id",
     authenticateUser,
@@ -45,7 +48,10 @@ router.get(
     "/user/:id",
     // authenticateUser,
     BookingController.getBookingByUserId
+);  
+router.get(
+    "/travel-tour/:id",
+    BookingController.getBookingByTravelTourId
 );
-
 
 module.exports = router;
