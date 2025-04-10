@@ -4,6 +4,8 @@ const TravelGuide = db.TravelGuide;
 const TravelTour = db.TravelTour;
 const Tour = db.Tour;
 const Location = db.Location;
+const User = db.User;
+const Booking = db.Booking;
 const { Op } = require("sequelize");
 
 // Lấy tất cả các tour mà một hướng dẫn viên tham gia bằng id
@@ -306,6 +308,112 @@ exports.getGuideTourByUserId = async (req, res) => {
     });
   }
 };
+exports.getTravelTourDetailForGuide = async (req, res) => {
+  try {
+    const { travelTourId } = req.params;
 
+    // Lấy thông tin tour du lịch
+    const travelTour = await TravelTour.findOne({
+      where: { id: travelTourId },
+      include: [
+        {
+          model: Tour,
+          as: 'Tour',
+          include: [
+            {
+              model: Location,
+              as: 'startLocation',
+              attributes: ['id', 'name_location']
+            },
+            {
+              model: Location,
+              as: 'endLocation',
+              attributes: ['id', 'name_location']
+            }
+          ]
+        }
+      ]
+    });
 
+    if (!travelTour) {
+      return res.status(404).json({ message: "Không tìm thấy tour du lịch!" });
+    }
+    
+    // Lấy thông tin hướng dẫn viên của tour
+    const guideTours = await GuideTour.findAll({
+      where: { travel_tour_id: travelTourId },
+      include: [
+        {
+          model: TravelGuide,
+          as: 'travelGuide',
+          include: [
+            {
+              model: User,
+              as: 'user',
+            }
+          ]
+        }
+      ]
+    });
+    const bookings = await Booking.findAll({
+      where: { travel_tour_id: travelTourId }
+    });
 
+    // Format lại dữ liệu trả về
+    const formattedTravelTour = {
+      id: travelTour.id,
+      tour_id: travelTour.tour_id,
+      start_day: travelTour.start_day,
+      end_day: travelTour.end_day,
+      status: travelTour.status,
+      active: travelTour.active,
+      price: travelTour.price,
+      current_people: travelTour.current_people,
+      max_people: travelTour.max_people,
+      tour: {
+        id: travelTour.Tour.id,
+        name_tour: travelTour.Tour.name_tour,
+        start_location: travelTour.Tour.startLocation,
+        end_location: travelTour.Tour.endLocation
+      },
+      guides: guideTours.map(guideTour => ({
+        id: guideTour.travelGuide.id,
+        gender: guideTour.travelGuide.gender_guide,
+        first_name: guideTour.travelGuide.first_name,
+        last_name: guideTour.travelGuide.last_name,
+        email: guideTour.travelGuide.email,
+        phone: guideTour.travelGuide.number_phone,
+        address: guideTour.travelGuide.address,
+        avatar: guideTour.travelGuide.user.avatar,
+        display_name: guideTour.travelGuide.user.displayName,
+      })),
+      bookings: bookings.map(booking => ({
+        id: booking.id,
+        status: booking.status,
+        number_children: booking.number_children,
+        number_adult: booking.number_adult,
+        number_toddler: booking.number_toddler,
+        number_newborn: booking.number_newborn,
+        booking_date: booking.booking_date,
+        total_cost: booking.total_cost,
+        name: booking.name,
+        email: booking.email,
+        phone: booking.phone,
+        address: booking.address,
+        note: booking.note,
+        booking_code: booking.booking_code,
+      }))
+    };
+
+    res.json({
+      message: "Lấy thông tin tour du lịch thành công!",
+      data: formattedTravelTour
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({
+      message: "Lỗi khi lấy thông tin tour du lịch",
+      error: error.message,
+    });
+  }
+};
