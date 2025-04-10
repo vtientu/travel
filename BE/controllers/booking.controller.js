@@ -227,6 +227,10 @@ exports.getBookingById = async (req, res) => {
     if (!booking) {
       return res.status(200).json({ message: "Không tìm thấy đơn hàng!" });
     }
+    const Passengers = await Passenger.findAll({
+      where: { booking_id: bookingId },
+    });
+    booking.dataValues.passengers = Passengers;
 
     res.status(200).json({
       message: "Tất cả booking đã được lấy thành công!",
