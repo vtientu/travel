@@ -1,30 +1,29 @@
 const db = require("../models");
 const Feedback = db.Feedback;
 const Tour = db.Tour;
-const Customer = db.Customer;
+const User = db.User;
 const TravelGuide = db.TravelGuide;
 
-// Lấy tất cả Feedback theo customer_id
-exports.getFeedbackByCustomer = async (req, res) => {
+// Lấy tất cả Feedback theo user_id
+exports.getFeedbackByUser = async (req, res) => {
   try {
-    const customerId = req.params.customerId;
+    const userId = req.params.userId;
 
-    // Tìm Customer dựa trên customer_id
-    const customer = await Customer.findByPk(customerId);
+    // Tìm User dựa trên user_id
+    const user = await User.findByPk(userId);
 
-    if (!customer) {
-      return res.status(404).json({ message: "Khách hàng không tồn tại!" });
+    if (!user) {
+      return res.status(404).json({ message: "Người dùng không tồn tại!" });
     }
 
-    // Lấy tất cả feedback của customer dựa trên customer_id
+    // Lấy tất cả feedback của user dựa trên user_id
     const feedbacks = await Feedback.findAll({
-      where: { customer_id: customerId },
+      where: { user_id: userId },
       include: [
         { model: Tour, as: "tour" },
         {
-          model: Customer,
-          as: "customer",
-          attributes: ["first_name", "last_name"],
+          model: User,
+          as: "user",
         },
         {
           model: TravelGuide,
@@ -37,7 +36,7 @@ exports.getFeedbackByCustomer = async (req, res) => {
     if (feedbacks.length === 0) {
       return res
         .status(404)
-        .json({ message: "Không tìm thấy feedback nào cho khách hàng này" });
+        .json({ message: "Không tìm thấy feedback nào cho người dùng này" });
     }
 
     res.status(200).json({
@@ -55,17 +54,12 @@ exports.getFeedbackByCustomer = async (req, res) => {
 // Tạo feedback cho Tour
 exports.createFeedbackForTour = async (req, res) => {
   try {
-    const {
-      customer_id,
-      tour_id,
-      description_feedback,
-      rating,
-      feedback_date,
-    } = req.body;
+    const { user_id, tour_id, description_feedback, rating, feedback_date } =
+      req.body;
 
-    const customer = await Customer.findByPk(customer_id);
-    if (!customer) {
-      return res.status(404).json({ message: "Khách hàng không tồn tại!" });
+    const user = await User.findByPk(user_id);
+    if (!user) {
+      return res.status(404).json({ message: "Người dùng không tồn tại!" });
     }
 
     const tour = await Tour.findByPk(tour_id);
@@ -77,7 +71,7 @@ exports.createFeedbackForTour = async (req, res) => {
     const feedbackRating = rating || 5;
 
     const newFeedback = await Feedback.create({
-      customer_id,
+      user_id,
       tour_id,
       description_feedback,
       rating: feedbackRating,
@@ -100,16 +94,16 @@ exports.createFeedbackForTour = async (req, res) => {
 exports.createFeedbackForTravelGuide = async (req, res) => {
   try {
     const {
-      customer_id,
+      user_id,
       travel_guide_id,
       description_feedback,
       rating,
       feedback_date,
     } = req.body;
 
-    const customer = await Customer.findByPk(customer_id);
-    if (!customer) {
-      return res.status(404).json({ message: "Khách hàng không tồn tại!" });
+    const user = await User.findByPk(user_id);
+    if (!user) {
+      return res.status(404).json({ message: "Người dùng không tồn tại!" });
     }
 
     const travelGuide = await TravelGuide.findByPk(travel_guide_id);
@@ -121,7 +115,7 @@ exports.createFeedbackForTravelGuide = async (req, res) => {
     const feedbackRating = rating || 5;
 
     const newFeedback = await Feedback.create({
-      customer_id,
+      user_id,
       travel_guide_id,
       description_feedback,
       rating: feedbackRating,
