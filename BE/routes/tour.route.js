@@ -13,7 +13,7 @@ router.get(
   "/get-by-location-id/:locationId",
   tourController.getTourByLocationId
 );
-router.get("/:id/activities", tourController.getTourActivities);
+router.get("/activities/:id", tourController.getTourActivities);
 
 router.get("/", tourController.getAllTours);
 
@@ -41,9 +41,6 @@ router.delete(
   authenticateAdmin,
   tourController.deleteTourById
 );
-router.get(
-  "/get-by-topic-id/:topicId",
-  tourController.getToursByTopicId
-);
+router.get("/get-by-topic-id/:topicId", tourController.getToursByTopicId);
 
 module.exports = router;
