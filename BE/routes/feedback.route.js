@@ -8,30 +8,30 @@ const {
 } = require("../middleware/authMiddleware");
 
 router.get(
-  "/:customerId",
-  authenticateUser,
-  feedbackController.getFeedbackByCustomer
+  "/:userId",
+  // authenticateUser,
+  feedbackController.getFeedbackByUser
 );
 router.post(
   "/create/tour",
-  authenticateUser,
+  // authenticateUser,
   feedbackController.createFeedbackForTour
 );
 router.post(
   "/create/travel-guide",
-  authenticateUser,
+  // authenticateUser,
   feedbackController.createFeedbackForTravelGuide
 );
 router.put(
   "/update/:id",
-  authenticateUser,
-  authenticateAdmin,
+  // authenticateUser,
+  // authenticateAdmin,
   feedbackController.updateFeedback
 );
 router.delete(
   "/delete/:id",
-  authenticateUser,
-  authenticateAdmin,
+  // authenticateUser,
+  // authenticateAdmin,
   feedbackController.deleteFeedback
 );
 
