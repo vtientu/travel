@@ -27,4 +27,6 @@ router.delete("/:id",
     // authenticateAdmin,
     topicController.deleteTopic);
 
+router.post("/add-tour", topicController.addTourToTopic);
+
 module.exports = router; 

@@ -1,5 +1,6 @@
 const db = require("../models");
 const Topic = db.Topic;
+const Tour = db.Tour;
 
 // Tạo chủ đề mới
 exports.createTopic = async (req, res) => {
@@ -10,6 +11,12 @@ exports.createTopic = async (req, res) => {
     if (!name) {
       return res.status(400).json({
         message: "Vui lòng nhập tên chủ đề!",
+      });
+    }
+    const existingTopic = await Topic.findOne({ where: { name } });
+    if (existingTopic) {
+      return res.status(400).json({
+        message: "Chủ đề đã tồn tại!",
       });
     }
 
@@ -134,3 +141,27 @@ exports.deleteTopic = async (req, res) => {
     });
   }
 };
+exports.addTourToTopic = async (req, res) => {
+  try {
+    const { topicId, tourIds } = req.body;
+    const topic = await Topic.findByPk(topicId);
+    if (!topic) {
+      return res.status(500).json({ message: "Không tìm thấy chủ đề!" });
+    }
+    const tours = await Tour.findAll({
+      where: { id: tourIds },
+    });
+    if (tours.length !== tourIds.length) {
+      return res.status(500).json({ message: "Không tìm thấy tour!" });
+    }
+    await topic.addTours(tours);
+    res.status(200).json({ message: "Thêm tour vào chủ đề thành công!" });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({
+      message: "Lỗi khi thêm tour vào chủ đề!",
+      error: error.message,
+    });
+  }
+};
+
