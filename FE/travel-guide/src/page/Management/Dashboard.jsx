@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import CalendarTravelTour from "../../components/ModalManage/ModalTour/CalendarTravelTour";
+import CalendarTravelTour from "../../components/sn-travel-guide-tour/CalendarTravelTour";
 import StaticSection from "../../components/sn-dashboard/StaticSection";
 import LayoutManagement from "../../layouts/LayoutManagement";
 import { getGuideTourByUserId } from "../../services/API/guide-tour.service";

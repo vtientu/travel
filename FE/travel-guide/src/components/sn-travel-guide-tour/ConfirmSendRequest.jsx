@@ -11,9 +11,11 @@ const ConfirmSendRequest = ({ tourId, open, onClose }) => {
         alert("Gửi yêu cầu thành công");
       } else {
         console.log(response.data);
+        alert(response.message);
       }
     } catch (error) {
       console.error("Error sending request:", error);
+      alert(error.message);
     }
   };
 

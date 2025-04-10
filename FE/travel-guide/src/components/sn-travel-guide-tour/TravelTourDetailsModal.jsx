@@ -1,467 +1,237 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
-import { Square, SquareCheck } from "lucide-react";
+import { useEffect, useState } from "react";
+import { PencilIcon, XIcon } from "lucide-react";
+import { getTravelTourDetailForGuide } from "../../services/API/guide-tour.service";
+import { formatDate } from "../../utils/dateUtil";
+import BookingListModal from "./BookingListModal";
 
-const TravelTourDetailsModal = ({ scheduleId, onClose, open }) => {
-  const [loading, setLoading] = useState(false);
-  const [data, setData] = useState(null);
+const TravelTourDetailsModal = ({ tourSelected, onClose, open }) => {
+  const [travelTourDetail, setTravelTourDetail] = useState(null);
+  const [openBookingListModal, setOpenBookingListModal] = useState(false);
+
+  const handleClose = () => {
+    onClose();
+    setTravelTourDetail(null);
+  };
 
   useEffect(() => {
-    const fetchSchedule = async () => {
-      try {
-        const res = await axios.get(`/api/tour-schedule/${scheduleId}`);
-        setData(res.data);
-      } catch (err) {
-        console.error("Failed to fetch schedule", err);
-      } finally {
-        setLoading(false);
+    const fetchTravelTourDetail = async () => {
+      if (tourSelected) {
+        const response = await getTravelTourDetailForGuide(
+          tourSelected.travel_tour_id
+        );
+        if (response.status === 200) {
+          setTravelTourDetail(response.data.data);
+        }
       }
     };
-
-    fetchSchedule();
-  }, [scheduleId]);
-
-  if (loading) return <div className="p-8">Đang tải dữ liệu...</div>;
-  if (!data)
-    return <div className="p-8 text-red-500">Không tìm thấy dữ liệu</div>;
+    fetchTravelTourDetail();
+  }, [tourSelected]);
 
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
-      <div className="bg-white w-[90%] max-w-6xl p-6 rounded-lg shadow-xl relative overflow-x-auto overflow-y-hidden grid grid-cols-12 gap-4 h-4/5">
-        <div className="flex flex-col gap-4 col-span-12 md:col-span-4">
-          <h2 className="text-xl font-semibold mb-4">
-            Thông tin lịch khởi hành
-          </h2>
-          <div className="grid grid-cols-2 gap-4 ">
-            <div>
-              <label className="text-sm text-gray-600">Điểm khởi hành</label>
-              <input
-                disabled
-                className="w-full border px-3 py-2 rounded mt-1"
-                value={
-                  data?.departureDate
-                    ? new Date(data.departureDate).toLocaleDateString()
-                    : ""
-                }
-              />
-            </div>
-            <div>
-              <label className="text-sm text-gray-600">Điểm đến</label>
-              <input
-                disabled
-                className="w-full border px-3 py-2 rounded mt-1"
-                value={
-                  data?.returnDate
-                    ? new Date(data.returnDate).toLocaleDateString()
-                    : ""
-                }
-              />
-            </div>
-          </div>
-          <div>
-            <label className="text-sm text-gray-600">Tình trạng chỗ</label>
-            <input
-              disabled
-              className="w-full border px-3 py-2 rounded mt-1"
-              value={`${data?.availableSeats || 0}/${data?.totalSeats || 0}`}
-            />
-          </div>
-          <div>
-            <label className="text-sm text-gray-600">Giá Tour</label>
-            <input
-              disabled
-              className="w-full border px-3 py-2 rounded mt-1"
-              value={data?.price?.toLocaleString("vi-VN")}
-            />
-          </div>
-          <div className="mb-6">
-            <label className="text-sm text-gray-600">Nội dung ghi chú</label>
-            <textarea
-              disabled
-              className="w-full border px-3 py-2 rounded mt-1"
-              value={data?.note}
-              placeholder="Không có ghi chú nào"
-            />
-          </div>
-        </div>
-        <div className="col-span-12 md:col-span-8 border-l-2 border-gray-300 pl-4 h-full overflow-y-hidden">
-          <h3 className="text-lg font-semibold mb-3">Danh sách khách hàng</h3>
-          <div className="overflow-y-auto h-full">
-            <table className="w-full text-sm">
-              <thead className="text-gray-600 border-b font-semibold">
-                <tr>
-                  <th className="p-2 ">Họ tên</th>
-                  <th className="p-2 ">Điện thoại</th>
-                  <th className="p-2 ">Giới tính</th>
-                  <th className="p-2 ">Ngày sinh</th>
-                  <th className="p-2 ">Phòng đơn</th>
-                  <th className="p-2 ">Khách sạn</th>
-                  <th className="p-2 ">Nhà hàng</th>
-                </tr>
-              </thead>
-              <tbody>
-                {customers?.map((c, idx) => (
-                  <tr key={idx} className="border-b hover:bg-gray-50">
-                    <td className="p-2 ">{c.fullName}</td>
-                    <td className="p-2 ">{c.phoneNumber}</td>
-                    <td className="p-2 ">{c.gender}</td>
-                    <td className="p-2 ">
-                      {new Date(c.birthDate).toLocaleDateString()}
-                    </td>
-                    <td className="p-2  flex justify-center items-center">
-                      {c.room ? (
-                        <SquareCheck className="w-5 h-5 text-blue-600" />
-                      ) : (
-                        <Square className="w-5 h-5 text-gray-500" />
-                      )}
-                    </td>
-                    <td className="p-2 ">{c.hotel}</td>
-                    <td className="p-2 ">{c.restaurant}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div className="mt-6 text-right col-span-12">
+    <div className="fixed inset-0 z-10 bg-black/40 flex items-center justify-center">
+      <div className="bg-white w-[90%] h-[85vh] max-w-6xl rounded-2xl p-6 overflow-hidden shadow-xl flex flex-col">
+        <div className="flex justify-between items-start mb-4">
+          <h2 className="text-xl font-semibold">Danh sách lịch trình</h2>
           <button
-            onClick={onClose}
-            className="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300"
+            className="text-gray-500 hover:text-black"
+            onClick={handleClose}
+          >
+            <XIcon className="w-5 h-5" />
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 flex-1">
+          {/* Left column */}
+          <div className="space-y-4 col-span-4">
+            <div>
+              <h3 className="text-sm text-gray-500 mb-1 font-medium">
+                Thông tin lịch khởi hành
+              </h3>
+              <p className="font-semibold">
+                {travelTourDetail?.tour?.name_tour}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium">
+                  Điểm khởi hành
+                </label>
+                <input
+                  className="input w-full border rounded-md p-1"
+                  disabled
+                  value={travelTourDetail?.tour?.start_location?.name_location}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium">Điểm đến</label>
+                <input
+                  className="input w-full border rounded-md p-1"
+                  disabled
+                  value={travelTourDetail?.tour?.end_location?.name_location}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium">
+                  Ngày khởi hành
+                </label>
+                <input
+                  className="input w-full border rounded-md p-1"
+                  value={
+                    travelTourDetail?.start_day
+                      ? formatDate(travelTourDetail?.start_day)
+                      : ""
+                  }
+                  disabled
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium">Ngày về</label>
+                <input
+                  className="input w-full border rounded-md p-1"
+                  value={
+                    travelTourDetail?.end_day
+                      ? formatDate(travelTourDetail?.end_day)
+                      : ""
+                  }
+                  disabled
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium">
+                  Tình trạng chỗ
+                </label>
+                <input
+                  className="input w-full border rounded-md p-1"
+                  value={
+                    travelTourDetail?.current_people ||
+                    0 + "/" + travelTourDetail?.max_people ||
+                    0
+                  }
+                  disabled
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium">Giá Tour</label>
+                <input
+                  className="input w-full border rounded-md p-1"
+                  value={tourSelected?.travelTour?.price_tour?.toLocaleString(
+                    "vi-VN"
+                  )}
+                  disabled
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium">
+                Nội dung ghi chú
+              </label>
+              <textarea
+                className="input w-full h-20 resize-none rounded-md border p-1"
+                disabled
+                value={travelTourDetail?.note}
+              />
+            </div>
+          </div>
+
+          {/* Right column */}
+          <div className="flex flex-col h-full col-span-8">
+            <div className="mb-4 h-2/5 overflow-y-auto">
+              <h3 className="font-semibold">Danh sách hướng dẫn viên Tour</h3>
+              <p className="text-sm text-gray-500">
+                Danh sách hướng dẫn viên Tour du lịch có trong lịch
+              </p>
+
+              <table className="w-full mt-2 text-sm border">
+                <thead className="bg-gray-100 text-left">
+                  <tr>
+                    <th className="p-2">Tên hướng dẫn viên</th>
+                    <th className="p-2">Giới tính</th>
+                    <th className="p-2">Email</th>
+                    <th className="p-2">Số điện thoại</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {travelTourDetail?.guides?.map((guide) => (
+                    <tr key={guide.id}>
+                      <td className="p-2">
+                        {guide.last_name} {guide.first_name}
+                      </td>
+                      <td className="p-2">
+                        {guide.gender === "male" ? "Nam" : "Nữ"}
+                      </td>
+                      <td className="p-2">{guide.email}</td>
+                      <td className="p-2">{guide.phone}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="h-2/5">
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="font-semibold">Danh sách đặt lịch</h3>
+                <a
+                  href="#"
+                  className="text-red-600 text-sm"
+                  onClick={() => setOpenBookingListModal(true)}
+                >
+                  Xem tất cả danh sách &gt;
+                </a>
+              </div>
+
+              <div className="h-full">
+                <table className="w-full text-sm border">
+                  <thead className="bg-gray-100 text-left">
+                    <tr>
+                      <th className="p-2">Mã đặt Tour</th>
+                      <th className="p-2">Tên người đặt</th>
+                      <th className="p-2">Số điện thoại</th>
+                      <th className="p-2">Thao tác</th>
+                    </tr>
+                  </thead>
+                  <tbody className="overflow-y-auto">
+                    {travelTourDetail?.bookings?.slice(0, 4)?.map((booking) => (
+                      <tr className="border-t" key={booking.id}>
+                        <td className="p-2">{booking.booking_code}</td>
+                        <td className="p-2">{booking.name}</td>
+                        <td className="p-2">{booking.phone}</td>
+                        <td className="p-2">
+                          <PencilIcon className="w-4 h-4 cursor-pointer" />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="flex justify-end mt-4 gap-2">
+          <button
+            className="btn border rounded-md px-4 py-2 text-sm"
+            onClick={handleClose}
           >
             Hủy
           </button>
+          <button className="btn bg-red-600 text-white rounded-md px-4 py-2 text-sm">
+            Cập nhật
+          </button>
         </div>
       </div>
+      <BookingListModal
+        bookingList={travelTourDetail?.bookings}
+        open={openBookingListModal}
+        onClose={() => setOpenBookingListModal(false)}
+      />
     </div>
   );
 };
 
 export default TravelTourDetailsModal;
-const customers = [
-  {
-    name: "Nguyễn Văn A",
-    phone: "0912345670",
-    gender: "Nam",
-    dob: "1990-01-01",
-    room: false,
-    hotel: "Khách sạn 1",
-    restaurant: "Nhà hàng A",
-  },
-  {
-    name: "Trần Thị B",
-    phone: "0987654321",
-    gender: "Nữ",
-    dob: "1992-05-12",
-    room: true,
-    hotel: "Khách sạn 2",
-    restaurant: "Nhà hàng B",
-  },
-  {
-    name: "Lê Văn C",
-    phone: "0901122334",
-    gender: "Nam",
-    dob: "1988-10-15",
-    room: false,
-    hotel: "Khách sạn 1",
-    restaurant: "Nhà hàng C",
-  },
-  {
-    name: "Phạm Thị D",
-    phone: "0933445566",
-    gender: "Nữ",
-    dob: "1995-03-20",
-    room: true,
-    hotel: "Khách sạn 3",
-    restaurant: "Nhà hàng A",
-  },
-  {
-    name: "Hoàng Văn E",
-    phone: "0966112233",
-    gender: "Nam",
-    dob: "1989-08-08",
-    room: false,
-    hotel: "Khách sạn 2",
-    restaurant: "Nhà hàng B",
-  },
-  {
-    name: "Vũ Thị F",
-    phone: "0977334455",
-    gender: "Nữ",
-    dob: "1993-12-30",
-    room: true,
-    hotel: "Khách sạn 1",
-    restaurant: "Nhà hàng C",
-  },
-  {
-    name: "Đặng Văn G",
-    phone: "0944223311",
-    gender: "Nam",
-    dob: "1991-06-14",
-    room: false,
-    hotel: "Khách sạn 3",
-    restaurant: "Nhà hàng A",
-  },
-  {
-    name: "Ngô Thị H",
-    phone: "0922334455",
-    gender: "Nữ",
-    dob: "1987-11-11",
-    room: true,
-    hotel: "Khách sạn 2",
-    restaurant: "Nhà hàng B",
-  },
-  {
-    name: "Bùi Văn I",
-    phone: "0933221144",
-    gender: "Nam",
-    dob: "1994-09-09",
-    room: false,
-    hotel: "Khách sạn 1",
-    restaurant: "Nhà hàng C",
-  },
-  {
-    name: "Lý Thị J",
-    phone: "0988445566",
-    gender: "Nữ",
-    dob: "1996-04-04",
-    room: true,
-    hotel: "Khách sạn 3",
-    restaurant: "Nhà hàng A",
-  },
-  {
-    name: "Tô Văn K",
-    phone: "0900778899",
-    gender: "Nam",
-    dob: "1990-07-07",
-    room: true,
-    hotel: "Khách sạn 2",
-    restaurant: "Nhà hàng B",
-  },
-  {
-    name: "Đỗ Thị L",
-    phone: "0911667788",
-    gender: "Nữ",
-    dob: "1986-02-28",
-    room: false,
-    hotel: "Khách sạn 1",
-    restaurant: "Nhà hàng C",
-  },
-  {
-    name: "Mai Văn M",
-    phone: "0922113344",
-    gender: "Nam",
-    dob: "1993-05-05",
-    room: true,
-    hotel: "Khách sạn 3",
-    restaurant: "Nhà hàng A",
-  },
-  {
-    name: "Trịnh Thị N",
-    phone: "0966554433",
-    gender: "Nữ",
-    dob: "1997-03-17",
-    room: false,
-    hotel: "Khách sạn 2",
-    restaurant: "Nhà hàng B",
-  },
-  {
-    name: "Phan Văn O",
-    phone: "0933111222",
-    gender: "Nam",
-    dob: "1985-12-12",
-    room: true,
-    hotel: "Khách sạn 1",
-    restaurant: "Nhà hàng C",
-  },
-  {
-    name: "Bùi Văn I",
-    phone: "0933221144",
-    gender: "Nam",
-    dob: "1994-09-09",
-    room: false,
-    hotel: "Khách sạn 1",
-    restaurant: "Nhà hàng C",
-  },
-  {
-    name: "Lý Thị J",
-    phone: "0988445566",
-    gender: "Nữ",
-    dob: "1996-04-04",
-    room: true,
-    hotel: "Khách sạn 3",
-    restaurant: "Nhà hàng A",
-  },
-  {
-    name: "Tô Văn K",
-    phone: "0900778899",
-    gender: "Nam",
-    dob: "1990-07-07",
-    room: true,
-    hotel: "Khách sạn 2",
-    restaurant: "Nhà hàng B",
-  },
-  {
-    name: "Đỗ Thị L",
-    phone: "0911667788",
-    gender: "Nữ",
-    dob: "1986-02-28",
-    room: false,
-    hotel: "Khách sạn 1",
-    restaurant: "Nhà hàng C",
-  },
-  {
-    name: "Mai Văn M",
-    phone: "0922113344",
-    gender: "Nam",
-    dob: "1993-05-05",
-    room: true,
-    hotel: "Khách sạn 3",
-    restaurant: "Nhà hàng A",
-  },
-  {
-    name: "Trịnh Thị N",
-    phone: "0966554433",
-    gender: "Nữ",
-    dob: "1997-03-17",
-    room: false,
-    hotel: "Khách sạn 2",
-    restaurant: "Nhà hàng B",
-  },
-  {
-    name: "Phan Văn O",
-    phone: "0933111222",
-    gender: "Nam",
-    dob: "1985-12-12",
-    room: true,
-    hotel: "Khách sạn 1",
-    restaurant: "Nhà hàng C",
-  },
-  {
-    name: "Bùi Văn I",
-    phone: "0933221144",
-    gender: "Nam",
-    dob: "1994-09-09",
-    room: false,
-    hotel: "Khách sạn 1",
-    restaurant: "Nhà hàng C",
-  },
-  {
-    name: "Lý Thị J",
-    phone: "0988445566",
-    gender: "Nữ",
-    dob: "1996-04-04",
-    room: true,
-    hotel: "Khách sạn 3",
-    restaurant: "Nhà hàng A",
-  },
-  {
-    name: "Tô Văn K",
-    phone: "0900778899",
-    gender: "Nam",
-    dob: "1990-07-07",
-    room: true,
-    hotel: "Khách sạn 2",
-    restaurant: "Nhà hàng B",
-  },
-  {
-    name: "Đỗ Thị L",
-    phone: "0911667788",
-    gender: "Nữ",
-    dob: "1986-02-28",
-    room: false,
-    hotel: "Khách sạn 1",
-    restaurant: "Nhà hàng C",
-  },
-  {
-    name: "Mai Văn M",
-    phone: "0922113344",
-    gender: "Nam",
-    dob: "1993-05-05",
-    room: true,
-    hotel: "Khách sạn 3",
-    restaurant: "Nhà hàng A",
-  },
-  {
-    name: "Trịnh Thị N",
-    phone: "0966554433",
-    gender: "Nữ",
-    dob: "1997-03-17",
-    room: false,
-    hotel: "Khách sạn 2",
-    restaurant: "Nhà hàng B",
-  },
-  {
-    name: "Phan Văn O",
-    phone: "0933111222",
-    gender: "Nam",
-    dob: "1985-12-12",
-    room: true,
-    hotel: "Khách sạn 1",
-    restaurant: "Nhà hàng C",
-  },
-  {
-    name: "Bùi Văn I",
-    phone: "0933221144",
-    gender: "Nam",
-    dob: "1994-09-09",
-    room: false,
-    hotel: "Khách sạn 1",
-    restaurant: "Nhà hàng C",
-  },
-  {
-    name: "Lý Thị J",
-    phone: "0988445566",
-    gender: "Nữ",
-    dob: "1996-04-04",
-    room: true,
-    hotel: "Khách sạn 3",
-    restaurant: "Nhà hàng A",
-  },
-  {
-    name: "Tô Văn K",
-    phone: "0900778899",
-    gender: "Nam",
-    dob: "1990-07-07",
-    room: true,
-    hotel: "Khách sạn 2",
-    restaurant: "Nhà hàng B",
-  },
-  {
-    name: "Đỗ Thị L",
-    phone: "0911667788",
-    gender: "Nữ",
-    dob: "1986-02-28",
-    room: false,
-    hotel: "Khách sạn 1",
-    restaurant: "Nhà hàng C",
-  },
-  {
-    name: "Mai Văn M",
-    phone: "0922113344",
-    gender: "Nam",
-    dob: "1993-05-05",
-    room: true,
-    hotel: "Khách sạn 3",
-    restaurant: "Nhà hàng A",
-  },
-  {
-    name: "Trịnh Thị N",
-    phone: "0966554433",
-    gender: "Nữ",
-    dob: "1997-03-17",
-    room: false,
-    hotel: "Khách sạn 2",
-    restaurant: "Nhà hàng B",
-  },
-  {
-    name: "Phan Văn O",
-    phone: "0933111222",
-    gender: "Nam",
-    dob: "1985-12-12",
-    room: true,
-    hotel: "Khách sạn 1",
-    restaurant: "Nhà hàng C",
-  },
-];

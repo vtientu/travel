@@ -2,7 +2,7 @@ import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { formatDate } from "../../utils/dateUtil";
 import { Loader } from "lucide-react";
 
-const InstructionScheduleTable = ({ tours, loading, setTourId }) => {
+const InstructionScheduleTable = ({ tours, loading, setTourSelected }) => {
   return (
     <table className="w-full border-collapse">
       <thead>
@@ -52,7 +52,7 @@ const InstructionScheduleTable = ({ tours, loading, setTourId }) => {
               <td className="flex justify-end p-2">
                 <button
                   className="hover:text-red-500"
-                  onClick={() => setTourId(tour.id)}
+                  onClick={() => setTourSelected(tour)}
                 >
                   <HiOutlineDotsHorizontal />
                 </button>

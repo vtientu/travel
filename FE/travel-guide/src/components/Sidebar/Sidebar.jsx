@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import Icons from "../Icons/Icon";
-import { BaggageClaim, ChartColumn, Loader, Map } from "lucide-react";
+import {
+  ArrowBigDown,
+  ArrowBigUp,
+  BaggageClaim,
+  ChartColumn,
+  Loader,
+  Map,
+} from "lucide-react";
 
 export default function Sidebar({ isCollapsed }) {
   const [selected, setSelected] = useState(null);
@@ -116,9 +122,9 @@ export default function Sidebar({ isCollapsed }) {
                   {!isCollapsed &&
                     item.subItems?.length > 0 &&
                     (openSubMenu === item.id ? (
-                      <img src={Icons.ArrowBottom} className="filter invert" />
+                      <ArrowBigDown />
                     ) : (
-                      <img src={Icons.ArrowRight} className="filter invert" />
+                      <ArrowBigUp />
                     ))}
                 </div>
 

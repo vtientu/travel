@@ -103,3 +103,17 @@ export const sendRequestTour = async (data) => {
     throw error;
   }
 };
+
+export const getTravelTourDetailForGuide = async (travelTourId) => {
+  try {
+    const response = await restClient({
+      url: `guide-tour/travel-tour/${travelTourId}`,
+      method: "GET",
+    });
+    return response;
+  } catch (error) {
+    console.error("Lỗi khi lấy chi tiết tour:", error);
+    throw error;
+  }
+};
+

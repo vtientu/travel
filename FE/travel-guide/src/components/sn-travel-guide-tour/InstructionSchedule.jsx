@@ -8,11 +8,11 @@ import Pagination from "../common/Pagination";
 import TravelTourDetailsModal from "./TravelTourDetailsModal";
 import TabsTour from "./TabsTour";
 import InstructionScheduleTable from "./InstructionScheduleTable";
-import CalendarTravelTour from "../ModalManage/ModalTour/CalendarTravelTour";
+import CalendarTravelTour from "./CalendarTravelTour";
 
 const InstructionSchedule = () => {
   const [viewType, setViewType] = useState("table");
-  const [tourId, setTourId] = useState(null);
+  const [tourSelected, setTourSelected] = useState(null);
   const [tab, setTab] = useState("all");
   const [tours, setTours] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -139,7 +139,7 @@ const InstructionSchedule = () => {
           <InstructionScheduleTable
             loading={loading}
             tours={tours}
-            setTourId={setTourId}
+            setTourSelected={setTourSelected}
           />
         )}
       </div>
@@ -149,9 +149,9 @@ const InstructionSchedule = () => {
         totalPages={totalPages}
       />
       <TravelTourDetailsModal
-        tourId={tourId}
-        open={!!tourId}
-        onClose={() => setTourId(null)}
+        tourSelected={tourSelected}
+        open={!!tourSelected}
+        onClose={() => setTourSelected(null)}
       />
     </div>
   );
