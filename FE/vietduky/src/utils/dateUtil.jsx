@@ -26,3 +26,13 @@ export const excelDateToJSDate = (serial) => {
   const date_info = new Date(utc_days * 86400 * 1000);
   return date_info.toISOString().split("T")[0]; // YYYY-MM-DD
 };
+
+export const formatTime = (timeString) => {
+  if (!timeString || typeof timeString !== "string") return "";
+
+  const parts = timeString.split(":");
+  const hours = parts[0];
+  const minutes = parts[1];
+
+  return `${hours}:${minutes}`;
+};

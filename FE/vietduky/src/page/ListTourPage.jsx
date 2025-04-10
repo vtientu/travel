@@ -76,6 +76,16 @@ export default function ListTour() {
   }, []);
 
   const handleFilter = async (filterParams) => {
+    // Kiểm tra xem có bộ lọc nào hợp lệ không
+    const hasFilters = Object.values(filterParams).some(param => param !== "" && param !== "Tất cả");
+  
+    if (!hasFilters) {
+      // Nếu không có bộ lọc, đặt lại danh sách tour về danh sách gốc
+      setFilteredTours(tours);
+      setMessage(""); // Xóa thông báo
+      return;
+    }
+  
     try {
       const res = await TourService.searchTour(filterParams);
       const toursData = res.data.data.tours;
@@ -89,7 +99,7 @@ export default function ListTour() {
 
   const activeTopics = topics.filter((topic) => topic.active === true);
 
-  // console.log("filteredTours", filteredTours);
+  console.log("filteredTours", filteredTours);
   
 
   return (

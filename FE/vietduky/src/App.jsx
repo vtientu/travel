@@ -17,6 +17,9 @@ import ListTour from "./page/ListTourPage.jsx";
 import ProfileCustomer from "./page/Account/ProfileCustomer";
 import TourBookingHistoryPage from "@/page/Account/TourBookingHistoryPage.jsx";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import ReviewPage from "./page/Account/ReviewPage";
+import SettingPage from "./page/Account/SettingPage";
+import FavouriteTourPage from "./page/Account/FavouriteTourPage";
 
 function App() {
   return (
@@ -44,6 +47,9 @@ function App() {
           <Route path={"/bookingConfirm"} element={<BookingConfirm />} />
           <Route path={"/bookingComplete"} element={<BookingComplete />} />
           <Route path={"/bookingHistory"} element={<TourBookingHistoryPage />} />
+          <Route path={"/reviews"} element={<ReviewPage />} />
+          <Route path={"/favorites"} element={<FavouriteTourPage />} />
+          <Route path={"/settings"} element={<SettingPage />} />
         </Route>
         <Route path={"/personalAI"} element={<PersonalAIPage />} />
         <Route path={"/deals"} element={<DealsPage />} />

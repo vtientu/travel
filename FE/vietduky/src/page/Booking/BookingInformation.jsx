@@ -55,7 +55,7 @@ export default function BookingTour() {
               name: response.data.displayName || prev.name,
               phone: response.data.Customer?.number_phone || prev.phone,
               email: response.data.email || prev.email,
-              address: response.data.address || prev.address,
+              address: response.data.Customer?.address || prev.address,
             }));
           }
         })

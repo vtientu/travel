@@ -49,6 +49,8 @@ import IconChecklistRed from "@/assets/icons/ico-checklist-red.svg";
 import Location1 from "@/assets/icons/location-1.svg";
 import Clock from "@/assets/icons/clock.svg";
 import CalendarPre from "@/assets/icons/calendar-pre.svg";
+import CalendarBold from "@/assets/icons/calendar-bold.svg";
+import UserBold from "@/assets/icons/user-bold.svg";
 
 const Icons = {
   Sidebar: barChartIcon,
@@ -102,6 +104,8 @@ const Icons = {
   Location1: Location1,
   Clock: Clock,
   CalendarPre: CalendarPre,
+  CalendarBold: CalendarBold,
+  UserBold: UserBold,
 };
 
 export default Icons;

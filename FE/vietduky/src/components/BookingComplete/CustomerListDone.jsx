@@ -2,7 +2,7 @@ import { PassengerService } from "@/services/API/passenger.service";
 import { BookingService } from "@/services/API/booking.service"; // Import BookingService
 import { useEffect, useState } from "react";
 
-export default function CustomerList({ passengerData, bookingData }) {
+export default function CustomerListDone({ passengerData, bookingData }) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [passengerList, setPassengerList] = useState([]);
   const [newPassenger, setNewPassenger] = useState({
@@ -100,9 +100,6 @@ export default function CustomerList({ passengerData, bookingData }) {
     return passengerList.length * pricePerPassenger; // Tính tổng giá
   };
 
-  // console.log();
-  
-
   return (
     <div className="border border-gray-400 rounded-lg overflow-hidden">
       {/* Header */}
@@ -138,74 +135,16 @@ export default function CustomerList({ passengerData, bookingData }) {
       {/* Content (table) */}
       {isExpanded && (
         <div className="p-4">
-          <div className="flex justify-between mb-3">
-            <input
-              type="text"
-              placeholder="Tìm kiếm bằng từ khóa"
-              className="border rounded px-3 py-1 w-1/3"
-            />
-            <div className="space-x-2">
-              <button className="px-3 py-1 border border-red-500 text-red-600 rounded hover:bg-red-100">
-                Xuất danh sách
-              </button>
-              <button className="px-3 py-1 border border-red-500 text-red-600 rounded hover:bg-red-100">
-                Đăng tải danh sách
-              </button>
-              <button className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700" onClick={addPassenger}>
-                Thêm khách hàng
-              </button>
-            </div>
-          </div>
-
-          {/* Form thêm hành khách */}
-          <div className="mb-4">
-            <input
-              type="text"
-              placeholder="Họ tên"
-              className="border rounded px-3 py-1 mb-2 "
-              value={newPassenger.name}
-              onChange={(e) => setNewPassenger({ ...newPassenger, name: e.target.value })}
-            />
-            <input
-              type="text"
-              placeholder="Số điện thoại"
-              className="border rounded px-3 py-1 mb-2 "
-              value={newPassenger.phone_number}
-              onChange={(e) => setNewPassenger({ ...newPassenger, phone_number: e.target.value })}
-            />
-            <select
-              className="border rounded px-3 py-1 mb-2 "
-              value={newPassenger.gender}
-              onChange={(e) => setNewPassenger({ ...newPassenger, gender: e.target.value })}
-            >
-              <option value="true">Nam</option>
-              <option value="false">Nữ</option>
-            </select>
-            <input
-              type="date"
-              className="border rounded px-3 py-1 mb-2 "
-              value={newPassenger.birth_date}
-              onChange={(e) => setNewPassenger({ ...newPassenger, birth_date: e.target.value })}
-            />
-            <input
-              type="text"
-              placeholder="Số passport"
-              className="border rounded px-3 py-1 mb-2 "
-              value={newPassenger.passport_number}
-              onChange={(e) => setNewPassenger({ ...newPassenger, passport_number: e.target.value })}
-            />
-          </div>
-
-          <table className="w-full border border-gray-300">
+          <table className="w-full">
             <thead className="bg-gray-100 text-left">
               <tr>
-                <th className="p-2 border">Họ tên</th>
-                <th className="p-2 border">Điện thoại</th>
-                <th className="p-2 border">Giới tính</th>
-                <th className="p-2 border">Ngày sinh</th>
-                <th className="p-2 border">Độ tuổi</th>
-                <th className="p-2 border">Số CCCD/Passport</th>
-                <th className="p-2 border">Phòng đơn</th>
+                <th className="p-2 ">Họ tên</th>
+                <th className="p-2 ">Điện thoại</th>
+                <th className="p-2 ">Giới tính</th>
+                <th className="p-2 ">Ngày sinh</th>
+                <th className="p-2 ">Độ tuổi</th>
+                <th className="p-2 ">Số CCCD/Passport</th>
+                <th className="p-2 ">Phòng đơn</th>
               </tr>
             </thead>
             <tbody>
@@ -213,18 +152,18 @@ export default function CustomerList({ passengerData, bookingData }) {
                 const { age, type, label } = calculateAgeAndType(passenger.birth_date); // Tính toán độ tuổi và loại
                 return (
                   <tr key={index}>
-                    <td className="p-2 border">{passenger.name}</td>
-                    <td className="p-2 border">{passenger.phone_number}</td>
-                    <td className="p-2 border">
+                    <td className="p-2 ">{passenger.name}</td>
+                    <td className="p-2 ">{passenger.phone_number}</td>
+                    <td className="p-2 ">
                       {passenger.gender === "true" ? "Nam" : "Nữ"}
                     </td>
-                    <td className="p-2 border">{passenger.birth_date}</td>
-                    <td className="p-2 border">
+                    <td className="p-2 ">{passenger.birth_date}</td>
+                    <td className="p-2 ">
                       {label}
                     </td>
-                    <td className="p-2 border">{passenger.passport_number}</td> {/* Hiển thị số passport */}
+                    <td className="p-2 ">{passenger.passport_number}</td> {/* Hiển thị số passport */}
                     {(type === "adult") && (
-                      <td className="p-2 border text-center">
+                      <td className="p-2  text-center">
                       <input type="checkbox" />
                     </td>
                     )
