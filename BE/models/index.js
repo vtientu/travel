@@ -220,12 +220,9 @@ TravelGuide.belongsTo(User, { foreignKey: "user_id", as: "user" });
 Role.hasMany(User, { foreignKey: "role_id" });
 User.belongsTo(Role, { foreignKey: "role_id", as: "role" });
 
-//Customer/PostExperience
-Customer.hasMany(PostExperience, { foreignKey: "customer_id" });
-PostExperience.belongsTo(Customer, {
-  foreignKey: "customer_id",
-  as: "customer",
-});
+//PostExperience/User
+User.hasMany(PostExperience, { foreignKey: "id" });
+PostExperience.belongsTo(User, { foreignKey: "id", as: "user" });
 
 //Booking/Notification
 Booking.hasMany(Notification, { foreignKey: "booking_id" });

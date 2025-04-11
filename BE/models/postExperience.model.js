@@ -8,7 +8,7 @@ module.exports = (sequelize, Sequelize) => {
         primaryKey: true,
         autoIncrement: true,
       },
-      customer_id: {
+      user_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
@@ -25,13 +25,13 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
       },
       postEx_album: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: true,
       },
       status: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
-        defaultValue: true,
+        defaultValue: false, // // 0: chưa duyệt, 1: đã duyệt
       },
     },
     {

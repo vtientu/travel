@@ -30,7 +30,9 @@ const uploadAlbumPost = multer({ storage: createStorage("album_posts") });
 const uploadPostExperience = multer({
   storage: createStorage("post_experience"),
 });
-
+const uploadAlbumFeedback = multer({
+  storage: createStorage("album_feedback"),
+});
 module.exports = {
   cloudinary,
   uploadAvatar,
@@ -40,4 +42,5 @@ module.exports = {
   uploadTourActivities,
   uploadAlbumPost,
   uploadPostExperience,
+  uploadAlbumFeedback,
 };
