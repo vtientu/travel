@@ -11,9 +11,13 @@ import {
   parseISO,
 } from "date-fns";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { EllipsisVertical } from "lucide-react";
+import TravelTourDetailsModal from "./TravelTourDetailsModal";
 
 export default function CalendarTravelTour({ travelTours = [] }) {
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [tourSelected, setTourSelected] = useState(null);
+
   const today = new Date();
 
   const start = startOfWeek(startOfMonth(currentMonth), { weekStartsOn: 1 });
@@ -139,9 +143,9 @@ export default function CalendarTravelTour({ travelTours = [] }) {
                     const isEnd =
                       format(day, "yyyy-MM-dd") === format(end, "yyyy-MM-dd");
 
-                    let bg = "bg-blue-100 text-blue-700 hover:bg-blue-200";
+                    let bg = "bg-blue-100 text-blue-700 ";
                     if (today >= start && today <= end)
-                      bg = "bg-orange-100 text-orange-700 hover:bg-orange-200";
+                      bg = "bg-orange-100 text-orange-700 ";
                     if (today > end) bg = "bg-gray-300 text-gray-600";
 
                     const borderRadiusClass =
@@ -156,7 +160,7 @@ export default function CalendarTravelTour({ travelTours = [] }) {
                     return (
                       <div
                         key={lineIdx}
-                        className={`h-[20px] w-full text-[11px] relative flex items-center cursor-pointer ${bg} ${borderRadiusClass}`}
+                        className={`h-[20px] w-full text-[11px] relative flex items-center  ${bg} ${borderRadiusClass}`}
                         title={`#${tourAtLine.id} - ${
                           tourAtLine?.travelTour?.max_people
                         } chỗ\n${format(start, "dd/MM")} → ${format(
@@ -179,15 +183,25 @@ export default function CalendarTravelTour({ travelTours = [] }) {
 
                         {/* Stripe cuối bên phải nếu là end */}
                         {isEnd && (
-                          <div
-                            className={`absolute right-0 top-0 h-full w-[4px] ${
-                              bg.includes("blue")
-                                ? "bg-blue-600"
-                                : bg.includes("orange")
-                                ? "bg-orange-600"
-                                : "bg-gray-600"
-                            } rounded-r`}
-                          />
+                          <div className="flex flex-row h-full items-center gap-1 absolute right-0 top-0">
+                            <button
+                              className="p-1 rounded-full hover:bg-gray-200"
+                              onClick={() => {
+                                setTourSelected(tourAtLine);
+                              }}
+                            >
+                              <EllipsisVertical className="w-4 h-4 text-black font-bold" />
+                            </button>
+                            <div
+                              className={`h-full w-[4px] ${
+                                bg.includes("blue")
+                                  ? "bg-blue-600"
+                                  : bg.includes("orange")
+                                  ? "bg-orange-600"
+                                  : "bg-gray-600"
+                              } rounded-r`}
+                            />
+                          </div>
                         )}
 
                         {/* Nội dung chỉ hiện ở start */}
@@ -207,6 +221,11 @@ export default function CalendarTravelTour({ travelTours = [] }) {
           })}
         </div>
       </div>
+      <TravelTourDetailsModal
+        tourSelected={tourSelected}
+        open={!!tourSelected}
+        onClose={() => setTourSelected(null)}
+      />
     </div>
   );
 }

@@ -1,14 +1,13 @@
 import { XIcon } from "lucide-react";
-import { useState } from "react";
-import { v4 as uuidv4 } from "uuid";
+import { useEffect, useState } from "react";
 
-const AddCustomerInfoModal = ({ open, onClose, onSubmit }) => {
+const UpdateCustomerInfoModal = ({ open, onClose, onSubmit, customer }) => {
   const [singleRoom, setSingleRoom] = useState(false);
   const [customerInfo, setCustomerInfo] = useState({
     name: "",
-    gender: "true",
+    gender: "",
     birth_date: "",
-    age_type: "adult",
+    age_type: "",
     phone_number: "",
     passport_number: "",
   });
@@ -71,41 +70,30 @@ const AddCustomerInfoModal = ({ open, onClose, onSubmit }) => {
     onClose();
   };
 
-  const handleSubmit = (type) => {
+  const handleSubmit = () => {
     const isValid = validate();
     if (isValid) {
-      if (type === "save") {
-        onSubmit({
-          ...customerInfo,
-          id: uuidv4(),
-          single_room: singleRoom,
-        });
-        handleClose();
-      } else if (type === "save_and_continue") {
-        onSubmit({
-          ...customerInfo,
-          id: uuidv4(),
-          single_room: singleRoom,
-        });
-        setCustomerInfo({
-          name: "",
-          gender: "true",
-          birth_date: "",
-          age_type: "adult",
-          phone_number: "",
-          passport_number: "",
-        });
-        setError({
-          name: "",
-          gender: "",
-          birth_date: "",
-          age_type: "",
-          phone_number: "",
-          passport_number: "",
-        });
-      }
+      onSubmit({
+        id: customer.id,
+        ...customerInfo,
+        single_room: singleRoom,
+      });
+      handleClose();
     }
   };
+
+  useEffect(() => {
+    if (open) {
+      setCustomerInfo({
+        name: customer?.name,
+        gender: customer?.gender,
+        birth_date: customer?.birth_date,
+        age_type: customer?.age_type,
+        phone_number: customer?.phone_number,
+        passport_number: customer?.passport_number,
+      });
+    }
+  }, [customer, open]);
 
   if (!open) return null;
 
@@ -235,15 +223,9 @@ const AddCustomerInfoModal = ({ open, onClose, onSubmit }) => {
             </button>
             <button
               className="border border-[#A80F21] text-[#A80F21] px-4 py-2 rounded-md"
-              onClick={() => handleSubmit("save")} // ✅ Đúng
+              onClick={handleSubmit}
             >
-              Lưu
-            </button>
-            <button
-              className="bg-[#A80F21] text-white px-4 py-2 rounded-md"
-              onClick={() => handleSubmit("save_and_continue")} // ✅ Đúng
-            >
-              Lưu và tiếp tục
+              Cập nhật
             </button>
           </div>
         </div>
@@ -252,4 +234,4 @@ const AddCustomerInfoModal = ({ open, onClose, onSubmit }) => {
   );
 };
 
-export default AddCustomerInfoModal;
+export default UpdateCustomerInfoModal;
