@@ -1,38 +1,44 @@
 const express = require("express");
 const router = express.Router();
 const feedbackController = require("../controllers/feedback.controller");
+const { uploadAlbumFeedback } = require("../utils/cloudinary");
 const {
   authenticateUser,
   authenticateAdmin,
   authenticateStaff,
 } = require("../middleware/authMiddleware");
 
-router.get(
-  "/:userId",
-  // authenticateUser,
-  feedbackController.getFeedbackByUser
-);
+router.get("/:userId", authenticateUser, feedbackController.getFeedbackByUser);
 router.post(
   "/create/tour",
-  // authenticateUser,
+  authenticateUser,
+  uploadAlbumFeedback.array("feedback_album", 10),
   feedbackController.createFeedbackForTour
 );
 router.post(
   "/create/travel-guide",
-  // authenticateUser,
+  authenticateUser,
+  uploadAlbumFeedback.array("feedback_album", 10),
   feedbackController.createFeedbackForTravelGuide
 );
 router.put(
   "/update/:id",
-  // authenticateUser,
-  // authenticateAdmin,
+  authenticateUser,
+  authenticateAdmin,
+  uploadAlbumFeedback.array("feedback_album", 10),
   feedbackController.updateFeedback
 );
 router.delete(
   "/delete/:id",
-  // authenticateUser,
-  // authenticateAdmin,
+  authenticateUser,
+  authenticateAdmin,
   feedbackController.deleteFeedback
+);
+
+router.get(
+  "/tour/:tourId",
+  // authenticateUser,
+  feedbackController.getFeedbackByTourId
 );
 
 module.exports = router;

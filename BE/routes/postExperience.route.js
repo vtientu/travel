@@ -10,6 +10,10 @@ const {
 
 router.get("/", postExperienceController.getAllPostExperiences);
 router.get("/:id", postExperienceController.getPostExperienceById);
+router.get(
+  "/user/:user_id",
+  postExperienceController.getPostExperienceByUserId
+);
 router.post(
   "/create",
   authenticateUser,
@@ -27,6 +31,18 @@ router.delete(
   authenticateUser,
   authenticateAdmin,
   postExperienceController.deletePostExperience
+);
+router.put(
+  "/approve/:id",
+  authenticateUser,
+  authenticateAdmin,
+  postExperienceController.approvePostExperience
+);
+router.put(
+  "/reject/:id",
+  authenticateUser,
+  authenticateAdmin,
+  postExperienceController.rejectPostExperience
 );
 
 module.exports = router;
