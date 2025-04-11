@@ -51,7 +51,10 @@ exports.getPostExperienceById = async (req, res) => {
 exports.createPostExperience = async (req, res) => {
   try {
     const { customer_id, title_post, description_post, post_date } = req.body;
-
+    const postEx_album =
+      req.files && req.files.length > 0
+        ? JSON.stringify(req.files.map((file) => file.path))
+        : null;
     // Kiểm tra xem customer có tồn tại không
     const customer = await Customer.findByPk(customer_id);
     if (!customer) {
@@ -64,6 +67,7 @@ exports.createPostExperience = async (req, res) => {
       title_post,
       description_post,
       post_date,
+      postEx_album,
     });
 
     res.status(201).json({
@@ -83,6 +87,10 @@ exports.updatePostExperience = async (req, res) => {
   try {
     const postId = req.params.id;
     const { title_post, description_post, post_date } = req.body;
+    const postEx_album =
+      req.files && req.files.length > 0
+        ? JSON.stringify(req.files.map((file) => file.path))
+        : null;
 
     const postExperience = await PostExperience.findByPk(postId);
     if (!postExperience) {
@@ -99,6 +107,8 @@ exports.updatePostExperience = async (req, res) => {
         description_post || postExperience.description_post;
     if (post_date != undefined)
       postExperience.post_date = post_date || postExperience.post_date;
+    if (postEx_album != undefined)
+      postExperience.postEx_album = postEx_album || postExperience.postEx_album;
 
     await postExperience.save();
 
