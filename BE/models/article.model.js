@@ -20,7 +20,7 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
       },
       album_post: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: false,
       },
       true_featured: {
