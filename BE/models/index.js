@@ -84,6 +84,7 @@ const TravelGuideLocation = require("./travelGuideLocation.model.js")(
   sequelize,
   Sequelize
 );
+const FavoriteTour = require("./favoriteTour.model.js")(sequelize, Sequelize);
 // Mối quan hệ (Associations)
 //Payment/Booking
 Booking.hasMany(Payment, { foreignKey: "booking_id" });
@@ -276,6 +277,14 @@ TravelGuide.belongsToMany(Location, {
   as: "locations",
 });
 
+//FavoriteTour/User
+User.hasMany(FavoriteTour, { foreignKey: "user_id" });
+FavoriteTour.belongsTo(User, { foreignKey: "user_id", as: "user" });
+
+//FavoriteTour/Tour
+Tour.hasMany(FavoriteTour, { foreignKey: "tour_id" });
+FavoriteTour.belongsTo(Tour, { foreignKey: "tour_id", as: "tour" });
+
 // Đối tượng `db` để chứa Sequelize và Models
 const db = {};
 db.sequelize = sequelize;
@@ -322,5 +331,6 @@ db.Topic = Topic;
 db.Article = Article;
 db.Directory = Directory;
 db.TravelGuideLocation = TravelGuideLocation;
+db.FavoriteTour = FavoriteTour;
 
 module.exports = db;
