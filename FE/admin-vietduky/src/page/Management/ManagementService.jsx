@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Layout from "../../layouts/LayoutManagement";
 import { LuSearch } from "react-icons/lu";
-import ModalAddService from "../../components/ModalManage/ModalAddService.jsx";
+import ModalAddService from "../../components/ModalManage/ModalAdd/ModalAddService.jsx";
 
 export default function ManagementService() {
     const [searchTerm, setSearchTerm] = useState("");

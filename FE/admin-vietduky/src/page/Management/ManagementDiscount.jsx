@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Layout from "../../layouts/LayoutManagement";
 import { LuSearch } from "react-icons/lu";
-import ModalAddVoucher from "../../components/ModalManage/ModalAddVocher.jsx";
+import ModalAddVoucher from "../../components/ModalManage/ModalAdd/ModalAddVocher.jsx";
 
 export default function ManagementDiscount() {
     const [vouchers, setVouchers] = useState([]);

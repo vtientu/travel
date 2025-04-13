@@ -1,8 +1,8 @@
 import {useEffect, useState} from "react";
 import {FaArrowRight} from "react-icons/fa";
-import TextEditor from "../../lib/TextEditor.jsx";
-import {fetchLocations, fetchServices, fetchTypeTours} from "../../services/service.js";
-import {createTour} from "../../services/API/tour.service.js";
+import TextEditor from "../../../lib/TextEditor.jsx";
+import {fetchLocations, fetchServices, fetchTypeTours} from "../../../services/service.js";
+import {createTour} from "../../../services/API/tour.service.js";
 
 export default function ModalAddSaleProgram({ onClose }) {
     const [locations, setLocations] = useState([]);

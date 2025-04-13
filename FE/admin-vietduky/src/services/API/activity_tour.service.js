@@ -33,3 +33,17 @@ export function getActivitiesByTourId(tourId) {
             throw err;
         });
 }
+export function deleteTourActivity(id) {
+    return restClient({
+        url: `tour-activities/delete/${id}`,
+        method: "DELETE",
+        headers: {
+            ...getAuthHeaders(),
+        },
+    })
+        .then((res) => res.data)
+        .catch((err) => {
+            console.error("❌ Lỗi khi xoá hoạt động tour:", err.response?.data || err);
+            throw err;
+        });
+}

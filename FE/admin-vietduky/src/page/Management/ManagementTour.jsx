@@ -1,12 +1,13 @@
   import { useEffect, useState } from "react";
   import Layout from "../../layouts/LayoutManagement";
-  import ModalAddTour from "../../components/ModalManage/ModalTour/ModalAddTour";
+  import ModalAddTour from "../../components/ModalManage/ModalAdd/ModalAddTour.jsx";
   import { LuSearch } from "react-icons/lu";
   import DropdownMenu from "../../components/Dropdown/DropdownMenuTour";
   import ModalManageTravelTour from "../../components/ModalManage/ModalList/ModalManageTravelTour.jsx";
   import { getTours } from "../../services/API/tour.service";
-  import ModalUpdateTour from "../../components/ModalUpdate/ModalUpdateTour.jsx";
-  import ModalAddProgram from "../../components/ModalManage/ModalAddProgram.jsx";
+  import ModalUpdateTour from "../../components/ModalManage/ModalUpdate/ModalUpdateTour.jsx";
+  import ModalManageActivity from "../../components/ModalManage/ModalList/ModalManageActivity.jsx";
+  import { getTourById } from "../../services/API/tour.service";
 
   export default function ManagementTour() {
     const [tours, setTours] = useState([]);
@@ -20,7 +21,7 @@
     const [isUpdateTourModalOpen, setIsUpdateTourModalOpen] = useState(false);
     const [editingTour, setEditingTour] = useState(null);
     const [newCreatedTourId, setNewCreatedTourId] = useState(null);
-    const [isAddProgramModalOpen, setIsAddProgramModalOpen] = useState(false);
+    const [isManagementProgramModalOpen, setIsManagementProgramModalOpen] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const toursPerPage = 12;
     const [selectedProgramTour, setSelectedProgramTour] = useState(null);
@@ -84,11 +85,18 @@
       toggleManageTravelTourModal();
     };
 
-    const handleOpenAddProgram = (tour) => {
-      setSelectedProgramTour(tour);
-      setIsAddProgramModalOpen(true);
-      setOpenDropdown(null);
+    const handleOpenManagementProgram = async (tour) => {
+      try {
+        const fullTour = await getTourById(tour.id);
+        setSelectedProgramTour(fullTour);
+        setIsManagementProgramModalOpen(true);
+        setOpenDropdown(null);
+      } catch (error) {
+        console.error("Lỗi khi lấy chi tiết tour:", error);
+        alert("Không thể tải chi tiết chương trình tour.");
+      }
     };
+
     const filteredTours = tours.filter((tour) => {
       if (location && tour?.startLocation?.name_location !== location) return false;
       const price = tour.price_tour;
@@ -190,7 +198,7 @@
                                 onEdit={() => handleEditTour(tour)}
                                 isOpen={openDropdown === tour.id}
                                 setOpenDropdown={setOpenDropdown}
-                                onOpenAddProgram={handleOpenAddProgram}
+                                onOpenManagementProgram={handleOpenManagementProgram}
                             />
                           </button>
                         </td>
@@ -217,18 +225,17 @@
             </div>
 
             {isAddTourModalOpen && (
-                <ModalAddTour
-                    onClose={toggleAddTourModal}
-                    onCreateSuccess={(tourId) => {
-                      setNewCreatedTourId(tourId);
-                      setIsAddTourModalOpen(false);
-                      setSelectedTour(tourId);
-                      setIsManageTravelTourModalOpen(true);
-                      fetchTours();
-                      alert("Tạo Tour thành công!");
-                    }}
-                />
-            )}
+                    <ModalAddTour
+                        onClose={toggleAddTourModal}
+                        onCreateSuccess={(newTour) => {
+                          setTours((prev) => [...prev, newTour]); // 👈 thêm vào cuối
+                          setIsAddTourModalOpen(false);
+                          setSelectedTour(newTour.id);
+                          setIsManageTravelTourModalOpen(true);
+                          alert("Tạo Tour thành công!");
+                        }}
+                    />
+                )}
 
             {isManageTravelTourModalOpen && (
                 <ModalManageTravelTour
@@ -248,14 +255,10 @@
                     }}
                 />
             )}
-            {isAddProgramModalOpen && (
-                <ModalAddProgram
-                    tour={selectedProgramTour} // truyền tour vào modal
-                    onClose={() => setIsAddProgramModalOpen(false)}
-                    onAddTravelTour={(programData) => {
-                      console.log("Chương trình mới:", programData);
-                      setIsAddProgramModalOpen(false);
-                    }}
+            {isManagementProgramModalOpen && selectedProgramTour && (
+                <ModalManageActivity
+                    tour={selectedProgramTour}
+                    onClose={() => setIsManagementProgramModalOpen(false)}
                 />
             )}
           </div>

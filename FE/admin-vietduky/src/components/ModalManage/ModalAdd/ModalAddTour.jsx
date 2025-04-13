@@ -1,8 +1,8 @@
-import TextEditor from "../../../lib/TextEditor";
+import TextEditor from "../../../lib/TextEditor.jsx";
 import { FaArrowRight } from "react-icons/fa";
 import { useEffect, useState } from "react";
-import {fetchLocations, fetchServices, fetchTypeTours} from "../../../services/service";
-import { createTour } from "../../../services/API/tour.service";
+import {fetchLocations, fetchServices, fetchTypeTours} from "../../../services/service.js";
+import { createTour } from "../../../services/API/tour.service.js";
 import ModalConfirmTravelTour from "../ModalConfirm/ModalConfirmTravelTour.jsx";
 import Select from "react-select"; // Import React Select đúng cách
 
@@ -42,7 +42,13 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setTourData((prev) => ({ ...prev, [name]: value }));
+
+    if (name === "price_tour") {
+      const raw = value.replace(/[^\d]/g, "");
+      setTourData((prev) => ({ ...prev, [name]: raw }));
+    } else {
+      setTourData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleEditorChange = (content) => {
@@ -113,10 +119,9 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
       const response = await createTour(formData);
       console.log("API response:", response);
 
-      const tourId = response?.tour?.id;
-
-      if (tourId) {
-        callback?.(tourId);
+      const tour = response?.tour;
+      if (tour) {
+        callback?.(tour);
       } else {
         alert("Tạo Tour thất bại!");
       }
@@ -128,8 +133,8 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
 
   const handleConfirm = () => {
     setIsConfirmModalOpen(false);
-    handleCreateTour((id) => {
-      onCreateSuccess?.(id);
+    handleCreateTour((tour) => {
+      onCreateSuccess?.(tour);
     });
   };
 
@@ -139,6 +144,10 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
       alert("Tạo Tour thành công!");
       onClose();
     });
+  };
+
+  const formatCurrency = (value) => {
+    return Number(value).toLocaleString("vi-VN");
   };
 
   const handleWrapperClick = () => {
@@ -220,7 +229,19 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
               <label className="block mb-2 font-medium before:content-['*'] before:text-red-500 before:mr-1">
                 Giá tour
               </label>
-              <input type="number" name="price_tour" className="w-full p-2 border rounded mb-4" placeholder="Nhập giá tour" value={tourData.price_tour} onChange={handleChange} required/>
+              <input
+                  type="text"
+                  name="price_tour"
+                  className="w-full p-2 border rounded mb-4"
+                  placeholder="Nhập giá tour"
+                  value={formatCurrency(tourData.price_tour)}
+                  onChange={handleChange}
+                  onBlur={(e) => {
+                    const raw = e.target.value.replace(/[^\d]/g, "");
+                    setTourData((prev) => ({ ...prev, price_tour: raw }));
+                  }}
+                  required
+              />
 
               {/* loại Tour */}
               <label className="block mb-2 font-medium before:content-['*'] before:text-red-500 before:mr-1">
@@ -267,7 +288,7 @@ export default function ModalAddTour({ onClose, onCreateSuccess }) {
                     label: services.find((service) => service.id === id)?.name_service,
                   }))}
                   onChange={handleServiceChange}
-                  className="w-full"
+                  className="w-full mb-2"
                   placeholder="Chọn dịch vụ kèm theo"
                   isSearchable
               />

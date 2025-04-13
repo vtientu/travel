@@ -3,7 +3,7 @@ import Layout from "../../layouts/LayoutManagement";
 import { formatDate } from '../../utils/dateUtil'
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { useEffect, useState } from "react";
-import ModalAddHotel from "../../components/ModalManage/ModalAddHotel";
+import ModalAddHotel from "../../components/ModalManage/ModalAdd/ModalAddHotel.jsx";
 
 const hotels = [
   {
