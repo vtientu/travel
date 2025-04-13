@@ -3,10 +3,10 @@ import Layout from "../../layouts/LayoutManagement";
 import { getLocations, deleteLocation } from "../../services/API/location.service";
 import { LuSearch } from "react-icons/lu";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
-import ModalAddLocation from "../../components/ModalManage/ModalAddLocation";
+import ModalAddLocation from "../../components/ModalManage/ModalAdd/ModalAddLocation.jsx";
 import { MdEdit, MdDelete } from "react-icons/md";
 import { FaEye } from "react-icons/fa";
-import ModalUpdateLocation from "../../components/ModalUpdate/ModalUpdateLocation.jsx";
+import ModalUpdateLocation from "../../components/ModalManage/ModalUpdate/ModalUpdateLocation.jsx";
 import ModalDeleteLocation from "../../components/ModalManage/ModalConfirm/ModalDeleteLocation.jsx";
 
 export default function ManagementLocation() {

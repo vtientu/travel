@@ -1,87 +1,132 @@
-import { HiOutlineInbox } from "react-icons/hi";
 import { useEffect, useState } from "react";
-import { getTravelTourByTourId } from "../../../services/API/travel_tour.service.js";
+import { HiOutlineInbox } from "react-icons/hi";
+import ModalAddActivity from "../ModalAdd/ModalAddActivity.jsx";
+import {deleteTourActivity} from "../../../services/API/activity_tour.service.js";
 
-export default function ModalManageActivity({ tourId, onClose, tours = [] }) {
-    const [openDropdown, setOpenDropdown] = useState(null);
-    const [travelTours, setTravelTours] = useState([]);
+export default function ModalManageActivity({ tour, onClose }) {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [activities, setActivities] = useState([]);
 
     useEffect(() => {
-        const fetchTravelTours = async () => {
-            try {
-                const response = await getTravelTourByTourId(tourId);
-                const data = response.travelTours || response;
-                setTravelTours(Array.isArray(data) ? data : []);
-            } catch (error) {
-                console.log("Lỗi khi lấy dữ liệu từ API", error);
-                setTravelTours([]);
-            }
-        };
+        console.log("TOUR RECEIVED:", tour);
+        if (tour?.activities) {
+            setActivities(tour.activities);
+        }
+    }, [tour]);
 
-        fetchTravelTours();
-    }, [tourId]);
+    const toggleModal = () => setIsModalOpen(!isModalOpen);
 
-    const handleWrapperClick = () => {
-        onClose();
+    const handleWrapperClick = () => onClose();
+    const handleModalClick = (event) => event.stopPropagation();
+
+    const handleAddActivity = (activitiesAdded) => {
+        if (Array.isArray(activitiesAdded)) {
+            setActivities((prev) => [...prev, ...activitiesAdded]);
+        } else {
+            setActivities((prev) => [...prev, activitiesAdded]);
+        }
     };
+    const handleDeleteActivity = async (activityId) => {
+        if (!activityId) return;
 
-    const handleModalClick = (event) => {
-        event.stopPropagation();
+        const confirmDelete = window.confirm("Bạn có chắc chắn muốn xoá chương trình này?");
+        if (!confirmDelete) return;
+
+        try {
+            await deleteTourActivity(activityId);
+            setActivities((prev) => prev.filter((item) => item.id !== activityId));
+            alert("Đã xoá chương trình thành công.");
+        } catch (error) {
+            console.error("Lỗi khi xoá chương trình:", error);
+            alert("Xoá chương trình thất bại.");
+        }
     };
 
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" onClick={handleWrapperClick}>
-            <div className="bg-white p-4 rounded-lg shadow-lg w-[80%] h-[80%] overflow-auto " onClick={handleModalClick}>
-                <div>
-                    <div className="flex justify-between items-center mb-4">
-                        <div>
-                            <label className="font-medium">
-                                Chương trình Tour
-                            </label>
-                        </div>
-                        <div className="flex gap-4">
-                            <button
-                                type="button"
-                                className="bg-red-700 text-white px-4 py-2 rounded-md"
-                            >
-                                Thêm chương trình
-                            </button>
-                        </div>
-                    </div>
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center" onClick={handleWrapperClick}>
+            <div className="bg-white p-6 rounded-lg shadow-lg w-3/4 h-6/7" onClick={handleModalClick}>
+                <h2 className="text-lg font-semibold mb-4">Chương trình Tour - {tour?.name_tour}</h2>
 
-                    <div className="relative">
-                        <div className="mt-4 mb-4 bg-white">
-                            <table className="w-full border-collapse border rounded-lg shadow-md bg-white">
-                                <thead>
-                                <tr className="text-SmokyGray">
-                                    <th className="p-2 ">Tiêu đề</th>
-                                    <th className="p-2">Mô tả</th>
-                                    <th className="p-2">Mô tả chi tiết</th>
-                                </tr>
-                                </thead>
-                                <tbody>
+                <div className="flex justify-end mb-4">
+                    <button
+                        type="button"
+                        className="bg-red-700 text-white px-4 py-2 rounded-md"
+                        onClick={toggleModal}
+                    >
+                        Thêm chương trình
+                    </button>
+                </div>
+
+                <div className="relative mb-6">
+                    <div className="mt-2 bg-white max-h-[60vh] overflow-y-auto rounded-lg border">
+                        <table className="w-full border-collapse text-md">
+                            <thead className="bg-gray-100">
+                            <tr className="text-gray-700 text-left">
+                                <th className="p-3 font-medium">Ảnh</th>
+                                <th className="p-3 font-medium">Ngày</th>
+                                <th className="p-3 font-medium">Tiêu đề</th>
+                                <th className="p-3 font-medium text-center">Hành động</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {activities.length === 0 ? (
                                 <tr>
-                                    <td colSpan="5" className="p-6 text-center">
+                                    <td colSpan="4" className="p-6 text-center">
                                         <div className="flex flex-col items-center h-[160px]">
                                             <div className="p-4 bg-gray-100 rounded-full mb-2">
                                                 <HiOutlineInbox className="text-4xl text-gray-600" />
                                             </div>
-                                            <p className="text-gray-600 text-md">
-                                                Chưa có hành trình nào
-                                            </p>
+                                            <p className="text-gray-600 text-md">Chưa có hành trình nào</p>
                                         </div>
                                     </td>
                                 </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        {/*{isModalOpen && (*/}
-                        {/*    <ModalAddProgram*/}
-                        {/*        onClose={toggleModal}*/}
-                        {/*        onAddTravelTour={handleAddTravelTour}*/}
-                        {/*    />*/}
-                        {/*)}*/}
+                            ) : (
+                                activities.map((prog, idx) => (
+                                    <tr
+                                        key={prog.id || idx}
+                                        className="border-t hover:bg-gray-50 transition-all"
+                                    >
+                                        <td className="p-3">
+                                            <img
+                                                src={prog.image || prog.preview}
+                                                alt={prog.title}
+                                                className="w-28 h-20 object-cover rounded shadow"
+                                            />
+                                        </td>
+                                        <td className="p-3 font-semibold">{prog.day}</td>
+                                        <td className="p-3">{prog.title}</td>
+                                        <td className="p-3 text-center">
+                                            <button
+                                                className="text-red-600 hover:text-red-800 text-sm font-medium"
+                                                onClick={() => handleDeleteActivity(prog.id)}
+                                            >
+                                                Xóa
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                            </tbody>
+                        </table>
                     </div>
+
+                    {isModalOpen && (
+                        <ModalAddActivity
+                            onClose={toggleModal}
+                            onAddTravelTour={handleAddActivity}
+                            tour={tour}
+                        />
+                    )}
+                </div>
+
+                <div className="flex justify-end">
+                    <button
+                        type="button"
+                        className="bg-gray-300 px-4 py-2 rounded-md"
+                        onClick={onClose}
+                    >
+                        Đóng
+                    </button>
                 </div>
             </div>
         </div>

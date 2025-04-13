@@ -1,10 +1,10 @@
-import TextEditor from "../../lib/TextEditor.jsx";
+import TextEditor from "../../../lib/TextEditor.jsx";
 import { FaArrowRight } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import { HiOutlineInbox } from "react-icons/hi";
-import { fetchLocations, fetchServices, fetchTypeTours } from "../../services/service";
-import ModalAddProgram from "../ModalManage/ModalAddProgram.jsx";
-import { createTour, updateTour, getTourById } from "../../services/API/tour.service.js";
+import { fetchLocations, fetchServices, fetchTypeTours } from "../../../services/service.js";
+import ModalAddActivity from "../ModalAdd/ModalAddActivity.jsx";
+import { createTour, updateTour, getTourById } from "../../../services/API/tour.service.js";
 import Select from "react-select";
 
 export default function ModalUpdateTour({ mode = "update", tourId = null, onClose, onCreateSuccess }) {
@@ -110,6 +110,17 @@ export default function ModalUpdateTour({ mode = "update", tourId = null, onClos
         setPreviewImages((prev) => prev.filter((_, i) => i !== index));
     };
 
+    const handleDeleteActivity = (activityId) => {
+        if (!activityId) return;
+        const confirm = window.confirm("Bạn có chắc chắn muốn xoá chương trình này?");
+        if (!confirm) return;
+
+        setTourData((prev) => ({
+            ...prev,
+            activities: prev.activities.filter((item) => item.id !== activityId),
+        }));
+    };
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setTourData((prev) => ({ ...prev, [name]: value }));
@@ -194,6 +205,17 @@ export default function ModalUpdateTour({ mode = "update", tourId = null, onClos
 
     const toggleModal = () => {
         setIsModalOpen(!isModalOpen);
+    };
+
+    const handleAddActivity = (activitiesAdded) => {
+        const newList = Array.isArray(activitiesAdded) ? activitiesAdded : [activitiesAdded];
+        setTourData((prev) => ({
+            ...prev,
+            activities: [...prev.activities, ...newList],
+        }));
+
+        alert("Tạo chương trình tour thành công!");
+        setIsModalOpen(false); // ✅ Chỉ đóng modal thêm, giữ nguyên ModalUpdateTour
     };
 
     const handleWrapperClick = () => {
@@ -394,7 +416,7 @@ export default function ModalUpdateTour({ mode = "update", tourId = null, onClos
                                     if (newFiles.length > 0) {
                                         setTourData((prev) => ({
                                             ...prev,
-                                            album: [...prev.album, ...newFiles],
+                                            album: [...(Array.isArray(prev.album) ? prev.album : []), ...newFiles],
                                         }));
                                         setPreviewImages((prev) => [
                                             ...prev,
@@ -475,12 +497,13 @@ export default function ModalUpdateTour({ mode = "update", tourId = null, onClos
 
                                 <div className="relative">
                                     <div className="mt-4 mb-4 bg-white max-h-[250px] overflow-y-auto rounded-lg border">
-                                        <table className="w-full border-collapse">
-                                            <thead>
-                                            <tr className="text-SmokyGray">
-                                                <th className="p-2">Ảnh</th>
-                                                <th className="p-2">Ngày</th>
-                                                <th className="p-2">Tiêu đề</th>
+                                        <table className="w-full border-collapse text-md">
+                                            <thead className="bg-gray-100">
+                                            <tr className="text-gray-700 text-left">
+                                                <th className="p-3 font-medium">Ảnh</th>
+                                                <th className="p-3 font-medium">Ngày</th>
+                                                <th className="p-3 font-medium">Tiêu đề</th>
+                                                <th className="p-3 font-medium text-center">Hành động</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -497,16 +520,26 @@ export default function ModalUpdateTour({ mode = "update", tourId = null, onClos
                                                 </tr>
                                             ) : (
                                                 tourData.activities.map((prog, idx) => (
-                                                    <tr key={prog.id || idx} className="border-t align-top group relative">
-                                                        <td className="p-2">
-                                                            <img src={prog.image} alt={prog.title} className="h-20 w-auto object-cover rounded"/>
+                                                    <tr
+                                                        key={prog.id || idx}
+                                                        className="border-t hover:bg-gray-50 transition-all"
+                                                    >
+                                                        <td className="p-3">
+                                                            <img
+                                                                src={prog.image || prog.preview}
+                                                                alt={prog.title}
+                                                                className="w-28 h-20 object-cover rounded shadow"
+                                                            />
                                                         </td>
-                                                        <td className="p-2 font-semibold text-left">{prog.title || `Ngày ${prog.day}`}</td>
-                                                        <td className="p-2 text-left">{prog.description?.slice(0, 100)}...</td>
-                                                        <td className="p-2 text-right relative">
-                                                            <div className="inline-block cursor-pointer group">
-                                                                <span className="text-xl">⋯</span>
-                                                            </div>
+                                                        <td className="p-3 font-semibold">{prog.day}</td>
+                                                        <td className="p-3">{prog.title}</td>
+                                                        <td className="p-3 text-center">
+                                                            <button
+                                                                className="text-red-600 hover:text-red-800 text-sm font-medium"
+                                                                onClick={() => handleDeleteActivity(prog.id)}
+                                                            >
+                                                                Xóa
+                                                            </button>
                                                         </td>
                                                     </tr>
                                                 ))
@@ -515,11 +548,13 @@ export default function ModalUpdateTour({ mode = "update", tourId = null, onClos
                                         </table>
                                     </div>
                                     {isModalOpen && (
-                                        <ModalAddProgram
+                                        <ModalAddActivity
                                             onClose={toggleModal}
-                                            // onAddTravelTour={handleAddActivity}
+                                            onAddTravelTour={handleAddActivity}
+                                            tour={{ id: tourId, name_tour: tourData.name_tour }}
                                         />
                                     )}
+
                                 </div>
                             </div>
                             <div>

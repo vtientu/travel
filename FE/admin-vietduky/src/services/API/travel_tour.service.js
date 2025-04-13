@@ -32,6 +32,8 @@ export function getTravelTourByTourId(tour_id) {
 }
 
 export function createTravelTour(data) {
+  console.log("Dữ liệu gửi API:", data); // 👉 Thêm log tại đây
+
   return restClient({
     url: "travel-tour/create",
     method: "POST",
@@ -43,6 +45,8 @@ export function createTravelTour(data) {
     })
     .catch(error => {
       console.error("Lỗi API:", error);
+      console.log("Chi tiết lỗi:", error.response?.data); // 👉 Log chi tiết lỗi trả về từ backend
+
       throw error;
     });
 }

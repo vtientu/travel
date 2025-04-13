@@ -28,5 +28,11 @@ router.delete(
   authenticateAdmin,
   ArticleController.deleteArticle
 );
+//Tăng lượt xem bài viết
+router.post(
+  "/increment-views/:id",
+  authenticateUser,
+  ArticleController.incrementViews
+);
 
 module.exports = router;

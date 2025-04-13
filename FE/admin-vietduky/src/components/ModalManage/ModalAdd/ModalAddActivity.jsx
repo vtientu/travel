@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { HiOutlineInbox, HiOutlineTrash, HiOutlineX } from "react-icons/hi";
-import {createTourActivity} from "../../services/API/activity_tour.service.js";
+import {createTourActivity} from "../../../services/API/activity_tour.service.js";
+import {IoMdAdd} from "react-icons/io";
 
-export default function ModalAddProgram({ tour, onClose, onAddTravelTour }) {
+export default function ModalAddActivity({ tour, onClose, onAddTravelTour }) {
     const [submittedPrograms, setSubmittedPrograms] = useState([]);
     const [programs, setPrograms] = useState([
         { day: "", title: "", description: "", detail: "", image: null, preview: null },
@@ -89,13 +90,17 @@ export default function ModalAddProgram({ tour, onClose, onAddTravelTour }) {
                 }
 
                 const response = await createTourActivity(formData);
-                submitted.push({ ...prog, imageUrl: response?.data?.image });
-            }
+                submitted.push({
+                    ...response.data,             // Dùng dữ liệu từ backend (bao gồm ảnh Cloudinary)
+                    preview: response.data.image  // Tạo thêm `preview` để dùng làm `src` nếu cần
+                });            }
 
             alert("Tạo chương trình tour thành công!");
             setSubmittedPrograms((prev) => [...prev, ...submitted]);
             setPrograms([{ day: "", title: "", description: "", detail: "", image: null, preview: null }]);
             onAddTravelTour(submitted);
+            onClose();
+
         } catch (error) {
             console.error("🔥 Lỗi từ backend:", error.response?.data || error);
             alert(error.response?.data?.message || "Tạo chương trình tour thất bại.");
@@ -113,7 +118,7 @@ export default function ModalAddProgram({ tour, onClose, onAddTravelTour }) {
 
     return (
         <div
-            className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-[9999]"
+            className="fixed inset-0 bg-black bg-opacity-20 flex justify-center items-center z-[9999]"
             onClick={handleWrapperClick}
         >
             <div
@@ -132,112 +137,136 @@ export default function ModalAddProgram({ tour, onClose, onAddTravelTour }) {
                             type="button"
                             className="bg-red-700 text-white px-4 py-2 rounded-md"
                             onClick={handleAddProgram}
-                        >
-                            ➕ Thêm chương trình
+                        ><IoMdAdd/>
                         </button>
                     </div>
 
                     <div className="mt-4 mb-4">
-                        <table className="w-full border-collapse border rounded-lg shadow bg-white">
-                            <thead className="bg-gray-100 text-sm text-gray-600">
+                        <table className="w-full border-collapse border rounded-lg bg-white text-sm">
+                            <thead className="bg-gray-50 text-gray-700 text-left">
                             <tr>
-                                <th className="p-2">Ngày</th>
-                                <th className="p-2">Tiêu đề</th>
-                                <th className="p-2">Mô tả</th>
-                                <th className="p-2">Chi tiết</th>
-                                <th className="p-2">Ảnh</th>
-                                <th className="p-2">Xóa</th>
+                                <th className="p-3 font-semibold">Ngày</th>
+                                <th className="p-3 font-semibold">Tiêu đề</th>
+                                <th className="p-3 font-semibold">Mô tả</th>
+                                <th className="p-3 font-semibold">Chi tiết</th>
+                                <th className="p-3 font-semibold text-center">Ảnh</th>
+                                <th className="p-3 font-semibold text-center">Xoá</th>
                             </tr>
                             </thead>
                             <tbody>
                             {programs.length === 0 ? (
                                 <tr>
-                                    <td colSpan="5" className="p-6 text-center">
+                                    <td colSpan="6" className="p-6 text-center">
                                         <div className="flex flex-col items-center h-[160px]">
                                             <div className="p-4 bg-gray-100 rounded-full mb-2">
                                                 <HiOutlineInbox className="text-4xl text-gray-600" />
                                             </div>
-                                            <p className="text-gray-600 text-md">
-                                                Chưa có hành trình nào
-                                            </p>
+                                            <p className="text-gray-600 text-md">Chưa có hành trình nào</p>
                                         </div>
                                     </td>
                                 </tr>
                             ) : (
                                 programs.map((prog, idx) => (
-                                    <tr key={idx} className="border-t text-center align-top">
-                                        <td className="p-2">
+                                    <tr key={idx} className="border-t align-middle hover:bg-gray-50 transition-all">
+                                        {/* Ngày */}
+                                        <td className="p-3">
                                             <input
                                                 type="number"
                                                 min="1"
                                                 placeholder="VD: 1"
                                                 value={prog.day}
                                                 onChange={(e) => handleChange(idx, "day", e.target.value)}
-                                                className="w-full px-2 py-1 border rounded"
+                                                className="w-full px-2 py-1 border rounded h-12"
                                                 required
                                             />
-
                                         </td>
-                                        <td className="p-2">
+
+                                        {/* Tiêu đề */}
+                                        <td className="p-3">
                                             <input
                                                 type="text"
                                                 placeholder="Nhập tiêu đề"
                                                 value={prog.title}
-                                                onChange={(e) =>
-                                                    handleChange(idx, "title", e.target.value)
-                                                }
-                                                className="w-full px-2 py-1 border rounded"
+                                                onChange={(e) => handleChange(idx, "title", e.target.value)}
+                                                className="w-full px-2 py-1 border rounded h-12"
                                                 required
                                             />
                                         </td>
-                                        <td className="p-2">
+
+                                        {/* Mô tả */}
+                                        <td className="p-3">
                                             <textarea
-                                                placeholder="Mô tả chi tiết"
+                                                placeholder="Mô tả"
                                                 value={prog.description}
-                                                onChange={(e) =>
-                                                    handleChange(idx, "description", e.target.value)} rows={2}
-                                                className="w-full px-2 py-1 border rounded"
-                                                required
-                                            />
+                                                onChange={(e) => handleChange(idx, "description", e.target.value)}
+                                                rows={2}
+                                                className="w-full px-2 py-1 border rounded" required/>
                                         </td>
-                                        <td className="p-2">
-                                            <textarea
-                                                placeholder="Chi tiết"
-                                                value={prog.detail}
-                                                onChange={(e) =>
-                                                    handleChange(idx, "detail", e.target.value)} rows={2}
-                                                className="w-full px-2 py-1 border rounded"/>
+
+                                        {/* Chi tiết */}
+                                        <td className="p-3">
+                                        <textarea
+                                            placeholder="Chi tiết"
+                                            value={prog.detail}
+                                            onChange={(e) => handleChange(idx, "detail", e.target.value)} rows={2}
+                                            className="w-full px-2 py-1 border rounded"/>
                                         </td>
-                                        <td className="p-2">
-                                            <input
-                                                type="file"
-                                                accept="image/*"
-                                                onChange={(e) =>
-                                                    handleImageChange(idx, e.target.files[0])}
-                                                className="w-full text-sm"
-                                            />
-                                            {prog.preview && (
-                                                <div className="relative mt-1">
-                                                    <img
-                                                        src={prog.preview}
-                                                        alt="preview"
-                                                        className="w-28 h-20 object-cover rounded shadow"
-                                                    />
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => handleRemoveImage(idx)}
-                                                        className="absolute top-0 right-0 bg-white rounded-full shadow p-[2px]"
-                                                    >
-                                                        <HiOutlineX className="text-red-500" />
-                                                    </button>
-                                                </div>
-                                            )}
+
+                                        {/* Ảnh */}
+                                        <td className="p-3 text-center">
+                                            <div
+                                                className="w-36 h-28 border-2 border-dashed border-gray-400 rounded-lg flex items-center justify-center bg-gray-50 cursor-pointer hover:bg-gray-50 transition relative mx-auto"
+                                                onDragOver={(e) => e.preventDefault()}
+                                                onDrop={(e) => {
+                                                    e.preventDefault();
+                                                    const file = e.dataTransfer.files[0];
+                                                    if (file) handleImageChange(idx, file);
+                                                }}
+                                                onClick={() =>
+                                                    document.getElementById(`fileInput-${idx}`)?.click()
+                                                }
+                                            >
+                                                {prog.preview ? (
+                                                    <div className="relative h-full flex items-center justify-center">
+                                                        <img
+                                                            src={prog.preview}
+                                                            alt="preview"
+                                                            className="max-h-full max-w-full object-contain rounded"
+                                                        />
+                                                        <button
+                                                            type="button"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleRemoveImage(idx);
+                                                            }}
+                                                            className="absolute top-1 right-1 bg-black bg-opacity-50 text-white rounded px-2 text-sm"
+                                                        >
+                                                            ✕
+                                                        </button>
+                                                    </div>
+                                                ) : (
+                                                    <span className="text-sm text-gray-500">
+                                                    Kéo & thả ảnh <br /> (.png, .jpg, .jpeg)
+                                                    </span>
+                                                )}
+                                                <input
+                                                    type="file"
+                                                    id={`fileInput-${idx}`}
+                                                    accept=".png,.jpg,.jpeg"
+                                                    className="hidden"
+                                                    onChange={(e) =>
+                                                        handleImageChange(idx, e.target.files[0])
+                                                    }
+                                                />
+                                            </div>
                                         </td>
-                                        <td className="p-2">
+
+                                        {/* Xóa */}
+                                        <td className="p-3 text-center">
                                             <button
                                                 type="button"
                                                 onClick={() => handleRemoveProgram(idx)}
-                                                className="text-red-500 hover:text-red-700"
+                                                className="text-red-500 hover:text-red-700 text-lg"
                                             >
                                                 <HiOutlineTrash />
                                             </button>
@@ -247,19 +276,6 @@ export default function ModalAddProgram({ tour, onClose, onAddTravelTour }) {
                             )}
                             </tbody>
                         </table>
-                        {submittedPrograms.length > 0 && (
-                            <div className="mt-6 border-t pt-4">
-                                <h3 className="text-md font-semibold text-gray-700 mb-2">Chương trình đã tạo</h3>
-                                <ul className="list-disc list-inside text-gray-700 space-y-2">
-                                    {submittedPrograms.map((p, idx) => (
-                                        <li key={idx}>
-                                            <strong>Ngày {p.day}</strong>: {p.title} – {p.description}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        )}
-
                     </div>
 
                     <div className="flex justify-end gap-4">

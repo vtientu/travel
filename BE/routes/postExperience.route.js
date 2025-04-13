@@ -44,5 +44,11 @@ router.put(
   authenticateAdmin,
   postExperienceController.rejectPostExperience
 );
+//Tăng lượt xem bài viết
+router.post(
+  "/increment-views/:id",
+  authenticateUser,
+  postExperienceController.incrementViews
+);
 
 module.exports = router;

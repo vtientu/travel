@@ -1,6 +1,6 @@
 import { useState } from "react";
-import TextEditor from "../../lib/TextEditor.jsx";
-import { createVoucher } from "../../services/API/vocher.service.js";
+import TextEditor from "../../../lib/TextEditor.jsx";
+import { createVoucher } from "../../../services/API/vocher.service.js";
 import DatePicker from "react-datepicker";
 
 export default function ModalAddVocher({ onClose }) {

@@ -1,15 +1,17 @@
 import { HiOutlineDotsHorizontal, HiOutlineInbox } from "react-icons/hi";
 import { formatDayDMY } from "../../../utils/dateUtil.jsx";
 import { MdDelete, MdEdit } from "react-icons/md";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { LuSearch } from "react-icons/lu";
-import ModalAddTravelTour from "../ModalAddTravelTour.jsx";
+import ModalAddTravelTour from "../ModalAdd/ModalAddTravelTour.jsx";
 import {
   deleteTravelTour,
   getTravelTourByTourId,
 } from "../../../services/API/travel_tour.service.js";
 import { FiCalendar, FiList } from "react-icons/fi";
-import CalendarTravelTour from "../ModalTour/CalendarTravelTour.jsx";
+import CalendarTravelTour from "../ModalCalendar/CalendarTravelTour.jsx";
+import {CiLock} from "react-icons/ci";
+import {IoIosLock} from "react-icons/io";
 
 export default function ModalManageTravelTour({ tourId, onClose, tours = [] }) {
   const [openDropdown, setOpenDropdown] = useState(null);
@@ -17,7 +19,7 @@ export default function ModalManageTravelTour({ tourId, onClose, tours = [] }) {
   const [isAddTravelTourModalOpen, setIsAddTravelTourModalOpen] =
     useState(false);
   const [viewMode, setViewMode] = useState("list"); // hoặc "calendar"
-
+  const dropdownRef = useRef(null);
   const handleAddTravelTour = () => {
     setIsAddTravelTourModalOpen(true);
   };
@@ -38,6 +40,8 @@ export default function ModalManageTravelTour({ tourId, onClose, tours = [] }) {
       try {
         const response = await getTravelTourByTourId(tourId);
         const data = response.travelTours || response;
+        console.log("📦 Danh sách travelTours:", tours); // ✅ log toàn bộ danh sách
+
         setTravelTours(Array.isArray(data) ? data : []);
       } catch (error) {
         console.log("Lỗi khi lấy dữ liệu từ API", error);
@@ -48,6 +52,21 @@ export default function ModalManageTravelTour({ tourId, onClose, tours = [] }) {
     fetchTravelTours();
   }, [tourId]);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+          dropdownRef.current &&
+          !dropdownRef.current.contains(event.target)
+      ) {
+        setOpenDropdown(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
   const handleDeleteTravelTour = async (index) => {
     const id = travelTours[index].id;
     try {
@@ -165,14 +184,19 @@ export default function ModalManageTravelTour({ tourId, onClose, tours = [] }) {
               <div className="overflow-auto">
                 <table className="w-full rounded-lg shadow-md bg-white">
                   <thead>
-                    <tr className="text-SmokyGray">
-                      <th className="p-2 text-left">Ngày khởi hành</th>
-                      <th className="p-2">Ngày về</th>
-                      <th className="p-2">Tình trạng chỗ</th>
-                      <th className="p-2">Giá</th>
-                      <th className="p-2"></th>
-                    </tr>
+                  <tr className="text-SmokyGray">
+                    <th className="p-2 text-left">Ngày khởi hành</th>
+                    <th className="p-2">Ngày về</th>
+                    <th className="p-2">Giờ đi</th>
+                    <th className="p-2">Giờ đóng cổng</th>
+                    <th className="p-2">Giá người lớn</th>
+                    {/*<th className="p-2">Giá trẻ em</th>*/}
+                    {/*<th className="p-2">Giá trẻ nhỏ</th>*/}
+                    <th className="p-2">Số lượng</th>
+                    <th className="p-2"></th>
+                  </tr>
                   </thead>
+
                   <tbody>
                     {travelTours.map((travelTour, index) => {
                       if (
@@ -183,45 +207,58 @@ export default function ModalManageTravelTour({ tourId, onClose, tours = [] }) {
                         return null;
 
                       return (
-                        <tr
-                          key={index}
-                          className={`border-t text-center ${
-                            index % 2 === 0 ? "bg-white" : "bg-gray-100"
-                          }`}
-                        >
-                          <td className="p-2 text-left">
-                            {formatDayDMY(travelTour.start_day)}
-                          </td>
-                          <td className="p-2">
-                            {formatDayDMY(travelTour.end_day)}
-                          </td>
-                          <td className="p-2">{travelTour.max_people}</td>
-                          <td className="p-2 text-RedPrice">
-                            {travelTour.price_tour.toLocaleString("vi-VN")} VNĐ
-                          </td>
-                          <td className="flex justify-end p-2 relative">
-                            <button
-                              onClick={() => toggleDropdown(index)}
-                              className="relative"
-                            >
-                              <HiOutlineDotsHorizontal className="text-xl cursor-pointer" />
-                            </button>
-                            {openDropdown === index && (
-                              <div className="absolute right-0 mt-2 w-48 bg-white shadow-md rounded-md z-10">
-                                <button className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left whitespace-nowrap">
-                                  <MdEdit className="mr-2 text-gray-700" /> Cập
-                                  nhật hành trình
-                                </button>
-                                <button
-                                  onClick={() => handleDeleteTravelTour(index)}
-                                  className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left text-red-600 whitespace-nowrap"
-                                >
-                                  <MdDelete className="mr-2" /> Xóa hành trình
-                                </button>
-                              </div>
-                            )}
-                          </td>
-                        </tr>
+                          <tr
+                              key={index}
+                              className={`border-t text-center ${index % 2 === 0 ? "bg-white" : "bg-gray-100"}`}
+                          >
+                            <td className="p-2 text-left">
+                              {formatDayDMY(travelTour.start_day)}
+                            </td>
+                            <td className="p-2">
+                              {formatDayDMY(travelTour.end_day)}
+                            </td>
+                            <td className="p-2">
+                              {travelTour.start_time_depart} - {travelTour.end_time_depart}
+                            </td>
+                            <td className="p-2">
+                              {travelTour.start_time_close} - {travelTour.end_time_close}
+                            </td>
+                            <td className="p-2 text-RedPrice">
+                              {travelTour.price_tour?.toLocaleString("vi-VN")} VNĐ
+                            </td>
+                            {/*<td className="p-2 text-RedPrice">*/}
+                            {/*  {travelTour.children_price?.toLocaleString("vi-VN")} VNĐ*/}
+                            {/*</td>*/}
+                            {/*<td className="p-2 text-RedPrice">*/}
+                            {/*  {travelTour.toddler_price?.toLocaleString("vi-VN")} VNĐ*/}
+                            {/*</td>*/}
+                            <td className="p-2">{travelTour.max_people}</td>
+                            <td className="flex justify-end p-2 relative">
+                              <button onClick={() => toggleDropdown(index)} className="relative">
+                                <HiOutlineDotsHorizontal className="text-xl cursor-pointer" />
+                              </button>
+                              {openDropdown === index && (
+                                  <div
+                                      ref={dropdownRef}
+                                      className="absolute right-0 mt-2 w-48 bg-white shadow-md rounded-md z-10"
+                                  >
+                                    <button className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left whitespace-nowrap">
+                                      <MdEdit className="mr-2 text-gray-700" /> Cập nhật hành trình
+                                    </button>
+                                    <button className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left">
+                                      <IoIosLock className="mr-2 text-gray-700" />
+                                      Đóng lịch khởi hành
+                                    </button>
+                                    <button
+                                        onClick={() => handleDeleteTravelTour(index)}
+                                        className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left text-red-600 whitespace-nowrap"
+                                    >
+                                      <MdDelete className="mr-2" /> Xóa hành trình
+                                    </button>
+                                  </div>
+                              )}
+                            </td>
+                          </tr>
                       );
                     })}
                   </tbody>

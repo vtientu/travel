@@ -84,6 +84,8 @@ const TravelGuideLocation = require("./travelGuideLocation.model.js")(
   sequelize,
   Sequelize
 );
+const FavoriteTour = require("./favoriteTour.model.js")(sequelize, Sequelize);
+const Like = require("./like.model.js")(sequelize, Sequelize);
 // Mối quan hệ (Associations)
 //Payment/Booking
 Booking.hasMany(Payment, { foreignKey: "booking_id" });
@@ -276,6 +278,54 @@ TravelGuide.belongsToMany(Location, {
   as: "locations",
 });
 
+//FavoriteTour/User
+User.hasMany(FavoriteTour, { foreignKey: "user_id" });
+FavoriteTour.belongsTo(User, { foreignKey: "user_id", as: "user" });
+
+//FavoriteTour/Tour
+Tour.hasMany(FavoriteTour, { foreignKey: "tour_id" });
+FavoriteTour.belongsTo(Tour, { foreignKey: "tour_id", as: "tour" });
+
+//Like/User
+User.hasMany(Like, { foreignKey: "user_id" });
+Like.belongsTo(User, { foreignKey: "user_id", as: "user" });
+
+//Like/Feedback
+Feedback.hasMany(Like, {
+  foreignKey: "target_id",
+  constraints: false,
+  scope: { target_type: "feedback" },
+});
+Like.belongsTo(Feedback, {
+  foreignKey: "target_id",
+  constraints: false,
+  as: "feedback",
+});
+
+// Like/PostExperience
+PostExperience.hasMany(Like, {
+  foreignKey: "target_id",
+  constraints: false,
+  scope: { target_type: "postExperience" },
+});
+Like.belongsTo(PostExperience, {
+  foreignKey: "target_id",
+  constraints: false,
+  as: "postExperience",
+});
+
+// Like/Article
+Article.hasMany(Like, {
+  foreignKey: "target_id",
+  constraints: false,
+  scope: { target_type: "article" },
+});
+Like.belongsTo(Article, {
+  foreignKey: "target_id",
+  constraints: false,
+  as: "article",
+});
+
 // Đối tượng `db` để chứa Sequelize và Models
 const db = {};
 db.sequelize = sequelize;
@@ -322,5 +372,7 @@ db.Topic = Topic;
 db.Article = Article;
 db.Directory = Directory;
 db.TravelGuideLocation = TravelGuideLocation;
+db.FavoriteTour = FavoriteTour;
+db.Like = Like;
 
 module.exports = db;

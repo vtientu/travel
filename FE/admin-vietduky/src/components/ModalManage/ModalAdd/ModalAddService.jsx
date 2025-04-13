@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createService } from "../../services/API/service.service"; // Import createService
+import { createService } from "../../../services/API/service.service.js"; // Import createService
 
 export default function ModalAddService({ onClose, onSuccess }) {
     const [serviceData, setServiceData] = useState({
