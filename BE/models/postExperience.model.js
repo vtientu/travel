@@ -33,6 +33,10 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
         defaultValue: false, // // 0: chưa duyệt, 1: đã duyệt
       },
+      views: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0,
+      },
     },
     {
       tableName: "post_experience",
