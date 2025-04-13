@@ -35,6 +35,10 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.DATEONLY,
         allowNull: true,
       },
+      feedback_album: {
+        type: Sequelize.TEXT,
+        allowNull: true,
+      },
     },
     {
       tableName: "feedback",

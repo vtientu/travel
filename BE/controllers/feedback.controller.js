@@ -56,6 +56,10 @@ exports.createFeedbackForTour = async (req, res) => {
   try {
     const { user_id, tour_id, description_feedback, rating, feedback_date } =
       req.body;
+    const feedback_album =
+      req.files && req.files.length > 0
+        ? JSON.stringify(req.files.map((file) => file.path))
+        : null;
 
     const user = await User.findByPk(user_id);
     if (!user) {
@@ -76,6 +80,7 @@ exports.createFeedbackForTour = async (req, res) => {
       description_feedback,
       rating: feedbackRating,
       feedback_date,
+      feedback_album,
     });
 
     res.status(201).json({
@@ -100,6 +105,10 @@ exports.createFeedbackForTravelGuide = async (req, res) => {
       rating,
       feedback_date,
     } = req.body;
+    const feedback_album =
+      req.files && req.files.length > 0
+        ? JSON.stringify(req.files.map((file) => file.path))
+        : null;
 
     const user = await User.findByPk(user_id);
     if (!user) {
@@ -120,6 +129,7 @@ exports.createFeedbackForTravelGuide = async (req, res) => {
       description_feedback,
       rating: feedbackRating,
       feedback_date,
+      feedback_album,
     });
 
     res.status(201).json({
@@ -139,6 +149,10 @@ exports.updateFeedback = async (req, res) => {
   try {
     const feedbackId = req.params.id;
     const { description_feedback, rating, feedback_date } = req.body;
+    const feedback_album =
+      req.files && req.files.length > 0
+        ? JSON.stringify(req.files.map((file) => file.path))
+        : null;
 
     const feedback = await Feedback.findByPk(feedbackId);
     if (!feedback) {
@@ -152,7 +166,8 @@ exports.updateFeedback = async (req, res) => {
     if (rating != undefined) feedback.rating = rating || feedback.rating;
     if (feedback_date != undefined)
       feedback.feedback_date = feedback_date || feedback.feedback_date;
-
+    if (feedback_album != undefined)
+      feedback.feedback_album = feedback_album || feedback.feedback_album;
     await feedback.save();
 
     res.status(200).json({
@@ -185,6 +200,49 @@ exports.deleteFeedback = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       message: "Lỗi khi xóa feedback",
+      error: error.message,
+    });
+  }
+};
+
+// Lấy tất cả Feedback theo tour_id
+exports.getFeedbackByTourId = async (req, res) => {
+  try {
+    const tourId = req.params.tourId;
+
+    // Tìm Tour dựa trên tour_id
+    const tour = await Tour.findByPk(tourId);
+
+    if (!tour) {
+      return res.status(404).json({ message: "Tour không tồn tại!" });
+    }
+
+    // Lấy tất cả feedback của tour dựa trên tour_id
+    const feedbacks = await Feedback.findAll({
+      where: { tour_id: tourId },
+      include: [
+        { model: User, as: "user" },
+        {
+          model: TravelGuide,
+          as: "travelGuide",
+          attributes: ["first_name", "last_name"],
+        },
+      ],
+    });
+
+    if (feedbacks.length === 0) {
+      return res.status(404).json({
+        message: "Không tìm thấy feedback nào cho tour này",
+      });
+    }
+
+    res.status(200).json({
+      message: "Lấy feedback thành công",
+      data: feedbacks,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Lỗi khi lấy feedback",
       error: error.message,
     });
   }
