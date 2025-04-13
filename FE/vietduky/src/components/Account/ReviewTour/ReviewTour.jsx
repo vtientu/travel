@@ -1,44 +1,45 @@
 import ModalSharePost from "./ModalSharePost";
+import Icons from "@/components/Icons/Icon";
 import { FeedbackService } from "@/services/API/feedback.service";
 import { PostExperienceService } from "@/services/API/post_experience.service";
+import { formatDate } from "@/utils/dateUtil";
 import { useEffect, useState } from "react";
 import { FaThumbsUp } from "react-icons/fa";
 import { FaStar } from "react-icons/fa6";
 import { FiEdit2, FiExternalLink } from "react-icons/fi";
 
-const sharedPosts = [
-  {
-    id: 1,
-    status: "pending",
-    title:
-      "Chia sẻ Kinh nghiệm: Khám Phá Sơn Trà – Phố Cổ Hội An – Bà Nà – Rừng Dừa Bảy Mẫu",
-    date: "18/03/2025",
-    image: "https://i.imgur.com/NT2YEGz.jpg",
-    likes: 0,
-    author: "PHẠM ĐỨC MẠNH",
-  },
-  {
-    id: 2,
-    status: "approved",
-    title:
-      "Chia sẻ Kinh nghiệm: Khám Phá Sơn Trà – Phố Cổ Hội An – Bà Nà – Rừng Dừa Bảy Mẫu",
-    date: "18/03/2025",
-    image: "https://i.imgur.com/NT2YEGz.jpg",
-    likes: 1,
-    author: "PHẠM ĐỨC MẠNH",
-  },
-  {
-    id: 3,
-    status: "locked",
-    title:
-      "Chia sẻ Kinh nghiệm: Khám Phá Sơn Trà – Phố Cổ Hội An – Bà Nà – Rừng Dừa Bảy Mẫu",
-    date: "18/03/2025",
-    image: "https://i.imgur.com/NT2YEGz.jpg",
-    likes: 1,
-    author: "PHẠM ĐỨC MẠNH",
-  },
-];
-
+// const sharedPosts = [
+//   {
+//     id: 1,
+//     status: "pending",
+//     title:
+//       "Chia sẻ Kinh nghiệm: Khám Phá Sơn Trà – Phố Cổ Hội An – Bà Nà – Rừng Dừa Bảy Mẫu",
+//     date: "18/03/2025",
+//     image: "https://i.imgur.com/NT2YEGz.jpg",
+//     likes: 0,
+//     author: "PHẠM ĐỨC MẠNH",
+//   },
+//   {
+//     id: 2,
+//     status: "approved",
+//     title:
+//       "Chia sẻ Kinh nghiệm: Khám Phá Sơn Trà – Phố Cổ Hội An – Bà Nà – Rừng Dừa Bảy Mẫu",
+//     date: "18/03/2025",
+//     image: "https://i.imgur.com/NT2YEGz.jpg",
+//     likes: 1,
+//     author: "PHẠM ĐỨC MẠNH",
+//   },
+//   {
+//     id: 3,
+//     status: "locked",
+//     title:
+//       "Chia sẻ Kinh nghiệm: Khám Phá Sơn Trà – Phố Cổ Hội An – Bà Nà – Rừng Dừa Bảy Mẫu",
+//     date: "18/03/2025",
+//     image: "https://i.imgur.com/NT2YEGz.jpg",
+//     likes: 1,
+//     author: "PHẠM ĐỨC MẠNH",
+//   },
+// ];
 
 const statusMap = {
   pending: { text: "Đang chờ duyệt bài", color: "text-blue-500" },
@@ -50,7 +51,7 @@ export default function ReviewTour() {
   const [activeTab, setActiveTab] = useState("review");
   const [showModal, setShowModal] = useState(false);
   const [reviews, setReviews] = useState([]);
-//   const [sharedPosts, setSharedPosts] = useState([]);
+  const [sharedPosts, setSharedPosts] = useState([]);
   const user = JSON.parse(localStorage.getItem("user")) || null;
 
   useEffect(() => {
@@ -63,18 +64,20 @@ export default function ReviewTour() {
       }
     };
 
-    // const fetchPosts = async () => {
-    //   try {
-    //     const response = await PostExperienceService.getAllPostExperience();
-    //     setSharedPosts(response.data.data);
-    //   } catch (error) {
-    //     console.error("Error fetching posts:", error);
-    //   }
-    // };
+    const fetchPosts = async () => {
+      try {
+        const response = await PostExperienceService.getAllPostExperience();
+        setSharedPosts(response.data.data);
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+      }
+    };
 
-    // fetchPosts();
+    fetchPosts();
     fetchReviews();
-  }, [user?.id]);  
+  }, [user?.id]);
+
+  console.log("Shared Posts:", sharedPosts);
 
   const getRecommendationText = (rating) => {
     switch (rating) {
@@ -107,12 +110,14 @@ export default function ReviewTour() {
     <div className=" mx-auto px-4">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-semibold mb-4">Danh sách đánh giá</h2>
-        <button
-          className="bg-red-500 text-white px-4 py-1.5 rounded-lg"
-          onClick={() => setShowModal(true)}
-        >
-          Thêm bài viết đánh giá
-        </button>
+        {activeTab === "shared" && ( // Chỉ hiển thị nút nếu activeTab là "shared"
+          <button
+            className="bg-red-500 text-white px-4 py-1.5 rounded-lg"
+            onClick={() => setShowModal(true)}
+          >
+            Thêm bài viết đánh giá
+          </button>
+        )}
       </div>
 
       <ModalSharePost isOpen={showModal} onClose={() => setShowModal(false)} />
@@ -241,53 +246,61 @@ export default function ReviewTour() {
       {/* Bài viết chia sẻ */}
       {activeTab === "shared" &&
         sharedPosts.map((post) => {
-          <div
-            key={post.id}
-            className="bg-white p-4 rounded-lg shadow border mb-5"
-          >
-            <div className="text-sm font-medium mb-3">
-              Trạng thái:{" "}
-              <span className={`${statusMap[post.status].color}`}>
+          return (
+            <div
+              key={post.id}
+              className="bg-white p-4 rounded-lg shadow border mb-5"
+            >
+              <div className="text-sm font-medium mb-3 border-b border-gray-300 pb-2">
+                Trạng thái:{" "}
+                {/* <span className={`${statusMap[post.status].color}`}>
                 {statusMap[post.status].text}
-              </span>
-            </div>
+              </span> */}
+              </div>
 
-            <div className="flex gap-4">
-              <img
-                src={post.image}
-                alt="preview"
-                className="w-28 h-24 object-cover rounded-md"
-              />
+              <div className="flex gap-4">
+                <img
+                  src={post.image}
+                  alt="preview"
+                  className="w-28 h-24 object-cover rounded-md"
+                />
 
-              <div className="flex-1">
-                <h3 className="text-lg font-bold text-red-600 mb-2">
-                  {post.title}
-                </h3>
+                <div className="flex-1">
+                  <h3 className="text-lg font-bold text-red-600 mb-2">
+                    {post.title_post}
+                  </h3>
 
-                <div className="text-sm text-gray-600 flex flex-wrap gap-4 mb-1">
-                  <span>🗓️ Ngày viết: {post.date}</span>
-                  <span>
-                    <FaThumbsUp className="inline mr-1" />
-                    {post.likes} người thấy điều này hữu ích
-                  </span>
+                  <div className="text-sm text-gray-600 flex flex-wrap gap-4 mb-1">
+                    <span className="flex items-center gap-1 text-zinc-900">
+                      <img src={Icons.CalendarBold} />
+                      <span>Ngày viết: {formatDate(post.post_date)}</span>
+                    </span>
+                    <span className="flex items-center gap-1 text-zinc-900">
+                      <FaThumbsUp className="inline mr-1" />
+                      {post.likes} người thấy điều này hữu ích
+                    </span>
+                  </div>
+
+                  <p className="mt-5 text-sm text-gray-500">
+                    Viết bởi: {post?.customer?.first_name}{" "}
+                    {post?.customer?.last_name}
+                  </p>
                 </div>
 
-                <p className="text-sm text-gray-500">Viết bởi: {post.author}</p>
-              </div>
-
-              {/* Icons */}
-              <div className="flex flex-col justify-center gap-3 pr-2 text-gray-500">
-                <FiEdit2
-                  className="cursor-pointer hover:text-blue-500"
-                  title="Sửa bài viết"
-                />
-                <FiExternalLink
-                  className="cursor-pointer hover:text-blue-500"
-                  title="Xem bài viết"
-                />
+                {/* Icons */}
+                <div className="flex items-center justify-center gap-3 pr-2 text-gray-500">
+                  <FiEdit2
+                    className="cursor-pointer hover:text-blue-500"
+                    title="Sửa bài viết"
+                  />
+                  <FiExternalLink
+                    className="cursor-pointer hover:text-blue-500"
+                    title="Xem bài viết"
+                  />
+                </div>
               </div>
             </div>
-          </div>;
+          );
         })}
     </div>
   );

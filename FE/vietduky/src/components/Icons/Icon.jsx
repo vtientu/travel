@@ -51,6 +51,8 @@ import Clock from "@/assets/icons/clock.svg";
 import CalendarPre from "@/assets/icons/calendar-pre.svg";
 import CalendarBold from "@/assets/icons/calendar-bold.svg";
 import UserBold from "@/assets/icons/user-bold.svg";
+import HeartRed from "@/assets/icons/heart-red.svg";
+import Zalo from "@/assets/icons/Zalo.svg";
 
 const Icons = {
   Sidebar: barChartIcon,
@@ -106,6 +108,8 @@ const Icons = {
   CalendarPre: CalendarPre,
   CalendarBold: CalendarBold,
   UserBold: UserBold,
+  HeartRed: HeartRed,
+  Zalo: Zalo,
 };
 
 export default Icons;

@@ -58,12 +58,12 @@ exports.getTravelTourById = async (req, res) => {
         include: [
           {
             model: Location,
-            as: 'StartLocation',
+            as: 'startLocation',
             attributes: ['id', 'name_location']
           },
           {
             model: Location,
-            as: 'EndLocation',
+            as: 'endLocation',
             attributes: ['id', 'name_location']
           }
         ]

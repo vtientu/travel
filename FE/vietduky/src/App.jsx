@@ -20,8 +20,33 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ReviewPage from "./page/Account/ReviewPage";
 import SettingPage from "./page/Account/SettingPage";
 import FavouriteTourPage from "./page/Account/FavouriteTourPage";
+import ArticlePage from "./page/ArticlePage/PostArticle/ArticlePage";
+import DetailArticlePage from "./page/ArticlePage/PostArticle/DetailArticlePage";
+import DetailTourBooking from "./page/DetailTourBooking";
+import { useEffect, useState } from "react";
+import { DirectoryService } from "./services/API/directory.service";
+import DynamicArticlePage from "./page/ArticlePage/PostDynamicArticle/DynamicArticlePage";
+import PostExperiencePage from "./page/ArticlePage/PostExperience/PostExperiencePage";
+import DetailPostExperience from "./page/ArticlePage/PostExperience/DetailPostExperience";
 
 function App() {
+  const [directory, setDirectory] = useState([]);
+
+  useEffect(() => {
+    const fetchDirectory = async () => {
+      try {
+        const response = await DirectoryService.getAllDirectory();
+        setDirectory(response.data.data);
+      } catch (error) {
+        console.error("Error fetching directory:", error);
+      }
+    }
+
+    fetchDirectory();
+  }, []);
+
+  console.log("Directory data:", directory);
+  
   return (
     <BrowserRouter>
       <ScrollToTop />
@@ -50,12 +75,19 @@ function App() {
           <Route path={"/reviews"} element={<ReviewPage />} />
           <Route path={"/favorites"} element={<FavouriteTourPage />} />
           <Route path={"/settings"} element={<SettingPage />} />
+          <Route path={"/detail-booking-tour/:id"} element={<DetailTourBooking />} />
         </Route>
         <Route path={"/personalAI"} element={<PersonalAIPage />} />
         <Route path={"/deals"} element={<DealsPage />} />
         <Route path={"/listTour"} element={<ListTour />} />
         <Route path={"/detailTour"} element={<DetailTourPage />} />
         <Route path="/tour/:id" element={<DetailTourPage />} />
+        <Route path={"/article/home"} element={<ArticlePage />} />
+        <Route path={"/article/post-experience"} element={<PostExperiencePage />} />
+        <Route path={"/article/post-experience/:id"} element={<DetailPostExperience />} />
+        <Route path={"/article/:alias"} element={<DynamicArticlePage />} />
+        <Route path={"/article/:id"} element={<DetailArticlePage />} />
+
 
         <Route path={"/credit"} element={<PaymentForm />} />
 

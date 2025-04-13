@@ -3,8 +3,10 @@ import { formatDayDMY } from "@/utils/dateUtil";
 import { CalendarDays, User } from "lucide-react";
 import { BsPencil, BsArrowRepeat } from "react-icons/bs";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { useNavigate } from "react-router-dom";
 
 export default function UpcomingBookingCard({ booking }) {
+  const navigate = useNavigate();
   return (
     <>
       <div className="flex gap-6 items-center mb-4 border-b">
@@ -40,7 +42,7 @@ export default function UpcomingBookingCard({ booking }) {
         </p>
       </div>
       <div className="flex flex-col gap-2">
-        <h3 className="text-[#A80F21] font-semibold text-xl mb-2">
+        <h3 onClick={() => navigate(`/detail-booking-tour/${booking?.TravelTour?.Tour?.id}`)} className="text-[#A80F21] font-semibold text-xl mb-2 cursor-pointer hover:text-red-600">
           {booking?.TravelTour?.Tour?.name_tour || "Tên tour không có"}
         </h3>
         <div className="flex gap-4">

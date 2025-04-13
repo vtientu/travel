@@ -15,8 +15,11 @@ const Calendar = ({ id, initialSelectedDate }) => {
   const [currentDate, setCurrentDate] = useState(dayjs());
   const [viewMode, setViewMode] = useState("calendar");
   const [tourDates, setTourDates] = useState({});
+  const [tourEndDates, setTourEndDates] = useState({});
+  const [tourPrice, setTourPrice] = useState(0);
   const [travelTourData, setTravelTourData] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
+  const [hoveredDate, setHoveredDate] = useState(null);
 
   // console.log(selectedDate);
   // console.log(initialSelectedDate);
@@ -55,6 +58,23 @@ const Calendar = ({ id, initialSelectedDate }) => {
           return acc;
         }, {});
 
+        const formattedTourEndDates = tour.reduce((acc, tour) => {
+          if (tour.end_day) {
+            const dateStr = dayjs(tour.start_day).format("YYYY-MM-DD");
+            acc[dateStr] = dayjs(tour.end_day).format("DD/MM/YYYY");
+          }
+          return acc;
+        }, {});
+
+        const initialTourPrice = tour.reduce((acc, tour) => {
+          if (tour.price_tour) {
+            return acc + tour.price_tour;
+          }
+          return acc;
+        }, 0);
+
+        setTourPrice(initialTourPrice / 1000); // Chia cho 1000 để chuyển đổi sang triệu
+        setTourEndDates(formattedTourEndDates);
         setTourDates(formattedTourDates);
 
         if (initialSelectedDate) {
@@ -224,12 +244,21 @@ const Calendar = ({ id, initialSelectedDate }) => {
                         isTourDate &&
                         toggleDateSelection(dateStr)
                       }
+                      onMouseEnter={() => isTourDate && setHoveredDate(dateStr)}
+                      onMouseLeave={() => setHoveredDate(null)}
                     >
                       <span className="text-sm font-normal">{date.date()}</span>
                       {isTourDate && (
                         <span className="text-xs font-normal mt-1">
                           {tourDates[dateStr]}
                         </span>
+                      )}
+                      {hoveredDate === dateStr && isTourDate && (
+                        <div className="absolute bg-red-500 text-sm text-white border border-gray-300 p-2 rounded shadow-lg mt-36">
+                          <p>Ngày đi: {date.format("DD/MM/YYYY")}</p>
+                          <p>Ngày về: {tourEndDates[dateStr] || date.add(1, "day").format("DD/MM/YYYY")}</p>
+                          <p>Giá: {(parseFloat(tourDates[dateStr]) * 1000000).toLocaleString('vi-VN')} VNĐ</p>                        
+                        </div>
                       )}
                     </div>
                   );

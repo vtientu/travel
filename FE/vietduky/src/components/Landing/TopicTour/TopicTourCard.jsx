@@ -1,8 +1,8 @@
 import Icons from "@/components/Icons/Icon";
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 const TopicTourCard = ({
-  image,
+  id, // Expect tour ID to be passed down
   name_tour,
   endLocation,
   activity_description,
@@ -11,7 +11,43 @@ const TopicTourCard = ({
   album,
   day_number,
   startLocation,
+  userId, // Expect userId to be passed down
 }) => {
+  const storageKey = `favoriteTours_${userId}`;
+  const [isFavorite, setIsFavorite] = useState(false);
+
+  useEffect(() => {
+    // Check if the tour is already a favorite
+    const storedFavorites = JSON.parse(localStorage.getItem(storageKey)) || [];
+    setIsFavorite(storedFavorites.includes(id)); // Check if ID is in favorites
+  }, [id, storageKey]);
+
+  const handleFavoriteToggle = (event) => {
+    event.stopPropagation(); // Prevent event propagation
+    setIsFavorite((prev) => {
+      const newFavoriteStatus = !prev;
+      const storedFavorites = JSON.parse(localStorage.getItem(storageKey)) || [];
+      
+      // Update favorites in localStorage
+      if (newFavoriteStatus) {
+        // Add to favorites if not already present
+        if (!storedFavorites.includes(id)) {
+          storedFavorites.push(id);
+        }
+      } else {
+        // Remove from favorites
+        const index = storedFavorites.indexOf(id);
+        if (index > -1) {
+          storedFavorites.splice(index, 1); // Remove the tour
+        }
+      }
+      localStorage.setItem(storageKey, JSON.stringify(storedFavorites));
+      return newFavoriteStatus;
+    });
+  };
+
+  
+
   return (
     <div className="w-96 px-2 py-3 bg-white rounded-2xl flex flex-col gap-2 hover:bg-gray-300 cursor-pointer relative group">
       {typeTour && (
@@ -29,8 +65,15 @@ const TopicTourCard = ({
           alt="Tour"
           className="w-full h-full object-cover rounded-2xl"
         />
-        <button className="absolute top-3 right-3 rounded-full shadow transition-all duration-300 hover:bg-red-500 hover:text-white">
-          <img src={Icons.Heart} alt="Heart" className="w-9 h-9" />
+        <button 
+          className={`absolute top-3 right-3 transition-all duration-300 `}
+          onClick={handleFavoriteToggle}
+        >
+          <img 
+            src={isFavorite ? Icons.HeartRed : Icons.Heart} 
+            alt="Heart" 
+            className="w-9 h-9" 
+          />
         </button>
       </div>
       {/* Tiêu đề */}
@@ -42,7 +85,6 @@ const TopicTourCard = ({
         <div className="flex items-center gap-2">
           <img src={Icons.Clock_3} alt="Clock" className="w-4 h-4" />
           <span>
-            {" "}
             Thời gian:{" "}
             {day_number > 1
               ? `${day_number} Ngày ${day_number - 1} Đêm`

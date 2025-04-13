@@ -52,7 +52,7 @@ const HistoryBookingCard = ({ booking }) => {
         <p className="text-sm mb-2">
           Trạng thái:{" "}
           <span className="text-green-600 font-semibold">
-            Đã hoàn thành chuyến đi
+            Đã thanh toán
           </span>
         </p>
       </div>

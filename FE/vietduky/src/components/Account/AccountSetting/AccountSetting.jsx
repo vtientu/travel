@@ -1,3 +1,4 @@
+import Icons from "@/components/Icons/Icon";
 import { useState } from "react";
 
 const settingsData = {
@@ -17,7 +18,8 @@ const settingsData = {
       options: [
         {
           label: "Nhật ký hoạt động",
-          description: "Đăng nhập tài khoản, thay đổi mật khẩu, mã PIN và bảo mật",
+          description:
+            "Đăng nhập tài khoản, thay đổi mật khẩu, mã PIN và bảo mật",
           key: "activityLog",
         },
         {
@@ -48,7 +50,60 @@ const settingsData = {
       ],
     },
   ],
-  sms: [],
+  sms: [
+    {
+      group: `${(<img src={Icons.Zalo} className="mr-1" />)} Zalo`,
+      options: [
+        {
+          label: "Khuyến mãi Việt Du Ký",
+          description: "Khuyến mãi và ưu đãi",
+          key: "promotionZalo",
+        },
+        {
+          label: "Nhật ký hoạt động",
+          description:
+            "Đăng nhập tài khoản, thay đổi mật khẩu, mã PIN và bảo mật",
+          key: "activityLogZalo",
+        },
+        {
+          label: "Đặt chỗ",
+          description: "Trạng thái đặt chỗ, cập nhật và nhắc nhở",
+          key: "bookingZalo",
+        },
+        {
+          label: "Tài chính",
+          description: "Thông báo các dịch vụ tài chính",
+          key: "financeZalo",
+        },
+      ],
+    },
+    {
+      group: "Tin nhắn",
+      options: [
+        {
+          label: "Khuyến mãi Việt Du Ký",
+          description: "Khuyến mãi và ưu đãi",
+          key: "promotion",
+        },
+        {
+          label: "Nhật ký hoạt động",
+          description:
+            "Đăng nhập tài khoản, thay đổi mật khẩu, mã PIN và bảo mật",
+          key: "activityLog",
+        },
+        {
+          label: "Đặt chỗ",
+          description: "Trạng thái đặt chỗ, cập nhật và nhắc nhở",
+          key: "booking",
+        },
+        {
+          label: "Tài chính",
+          description: "Thông báo các dịch vụ tài chính",
+          key: "finance",
+        },
+      ],
+    },
+  ],
 };
 
 export default function AccountSettings() {
@@ -60,6 +115,10 @@ export default function AccountSettings() {
     finance: true,
     reviewReminder: true,
     survey: true,
+    promotionZalo: true,
+    activityLogZalo: true,
+    bookingZalo: true,
+    financeZalo: true,
   });
 
   const handleToggle = (key) => {
@@ -67,7 +126,7 @@ export default function AccountSettings() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-4">
+    <div className="mx-auto p-4">
       <h2 className="text-xl font-semibold mb-4">Cài đặt thông báo</h2>
 
       {/* Tabs */}
@@ -90,6 +149,7 @@ export default function AccountSettings() {
           }`}
           onClick={() => setTab("sms")}
         >
+          {/* <img src={Icons.Zalo} className="mr-1" /> */}
           Tin nhắn
         </button>
       </div>
@@ -132,7 +192,9 @@ export default function AccountSettings() {
         ))}
 
         {settingsData[tab].length === 0 && (
-          <div className="text-sm text-gray-500">Không có cài đặt trong mục này.</div>
+          <div className="text-sm text-gray-500">
+            Không có cài đặt trong mục này.
+          </div>
         )}
       </div>
     </div>

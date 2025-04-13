@@ -7,6 +7,7 @@ import TopicTourCard from "./TopicTourCard";
 export default function TopicTour({ topic }) {
   const [tours, setTours] = useState([]);
   const navigate = useNavigate();
+  const userId = JSON.parse(localStorage.getItem("user"))?.id;
 
   useEffect(() => {
     const fetchTours = async () => {
@@ -21,7 +22,7 @@ export default function TopicTour({ topic }) {
     fetchTours();
   }, [topic.id]);
 
-  // console.log("topic", tours);
+  console.log("topic", tours);
 
   return (
     <div className="bg-transparent">
@@ -43,7 +44,7 @@ export default function TopicTour({ topic }) {
               className="relative box-border"
               onClick={() => navigate(`/tour/${tour.id}`)}
             >
-              <TopicTourCard {...tour}/>
+              <TopicTourCard {...tour} userId={userId} />
             </div>
           ))}
         </div>

@@ -15,7 +15,7 @@ export const PostExperienceService = {
     },
     createPostExperience: (data) => {
         return restClient({
-            url: "post-experience",
+            url: "post-experience/create",
             method: "POST",
             data,
         });

@@ -48,6 +48,9 @@ const BookingConfirmation = ({ bookingData }) => {
   console.log("paymentData:", paymentData);
   console.log("qrSrc:", qrSrc);
 
+  // console.log("bookingData:", bookingData);
+  
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -64,11 +67,11 @@ const BookingConfirmation = ({ bookingData }) => {
           bookingData?.travel_tour_id
         );
         if (travelTourResponse?.data) {
-          setTravelTour(travelTourResponse.data);
+          setTravelTour(travelTourResponse.data?.data);
 
           // Gọi tour chỉ khi travelTour đã được lấy thành công
           const tourResponse = await TourService.getTour(
-            travelTourResponse.data.tour_id
+            travelTourResponse.data?.data.tour_id
           );
           if (tourResponse?.data) {
             setTour(tourResponse.data?.data);
