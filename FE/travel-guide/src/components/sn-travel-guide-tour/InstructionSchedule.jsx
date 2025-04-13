@@ -36,6 +36,7 @@ const InstructionSchedule = () => {
           name_tour: search,
           start_location_id: startLocation,
           end_location_id: endLocation,
+          start_day: startDate,
           status: tab !== "all" && tab !== 1 ? tab : null,
           upcoming: tab === 1 ? true : false,
         });
@@ -52,7 +53,7 @@ const InstructionSchedule = () => {
       }
     };
     fetchTours();
-  }, [search, startLocation, endLocation, pagination, tab]);
+  }, [search, startLocation, endLocation, pagination, tab, startDate]);
 
   useEffect(() => {
     const fetchLocations = async () => {

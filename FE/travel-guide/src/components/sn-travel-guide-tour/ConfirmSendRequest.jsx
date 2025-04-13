@@ -16,6 +16,8 @@ const ConfirmSendRequest = ({ tourId, open, onClose }) => {
     } catch (error) {
       console.error("Error sending request:", error);
       alert(error.message);
+    } finally {
+      onClose();
     }
   };
 
