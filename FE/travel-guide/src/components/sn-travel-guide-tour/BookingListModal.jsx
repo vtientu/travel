@@ -19,7 +19,7 @@ const BookingListModal = ({ bookingList, open, onClose }) => {
         </div>
 
         <div className="flex flex-col h-full">
-          <div className="h-2/5 overflow-y-auto">
+          <div className="h-4/5 overflow-y-auto">
             <table className="w-full text-sm">
               <thead className="text-center border-b">
                 <tr>
@@ -69,7 +69,13 @@ const BookingListModal = ({ bookingList, open, onClose }) => {
       <BookingDetailsModal
         booking={booking}
         open={!!booking}
-        onClose={() => setBooking(null)}
+        onClose={() => {
+          setBooking(null);
+        }}
+        onSubmit={() => {
+          setBooking(null);
+          onClose();
+        }}
       />
     </div>
   );

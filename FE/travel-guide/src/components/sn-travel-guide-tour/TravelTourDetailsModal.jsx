@@ -3,9 +3,11 @@ import { PencilIcon, XIcon } from "lucide-react";
 import { getTravelTourDetailForGuide } from "../../services/API/guide-tour.service";
 import { formatDate } from "../../utils/dateUtil";
 import BookingListModal from "./BookingListModal";
+import BookingDetailsModal from "./BookingDetailsModal";
 
 const TravelTourDetailsModal = ({ tourSelected, onClose, open }) => {
   const [travelTourDetail, setTravelTourDetail] = useState(null);
+  const [booking, setBooking] = useState(null);
   const [openBookingListModal, setOpenBookingListModal] = useState(false);
 
   const handleClose = () => {
@@ -193,7 +195,7 @@ const TravelTourDetailsModal = ({ tourSelected, onClose, open }) => {
                       <th className="p-2">Mã đặt Tour</th>
                       <th className="p-2">Tên người đặt</th>
                       <th className="p-2">Số điện thoại</th>
-                      <th className="p-2">Thao tác</th>
+                      <th className="p-2 text-center">Thao tác</th>
                     </tr>
                   </thead>
                   <tbody className="overflow-y-auto">
@@ -202,8 +204,11 @@ const TravelTourDetailsModal = ({ tourSelected, onClose, open }) => {
                         <td className="p-2">{booking.booking_code}</td>
                         <td className="p-2">{booking.name}</td>
                         <td className="p-2">{booking.phone}</td>
-                        <td className="p-2">
-                          <PencilIcon className="w-4 h-4 cursor-pointer" />
+                        <td className="p-2 flex justify-center">
+                          <PencilIcon
+                            className="w-4 h-4 cursor-pointer"
+                            onClick={() => setBooking(booking)}
+                          />
                         </td>
                       </tr>
                     ))}
@@ -220,11 +225,20 @@ const TravelTourDetailsModal = ({ tourSelected, onClose, open }) => {
           >
             Hủy
           </button>
-          <button className="btn bg-red-600 text-white rounded-md px-4 py-2 text-sm">
+          {/* <button className="btn bg-red-600 text-white rounded-md px-4 py-2 text-sm">
             Cập nhật
-          </button>
+          </button> */}
         </div>
       </div>
+      <BookingDetailsModal
+        booking={booking}
+        open={!!booking}
+        onClose={() => setBooking(null)}
+        onSubmit={() => {
+          setBooking(null);
+          handleClose();
+        }}
+      />
       <BookingListModal
         bookingList={travelTourDetail?.bookings}
         open={openBookingListModal}

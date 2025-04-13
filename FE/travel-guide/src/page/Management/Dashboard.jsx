@@ -7,7 +7,6 @@ import Feedback from "../../components/sn-dashboard/Feedback";
 
 const Dashboard = () => {
   const [travelTours, setTravelTours] = useState([]);
-  const [feedbacks, setFeedbacks] = useState([]);
 
   const DEFAULT_FEEDBACKS = [
     {
