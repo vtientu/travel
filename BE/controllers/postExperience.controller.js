@@ -239,3 +239,29 @@ exports.rejectPostExperience = async (req, res) => {
     });
   }
 };
+
+//Tăng số lượt xem của bài viết trải nghiệm
+exports.incrementViews = async (req, res) => {
+  try {
+    const postId = req.params.id;
+    const postExperience = await PostExperience.findByPk(postId);
+    if (!postExperience) {
+      return res
+        .status(404)
+        .json({ message: "Không tìm thấy bài viết trải nghiệm!" });
+    }
+
+    postExperience.views += 1; // Tăng số lượt xem
+    await postExperience.save();
+
+    res.status(200).json({
+      message: "Tăng số lượt xem bài viết trải nghiệm thành công!",
+      views: postExperience.views,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Lỗi khi tăng số lượt xem bài viết trải nghiệm",
+      error: error.message,
+    });
+  }
+};

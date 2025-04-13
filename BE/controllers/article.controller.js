@@ -156,3 +156,31 @@ exports.deleteArticle = async (req, res) => {
     });
   }
 };
+
+//Tăng số lượt xem của bài viết
+exports.incrementViews = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const article = await Article.findByPk(id);
+
+    if (!article) {
+      return res.status(404).json({
+        message: "Không tìm thấy bài viết!",
+      });
+    }
+
+    article.views += 1;
+    await article.save();
+
+    res.status(200).json({
+      message: "Tăng số lượt xem thành công!",
+      views: article.views,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Lỗi khi tăng số lượt xem!",
+      error: error.message,
+    });
+  }
+};
