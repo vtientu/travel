@@ -16,6 +16,10 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      alias: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       description_post: {
         type: Sequelize.STRING,
         allowNull: false,

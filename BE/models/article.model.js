@@ -46,6 +46,10 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: true,
         defaultValue: Sequelize.NOW,
       },
+      article_title: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
     },
     {
       tableName: "article",

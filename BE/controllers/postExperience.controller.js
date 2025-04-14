@@ -1,4 +1,5 @@
 const db = require("../models");
+const slugify = require("slugify");
 const PostExperience = db.PostExperience;
 const User = db.User;
 
@@ -74,6 +75,16 @@ exports.getPostExperienceByUserId = async (req, res) => {
   }
 };
 
+const removeVietnameseTones = (str) => {
+  return str
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") // Loại bỏ dấu
+    .replace(/đ/g, "d") // Thay thế "đ" thành "d"
+    .replace(/Đ/g, "D") // Thay thế "Đ" thành "D"
+    .replace(/[^a-zA-Z0-9\s-]/g, "") // Loại bỏ ký tự đặc biệt
+    .trim();
+};
+
 // Tạo bài viết trải nghiệm mới
 exports.createPostExperience = async (req, res) => {
   try {
@@ -88,6 +99,15 @@ exports.createPostExperience = async (req, res) => {
       return res.status(404).json({ message: "Không tìm thấy người dùng!" });
     }
 
+    // Xử lý tiếng Việt trước khi tạo alias
+    const processedTitle = removeVietnameseTones(title_post);
+
+    // Tạo alias từ title_post
+    const alias = slugify(processedTitle, {
+      lower: true, // Chuyển thành chữ thường
+      strict: true, // Loại bỏ ký tự đặc biệt
+    });
+
     // Tạo mới bài viết trải nghiệm
     const newPostExperience = await PostExperience.create({
       user_id,
@@ -95,6 +115,7 @@ exports.createPostExperience = async (req, res) => {
       description_post,
       post_date,
       postEx_album,
+      alias,
     });
 
     res.status(201).json({
@@ -127,8 +148,18 @@ exports.updatePostExperience = async (req, res) => {
     }
 
     // Cập nhật bài viết trải nghiệm
-    if (title_post != undefined)
-      postExperience.title_post = title_post || postExperience.title_post;
+    if (title_post !== undefined) {
+      postExperience.title_post = title_post;
+
+      // Xử lý tiếng Việt trước khi tạo alias
+      const processedTitle = removeVietnameseTones(title_post);
+
+      // Tạo lại alias nếu title_post thay đổi
+      postExperience.alias = slugify(processedTitle, {
+        lower: true,
+        strict: true,
+      });
+    }
     if (description_post != undefined)
       postExperience.description_post =
         description_post || postExperience.description_post;

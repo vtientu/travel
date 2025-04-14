@@ -1,6 +1,8 @@
 const jwt = require("jsonwebtoken");
 const { User, Role, Customer } = require("../models");
 const bcrypt = require("bcryptjs");
+const crypto = require("crypto");
+const nodemailer = require("nodemailer");
 const dotenv = require("dotenv");
 dotenv.config();
 
@@ -191,10 +193,265 @@ const getProfile = async (req, res) => {
   }
 };
 
+// Gửi mã xác thực quên mật khẩu
+const sendResetCode = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    // Kiểm tra email có tồn tại không
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return res.status(404).json({ message: "Email không tồn tại!" });
+    }
+
+    // Tạo mã xác thực 6 số
+    const resetCode = crypto.randomInt(100000, 999999).toString();
+
+    // Lưu mã xác thực vào user (hoặc lưu vào bảng riêng nếu cần)
+    user.reset_code = resetCode;
+    user.reset_code_expiry = new Date(Date.now() + 10 * 60 * 1000); // Hết hạn sau 10 phút
+    await user.save();
+
+    // Gửi email chứa mã xác thực
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    const mailOptions = {
+      from: '"Việt Du Ký" <titi2024hd@gmail.com>',
+      to: email,
+      subject: "Mã xác thực quên mật khẩu",
+      html: `
+        <html>
+          <head>
+            <style>
+              body {
+                font-family: Arial, sans-serif;
+                line-height: 1.6;
+                color: #333;
+                background-color: #f9f9f9;
+                padding: 20px;
+              }
+              .email-container {
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 20px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                background-color: #fff;
+              }
+              h2 {
+                color: #4CAF50;
+                text-align: center;
+              }
+              p {
+                margin: 10px 0;
+              }
+              .code-box {
+                text-align: center;
+                margin: 20px 0;
+                padding: 10px;
+                border: 1px dashed #FF5722;
+                background-color: #fff7f0;
+                font-size: 1.5em;
+                color: #FF5722;
+                font-weight: bold;
+              }
+              .footer {
+                text-align: center;
+                margin-top: 20px;
+                font-size: 0.9em;
+                color: #666;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="email-container">
+              <h2>Yêu cầu đặt lại mật khẩu</h2>
+              <p>Xin chào,</p>
+              <p>Bạn đã yêu cầu đặt lại mật khẩu. Đây là mã xác thực của bạn:</p>
+              <div class="code-box">${resetCode}</div>
+              <p>Mã này sẽ hết hạn sau <strong>10 phút</strong>.</p>
+              <p>Nếu bạn không yêu cầu đặt lại mật khẩu, vui lòng bỏ qua email này.</p>
+              <br>
+              <p>Trân trọng,</p>
+              <p><strong>Đội ngũ hỗ trợ Việt Du Ký</strong></p>
+              <div class="footer">
+                <p>© 2025 Việt Du Ký. Tất cả các quyền được bảo lưu.</p>
+              </div>
+            </div>
+          </body>
+        </html>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res
+      .status(200)
+      .json({ message: "Mã xác thực đã được gửi đến email của bạn!" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Lỗi khi gửi mã xác thực!", error: error.message });
+  }
+};
+
+// Gửi lại mã xác thực quên mật khẩu
+const resendResetCode = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    // Kiểm tra email có tồn tại không
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return res.status(404).json({ message: "Email không tồn tại!" });
+    }
+
+    // Tạo mã xác thực mới
+    const resetCode = crypto.randomInt(100000, 999999).toString();
+
+    // Lưu mã xác thực mới vào user
+    user.reset_code = resetCode;
+    user.reset_code_expiry = new Date(Date.now() + 10 * 60 * 1000); // Hết hạn sau 10 phút
+    await user.save();
+
+    // Gửi email chứa mã xác thực mới
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    const mailOptions = {
+      from: '"Việt Du Ký" <titi2024hd@gmail.com>',
+      to: email,
+      subject: "Mã xác thực mới",
+      html: `
+        <html>
+          <head>
+            <style>
+              body {
+                font-family: Arial, sans-serif;
+                line-height: 1.6;
+                color: #333;
+                background-color: #f9f9f9;
+                padding: 20px;
+              }
+              .email-container {
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 20px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                background-color: #fff;
+              }
+              h2 {
+                color: #4CAF50;
+                text-align: center;
+              }
+              p {
+                margin: 10px 0;
+              }
+              .code-box {
+                text-align: center;
+                margin: 20px 0;
+                padding: 10px;
+                border: 1px dashed #FF5722;
+                background-color: #fff7f0;
+                font-size: 1.5em;
+                color: #FF5722;
+                font-weight: bold;
+              }
+              .footer {
+                text-align: center;
+                margin-top: 20px;
+                font-size: 0.9em;
+                color: #666;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="email-container">
+              <h2>Yêu cầu gửi lại mã xác thực</h2>
+              <p>Xin chào,</p>
+              <p>Đây là mã xác thực mới của bạn:</p>
+              <div class="code-box">${resetCode}</div>
+              <p>Mã này sẽ hết hạn sau <strong>10 phút</strong>.</p>
+              <p>Nếu bạn không yêu cầu, vui lòng bỏ qua email này.</p>
+              <br>
+              <p>Trân trọng,</p>
+              <p><strong>Đội ngũ hỗ trợ Việt Du Ký</strong></p>
+              <div class="footer">
+                <p>© 2025 Việt Du Ký. Tất cả các quyền được bảo lưu.</p>
+              </div>
+            </div>
+          </body>
+        </html>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res
+      .status(200)
+      .json({ message: "Mã xác thực mới đã được gửi đến email của bạn!" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Lỗi khi gửi lại mã xác thực!", error: error.message });
+  }
+};
+
+// Đổi mật khẩu
+const resetPassword = async (req, res) => {
+  try {
+    const { email, resetCode, newPassword, confirmPassword } = req.body;
+
+    // Kiểm tra email và mã xác thực
+    const user = await User.findOne({ where: { email } });
+    if (!user || user.reset_code !== resetCode) {
+      return res.status(400).json({ message: "Mã xác thực không hợp lệ!" });
+    }
+
+    // Kiểm tra mã xác thực có hết hạn không
+    if (new Date() > new Date(user.reset_code_expiry)) {
+      return res.status(400).json({ message: "Mã xác thực đã hết hạn!" });
+    }
+
+    // Kiểm tra mật khẩu mới và xác nhận mật khẩu
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({ message: "Mật khẩu không khớp!" });
+    }
+
+    // Cập nhật mật khẩu mới
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    user.reset_code = null; // Xóa mã xác thực sau khi sử dụng
+    user.reset_code_expiry = null;
+    await user.save();
+
+    res.status(200).json({ message: "Đổi mật khẩu thành công!" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Lỗi khi đổi mật khẩu!", error: error.message });
+  }
+};
+
 module.exports = {
   register,
   login,
   googleAuth,
   googleLogin,
   getProfile,
+  sendResetCode,
+  resetPassword,
+  resendResetCode,
 };

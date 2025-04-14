@@ -16,13 +16,13 @@ router.get(
 );
 router.post(
   "/create",
-  authenticateUser,
+  // authenticateUser,
   uploadPostExperience.array("postEx_album", 10),
   postExperienceController.createPostExperience
 );
 router.put(
   "/update/:id",
-  authenticateUser,
+  // authenticateUser,
   uploadPostExperience.array("postEx_album", 10),
   postExperienceController.updatePostExperience
 );
