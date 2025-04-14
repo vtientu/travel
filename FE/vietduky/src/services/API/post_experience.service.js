@@ -33,4 +33,10 @@ export const PostExperienceService = {
             method: "DELETE",
         });
     },
+    incrementViews: (id) => {
+        return restClient({
+            url: `post-experience/increment-views/${id}`,
+            method: "POST",
+        });
+    }
 };

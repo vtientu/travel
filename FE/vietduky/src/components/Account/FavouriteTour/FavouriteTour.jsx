@@ -1,4 +1,5 @@
 import Icons from "@/components/Icons/Icon";
+import { FavouriteTourService } from "@/services/API/favourite_tour.service";
 import { TourService } from "@/services/API/tour.service";
 import { TravelTourService } from "@/services/API/travel_tour.service";
 import { useState, useEffect } from "react";
@@ -10,26 +11,14 @@ import {
 } from "react-icons/ai"; // Import heart icons
 import { useNavigate } from "react-router-dom";
 
-export default function FavouriteTourCard() {
+export default function FavouriteTourCard({ favoriteTours, setFavoriteTours }) { // Nhận props ở đây
   const [tours, setTours] = useState([]);
   const [travelTours, setTravelTours] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6;
+  const user = JSON.parse(localStorage.getItem("user"));
   const navigate = useNavigate();
 
   const [currentDateIndex, setCurrentDateIndex] = useState(0);
   const maxVisibleDates = 4;
-
-  const [favoriteTours, setFavoriteTours] = useState([]);
-
-  const userId = JSON.parse(localStorage.getItem("user"))?.id; // Get the user ID
-  const storageKey = `favoriteTours_${userId}`; // Create the storage key based on user ID
-
-  useEffect(() => {
-    // Load favorite tours from local storage
-    const storedFavorites = JSON.parse(localStorage.getItem(storageKey)) || [];
-    setFavoriteTours(storedFavorites);
-  }, [storageKey]);
 
   useEffect(() => {
     const fetchTours = async () => {
@@ -54,31 +43,31 @@ export default function FavouriteTourCard() {
     fetchTravelTours();
   }, []);
 
-  // Filter tours to only include favorites
-  const filteredTours = tours.filter(tour => favoriteTours.includes(tour.id));
-  const totalPages = Math.ceil(filteredTours.length / itemsPerPage);
-  const paginatedTours = filteredTours.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  const handleToggleFavorite = async (tourId) => {
+    try {
+      const data = {
+        user_id: user.id,
+        tour_id: tourId,
+      };
+      
+      // Gọi API để xóa tour khỏi danh sách yêu thích
+      await FavouriteTourService.remove(data);
 
-  const toggleFavorite = (tourId) => {
-    setFavoriteTours((prevFavorites) => {
-      const updatedFavorites = prevFavorites.includes(tourId)
-        ? prevFavorites.filter((id) => id !== tourId) // Remove from favorites
-        : [...prevFavorites, tourId]; // Add to favorites
-
-      // Update local storage
-      localStorage.setItem(storageKey, JSON.stringify(updatedFavorites));
-
-      return updatedFavorites;
-    });
+      // Cập nhật lại danh sách favoriteTours
+      setFavoriteTours((prevFavorites) => 
+        prevFavorites.filter(favTour => favTour.tour_id !== tourId)
+      );
+    } catch (error) {
+      console.error("Error updating favorite status:", error);
+    }
   };
+
+  const filteredTours = tours.filter(tour => favoriteTours.some(favTour => favTour.tour_id === tour.id));
 
   return (
     <div>
-      <div>
-        {paginatedTours.map((tour) => {
+      {filteredTours.length > 0 ? (
+        filteredTours.map((tour) => {
           const tourDates = travelTours
             .filter((tt) => tt.tour_id === tour.id)
             .map((tt) => new Date(tt.start_day).toLocaleDateString("vi-VN"));
@@ -121,15 +110,14 @@ export default function FavouriteTourCard() {
                 </span>
                 {/* Heart Icon for favorites */}
                 <div className="absolute top-2 right-2">
-                  {favoriteTours.includes(tour.id) ? (
+                  {favoriteTours.some(favTour => favTour.tour_id === tour.id) ? (
                     <AiFillHeart
                       className="text-red-600 cursor-pointer"
-                      onClick={() => toggleFavorite(tour.id)}
+                      onClick={() => handleToggleFavorite(tour.id)}
                     />
                   ) : (
                     <AiOutlineHeart
                       className="text-gray-600 cursor-pointer"
-                      onClick={() => toggleFavorite(tour.id)}
                     />
                   )}
                 </div>
@@ -226,8 +214,10 @@ export default function FavouriteTourCard() {
               </div>
             </div>
           );
-        })}
-      </div>
+        })
+      ) : (
+        <div>Không có tour yêu thích nào.</div>
+      )}
     </div>
   );
 }

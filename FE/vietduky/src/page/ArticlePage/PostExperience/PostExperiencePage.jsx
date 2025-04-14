@@ -1,6 +1,5 @@
 import SidebarArticle from "@/components/Article/SidebarArticle/SidebarArticle";
 import LayoutArticle from "@/layouts/LayoutArticle";
-import { ArticleService } from "@/services/API/article.service";
 import { PostExperienceService } from "@/services/API/post_experience.service";
 import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
@@ -21,6 +20,18 @@ const PostExperiencePage = () => {
     fetchArticles();
   }, []);
 
+  const handleIncrementViewCount = async (id) => {
+    try {
+      await PostExperienceService.incrementViews(id);
+    } catch (error) {
+      console.error("Error incrementing view count:", error);
+    }
+  };
+
+  const handleArticleClick = (id) => {
+    handleIncrementViewCount(id); // Tăng lượt xem khi nhấp vào bài viết
+  };
+
   console.log("Articles data:", postExperiences);
 
   return (
@@ -39,13 +50,20 @@ const PostExperiencePage = () => {
                 Việt Du Ký &gt; Blog &gt; Muôn màu
               </p>
               <h2 className="text-xl font-semibold mb-2">
-                <NavLink to={`/article/post-experience/${postExperiences[0].id}`} className="hover:text-red-500">
+                <NavLink 
+                  to={`/article/post-experience/${postExperiences[0].id}`} 
+                  className="hover:text-red-500"
+                  onClick={() => handleArticleClick(postExperiences[0].id)}
+                >
                   {postExperiences[0].title_post}
                 </NavLink>
               </h2>
               <p className="text-sm text-gray-700 mb-4">
                 {postExperiences[0].description_post}
               </p>
+              <div className="text-xs text-gray-500 mb-2">
+                {postExperiences[0].views} lượt xem {/* Hiển thị số lượt xem */}
+              </div>
               <button className="bg-red-600 text-white text-sm px-4 py-2 rounded hover:bg-red-700 transition">
                 XEM THÊM...
               </button>
@@ -63,12 +81,16 @@ const PostExperiencePage = () => {
                 className="w-full rounded object-cover"
               />
               <h3 className="font-semibold text-base">
-                <NavLink to={`/article/post-experience/${article.id}`} className="hover:text-blue-500">
+                <NavLink 
+                  to={`/article/post-experience/${article.id}`} 
+                  className="hover:text-blue-500"
+                  onClick={() => handleArticleClick(article.id)}
+                >
                   {article.title_post}
                 </NavLink>
               </h3>
               <div className="text-xs text-gray-500">
-                {new Date(article.post_date).toLocaleDateString()} &nbsp;|&nbsp; 1944 views
+                {new Date(article.post_date).toLocaleDateString()} &nbsp;|&nbsp; {article.views} lượt xem {/* Hiển thị số lượt xem */}
               </div>
               <p className="text-sm text-gray-600">
                 {article.description_post}

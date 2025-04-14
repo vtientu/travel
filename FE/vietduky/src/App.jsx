@@ -44,8 +44,6 @@ function App() {
 
     fetchDirectory();
   }, []);
-
-  console.log("Directory data:", directory);
   
   return (
     <BrowserRouter>

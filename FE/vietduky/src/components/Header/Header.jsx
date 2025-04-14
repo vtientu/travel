@@ -1,7 +1,7 @@
 import Icons from "../Icons/Icon";
 import ModalLogin from "../ModalLogin/ModalLogin";
 import { StorageService } from "@/services/storage/StorageService";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import HeaderMenu from "./HeaderMenu";
 
@@ -11,6 +11,7 @@ export default function Header() {
   const [isOpenMenu, setIsOpenMenu] = useState(false);
   const [avatar, setAvatar] = useState(Icons.User);
   const [user, setUser] = useState(null);
+  const menuRef = useRef(null); // Tạo ref cho menu
 
   // Lấy thông tin user khi component mount
   useEffect(() => {
@@ -37,6 +38,20 @@ export default function Header() {
       setIsOpenLogin(true);
     }
   };
+
+  // Đóng menu khi click ra ngoài
+  const handleClickOutside = (event) => {
+    if (menuRef.current && !menuRef.current.contains(event.target)) {
+      setIsOpenMenu(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <header className="bg-red-700 text-white py-4 px-6 flex items-center justify-between relative">
@@ -65,7 +80,7 @@ export default function Header() {
         </nav>
 
         {/* Ảnh Avatar mở menu */}
-        <div className="relative ml-16">
+        <div className="relative ml-16" ref={menuRef}> {/* Gán ref vào div này */}
           <img
             onClick={handleAvatarClick}
             src={avatar}
@@ -83,9 +98,7 @@ export default function Header() {
           {isOpenMenu && (
             <div className="absolute right-0 mt-2 w-96 bg-white text-black rounded-md border border-gray-300 shadow-lg z-50">
               {user ? (
-                <>
-                  <HeaderMenu user={user} handleSignout={handleSignout}/>
-                </>
+                <HeaderMenu user={user} handleSignout={handleSignout}/>
               ) : (
                 <></>
               )}

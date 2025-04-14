@@ -1,63 +1,39 @@
 import Icons from "@/components/Icons/Icon";
-import React, { useState, useEffect } from "react";
+import { FavouriteTourService } from "@/services/API/favourite_tour.service";
+import React, { useState } from "react";
 
 const TopicTourCard = ({
-  id, // Expect tour ID to be passed down
+  id,
   name_tour,
-  endLocation,
-  activity_description,
   price_tour,
-  typeTour,
-  album,
   day_number,
-  startLocation,
-  userId, // Expect userId to be passed down
+  album,
+  userId,
+  favoriteTours,
+  setFavoriteTours,
 }) => {
-  const storageKey = `favoriteTours_${userId}`;
-  const [isFavorite, setIsFavorite] = useState(false);
+  const isFavorite = favoriteTours.some(favTour => favTour.tour_id === id); // Kiểm tra nếu tour là yêu thích
 
-  useEffect(() => {
-    // Check if the tour is already a favorite
-    const storedFavorites = JSON.parse(localStorage.getItem(storageKey)) || [];
-    setIsFavorite(storedFavorites.includes(id)); // Check if ID is in favorites
-  }, [id, storageKey]);
-
-  const handleFavoriteToggle = (event) => {
-    event.stopPropagation(); // Prevent event propagation
-    setIsFavorite((prev) => {
-      const newFavoriteStatus = !prev;
-      const storedFavorites = JSON.parse(localStorage.getItem(storageKey)) || [];
-      
-      // Update favorites in localStorage
-      if (newFavoriteStatus) {
-        // Add to favorites if not already present
-        if (!storedFavorites.includes(id)) {
-          storedFavorites.push(id);
-        }
-      } else {
-        // Remove from favorites
-        const index = storedFavorites.indexOf(id);
-        if (index > -1) {
-          storedFavorites.splice(index, 1); // Remove the tour
-        }
-      }
-      localStorage.setItem(storageKey, JSON.stringify(storedFavorites));
-      return newFavoriteStatus;
-    });
+  const handleFavoriteToggle = async (event) => {
+    event.stopPropagation(); // Ngăn chặn sự kiện click lan ra ngoài
+    const data = { user_id: userId, tour_id: id };
+    
+    if (isFavorite) {
+      // Xóa tour khỏi danh sách yêu thích
+      await FavouriteTourService.remove(data);
+      setFavoriteTours(prev => prev.filter(favTour => favTour.tour_id !== id));
+    } else {
+      // Thêm tour vào danh sách yêu thích
+      await FavouriteTourService.add(data); // Giả sử bạn có phương thức này để thêm tour yêu thích
+      setFavoriteTours(prev => [...prev, { tour_id: id }]);
+    }
   };
 
-  
-
   return (
-    <div className="w-96 px-2 py-3 bg-white rounded-2xl flex flex-col gap-2 hover:bg-gray-300 cursor-pointer relative group">
-      {typeTour && (
-        <div className="absolute z-10 flex flex-col items-center -left-0 bg-red-800 shadow-md">
-          <span className="text-white text-sm px-3 py-2.5 font-bold leading-tight">
-            ✨ {typeTour.name_type}
-          </span>
-          <div className="absolute -bottom-2 bg-red-900 -left-0 w-0 h-0 border-r-[8px] border-r-transparent border-b-[8px] border-b-white group-hover:border-b-gray-300 opacity-90" />
-        </div>
-      )}
+    <div
+      className="w-96 px-2 py-3 bg-white rounded-2xl flex flex-col gap-2 hover:bg-gray-300 cursor-pointer relative group"
+      onClick={() => navigate(`/tour/${id}`)} // Điều hướng khi click vào card
+    >
       {/* Hình ảnh + Thời gian */}
       <div className="relative h-60 rounded-2xl overflow-hidden">
         <img
@@ -83,7 +59,6 @@ const TopicTourCard = ({
       {/* Thông tin tour */}
       <div className="flex justify-between items-center text-blue-950 text-xs font-normal">
         <div className="flex items-center gap-2">
-          <img src={Icons.Clock_3} alt="Clock" className="w-4 h-4" />
           <span>
             Thời gian:{" "}
             {day_number > 1
@@ -91,21 +66,6 @@ const TopicTourCard = ({
               : `${day_number} Ngày ${day_number} Đêm`}
           </span>
         </div>
-        <div className="flex items-center gap-2">
-          <img src={Icons.ConciergeBell} alt="Concierge" className="w-4 h-4" />
-          <img src={Icons.Plane} alt="Plane" className="w-4 h-4" />
-          <img src={Icons.Car} alt="Car" className="w-4 h-4" />
-        </div>
-      </div>
-      {/* Số lượng chỗ ngồi */}
-      <div className="flex items-center gap-2">
-        <div className="flex items-center gap-2">
-          <img src={Icons.AimChair} alt="Seats" className="w-4 h-4" />
-          <span className="text-neutral-900 text-sm">
-            Số lượng chỗ ngồi còn trống:
-          </span>
-        </div>
-        <span className="text-red-800 text-sm font-bold"></span>
       </div>
       {/* Giá cả */}
       <p className="text-gray-500 text-xs">Giá mỗi đêm chưa gồm thuế và phí</p>
