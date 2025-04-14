@@ -100,6 +100,9 @@ export default function CustomerList({ passengerData, bookingData }) {
     return passengerList.length * pricePerPassenger; // Tính tổng giá
   };
 
+  // console.log();
+  
+
   return (
     <div className="border border-gray-400 rounded-lg overflow-hidden">
       {/* Header */}

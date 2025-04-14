@@ -22,7 +22,7 @@ const TextEditor = ({ value, onChange }) => {
   };
 
   return (
-    <div className="text-editor w-full border rounded-lg shadow bg-white">
+    <div className="text-editor w-full border rounded-lg bg-white">
       {/* Custom Toolbar */}
       <div id="custom-toolbar">
         <button className="ql-undo" onClick={handleUndo}>
@@ -61,7 +61,8 @@ const TextEditor = ({ value, onChange }) => {
             container: "#custom-toolbar",
           },
         }}
-        placeholder="Nhập số lượng người"
+        placeholder="Nhập nội dung bài viết của bạn..."
+        theme="snow"
       />
     </div>
   );

@@ -1,4 +1,5 @@
 import { Bell, CalendarDays, Heart, Star, User } from "lucide-react";
+import { FaHistory, } from "react-icons/fa";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Card } from "react-bootstrap";
 
@@ -8,10 +9,10 @@ export default function SideBarAccount() {
 
   const menuItems = [
     { key: "Hồ sơ của tôi", icon: User, path: "/profile" },
-    { key: "Lịch sử đặt Tour", icon: CalendarDays, path: "/bookingHistory" },
+    { key: "Lịch sử đặt Tour", icon: FaHistory, path: "/bookingHistory" },
     { key: "Đánh giá", icon: Star, path: "/reviews" },
     { key: "Danh sách yêu thích", icon: Heart, path: "/favorites" },
-    { key: "Cài đặt thông báo", icon: Bell, path: "/notifications" },
+    { key: "Cài đặt thông báo", icon: Bell, path: "/settings" },
   ];
 
   return (

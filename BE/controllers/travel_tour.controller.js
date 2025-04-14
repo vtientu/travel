@@ -55,24 +55,23 @@ exports.getTravelTourById = async (req, res) => {
   try {
     const travelTourId = req.params.id;
     const travelTour = await TravelTour.findByPk(travelTourId, {
-      include: [
-        {
-          model: Tour,
-          as: "Tour",
-          include: [
-            {
-              model: Location,
-              as: "StartLocation",
-              attributes: ["id", "name_location"],
-            },
-            {
-              model: Location,
-              as: "EndLocation",
-              attributes: ["id", "name_location"],
-            },
-          ],
-        },
-      ],
+
+      include: [{
+        model: Tour,
+        as: 'Tour',
+        include: [
+          {
+            model: Location,
+            as: 'startLocation',
+            attributes: ['id', 'name_location']
+          },
+          {
+            model: Location,
+            as: 'endLocation',
+            attributes: ['id', 'name_location']
+          }
+        ]
+      }]
     });
 
     if (!travelTour) {

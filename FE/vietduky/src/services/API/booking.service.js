@@ -51,5 +51,14 @@ export const BookingService = {
             },
         });
     },
+    getBookingByUserId: (id) => {
+        return restClient({
+            url: `booking/user/${id}`,
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${StorageService.getToken()}`,
+            },
+        });
+    }
 
 };

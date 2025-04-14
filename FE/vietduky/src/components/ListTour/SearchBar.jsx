@@ -1,7 +1,7 @@
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 
-export default function SearchBar({ tours, travelTours }) {
+export default function SearchBar({ tours, travelTours, filteredTours }) {
   const [sortOption, setSortOption] = useState("Ngày khởi hành gần nhất");
 
   return (

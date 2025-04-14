@@ -10,3 +10,7 @@
 .ql-undo:hover, .ql-redo:hover {
   color: #333;
 }
+
+.text-editor .ql-container {
+  min-height: 277px; /* Điều chỉnh chiều cao tại đây */
+}

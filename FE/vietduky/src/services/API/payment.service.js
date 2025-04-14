@@ -1,9 +1,9 @@
 import restClient from "../restClient";
 
 export const PaymentService = {
-    checkPayemnt: (data) => {
+    checkPayment: (data) => {
         return restClient({
-            url: "payment",
+            url: "payment/check",
             method: "POST",
             data,
         });
