@@ -22,7 +22,7 @@ const TextEditor = ({ value, onChange }) => {
   };
 
   return (
-    <div className="text-editor w-full border rounded-lg bg-white">
+    <div className="text-editor w-full bg-white">
       {/* Custom Toolbar */}
       <div id="custom-toolbar">
         <button className="ql-undo" onClick={handleUndo}>

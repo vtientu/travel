@@ -1,4 +1,5 @@
 import ModalAddSharePost from "./ModalAddSharePost";
+import ModalEditSharePost from "./ModalEditSharePost";
 import Icons from "@/components/Icons/Icon";
 import { FeedbackService } from "@/services/API/feedback.service";
 import { PostExperienceService } from "@/services/API/post_experience.service";
@@ -16,7 +17,8 @@ const statusMap = {
 
 export default function ReviewTour() {
   const [activeTab, setActiveTab] = useState("review");
-  const [showModal, setShowModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [reviews, setReviews] = useState([]);
   const [sharedPosts, setSharedPosts] = useState([]);
   const user = JSON.parse(localStorage.getItem("user")) || null;
@@ -33,7 +35,9 @@ export default function ReviewTour() {
 
     const fetchPosts = async () => {
       try {
-        const response = await PostExperienceService.getPostExperienceByUserId(user?.id);
+        const response = await PostExperienceService.getPostExperienceByUserId(
+          user?.id
+        );
         setSharedPosts(response.data.data);
       } catch (error) {
         console.error("Error fetching posts:", error);
@@ -44,7 +48,7 @@ export default function ReviewTour() {
     fetchReviews();
   }, [user?.id]);
 
-  console.log("Shared Posts:", sharedPosts);
+  // console.log("Shared Posts:", sharedPosts);  
 
   const getRecommendationText = (rating) => {
     switch (rating) {
@@ -77,17 +81,20 @@ export default function ReviewTour() {
     <div className=" mx-auto px-4">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-semibold mb-4">Danh sách đánh giá</h2>
-        {activeTab === "shared" && ( // Chỉ hiển thị nút nếu activeTab là "shared"
+        {activeTab === "shared" && (
           <button
             className="bg-red-500 text-white px-4 py-1.5 rounded-lg"
-            onClick={() => setShowModal(true)}
+            onClick={() => setShowAddModal(true)}
           >
             Thêm bài viết đánh giá
           </button>
         )}
       </div>
 
-      <ModalAddSharePost isOpen={showModal} onClose={() => setShowModal(false)} />
+      <ModalAddSharePost
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+      />
 
       {/* Tabs */}
       <div className="flex space-x-4 border-b mb-6">
@@ -215,7 +222,7 @@ export default function ReviewTour() {
         sharedPosts.map((post) => {
           const postExAlbum = JSON.parse(post.postEx_album);
           const firstImage = postExAlbum[0];
-
+          
           return (
             <div
               key={post.id}
@@ -254,16 +261,22 @@ export default function ReviewTour() {
                   </div>
 
                   <p className="mt-5 text-sm text-gray-500">
-                    Viết bởi: {post?.customer?.first_name}{" "}
-                    {post?.customer?.last_name}
+                    Viết bởi: {post?.user?.displayName || "Người dùng ẩn danh"}
                   </p>
                 </div>
 
                 {/* Icons */}
                 <div className="flex items-center justify-center gap-3 pr-2 text-gray-500">
-                  <FiEdit2
-                    className="cursor-pointer hover:text-blue-500"
-                    title="Sửa bài viết"
+                  <button onClick={() => setShowEditModal(true)}>
+                    <FiEdit2
+                      className="cursor-pointer hover:text-blue-500"
+                      title="Sửa bài viết"
+                    />
+                  </button>
+                  <ModalEditSharePost
+                    isOpen={showEditModal}
+                    post={post}
+                    onClose={() => setShowEditModal(false)}
                   />
                   <FiExternalLink
                     className="cursor-pointer hover:text-blue-500"

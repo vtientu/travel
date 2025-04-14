@@ -140,7 +140,7 @@ export default function ModalAddSharePost({ isOpen, onClose }) {
           {/* Soạn thảo nội dung */}
           <div className="flex flex-col h-full col-span-3">
             <label className="text-sm font-medium mb-2">Bài viết</label>
-            <div className=" rounded flex-1 flex flex-col overflow-hidden">
+            <div className="flex-1 flex flex-col overflow-hidden">
               <TextEditor />
             </div>
           </div>
