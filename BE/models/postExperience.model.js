@@ -29,9 +29,9 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: true,
       },
       status: {
-        type: Sequelize.BOOLEAN,
+        type: Sequelize.INTEGER,
         allowNull: false,
-        defaultValue: false, // // 0: chưa duyệt, 1: đã duyệt
+        defaultValue: 0, // // 0: chưa duyệt, 1: đã duyệt, 2: đã từ chối
       },
       views: {
         type: Sequelize.INTEGER,

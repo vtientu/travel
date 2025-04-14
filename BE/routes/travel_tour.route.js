@@ -13,8 +13,8 @@ router.get("/guide", travelTourController.getListTravelTourForGuide);
 router.get("/:id", travelTourController.getTravelTourById);
 router.post(
   "/create",
-  // authenticateUser,
-  // authenticateAdmin,
+  authenticateUser,
+  authenticateAdmin,
   travelTourController.createTravelTour
 );
 router.put(
@@ -41,6 +41,5 @@ router.post(
   authenticateAdmin,
   travelTourController.closeTourWhenFull
 );
-
 
 module.exports = router;

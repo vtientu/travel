@@ -42,7 +42,7 @@ module.exports = (sequelize, Sequelize) => {
         defaultValue: 0,
       },
       article_date: {
-        type: Sequelize.DATEONLY,
+        type: Sequelize.DATE,
         allowNull: true,
         defaultValue: Sequelize.NOW,
       },

@@ -187,13 +187,13 @@ exports.approvePostExperience = async (req, res) => {
         .json({ message: "Không tìm thấy bài viết trải nghiệm!" });
     }
 
-    if (postExperience.status === true) {
+    if (postExperience.status === 1) {
       return res.status(400).json({
         message: "Bài viết trải nghiệm đã được duyệt trước đó rồi!",
       });
     }
 
-    postExperience.status = true; // Đánh dấu là đã duyệt
+    postExperience.status = 1; // Đánh dấu là đã duyệt
     await postExperience.save();
 
     res.status(200).json({
@@ -219,13 +219,13 @@ exports.rejectPostExperience = async (req, res) => {
         .json({ message: "Không tìm thấy bài viết trải nghiệm!" });
     }
 
-    if (postExperience.status === false) {
+    if (postExperience.status === 2) {
       return res.status(400).json({
         message: "Bài viết trải nghiệm đã được từ chối trước đó rồi!",
       });
     }
 
-    postExperience.status = false; // Đánh dấu là đã từ chối
+    postExperience.status = 2; // Đánh dấu là đã từ chối
     await postExperience.save();
 
     res.status(200).json({

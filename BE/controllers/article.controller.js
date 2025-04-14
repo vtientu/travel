@@ -171,7 +171,14 @@ exports.createArticle = async (req, res) => {
 exports.updateArticle = async (req, res) => {
   try {
     const { article_id } = req.params;
-    const { directory_id, user_id, alias, description } = req.body;
+    const {
+      directory_id,
+      user_id,
+      alias,
+      description,
+      true_featured,
+      true_active,
+    } = req.body;
 
     const album_post =
       req.files && req.files.length > 0
@@ -191,6 +198,8 @@ exports.updateArticle = async (req, res) => {
     if (alias !== undefined) article.alias = alias;
     if (album_post !== null) article.album_post = album_post;
     if (description !== undefined) article.description = description;
+    if (true_featured !== undefined) article.true_featured = true_featured;
+    if (true_active !== undefined) article.true_active = true_active;
 
     await article.save();
 
