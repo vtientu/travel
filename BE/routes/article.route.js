@@ -21,7 +21,7 @@ router.post(
 );
 router.put(
   "/update/:article_id",
-  authenticateAdmin,
+  // authenticateAdmin,
   uploadAlbumPost.array("album_post", 10),
   ArticleController.updateArticle
 );

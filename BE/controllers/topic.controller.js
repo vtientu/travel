@@ -141,6 +141,8 @@ exports.deleteTopic = async (req, res) => {
     });
   }
 };
+
+// Thêm tour vào chủ đề
 exports.addTourToTopic = async (req, res) => {
   try {
     const { topicId, tourIds } = req.body;
@@ -165,3 +167,29 @@ exports.addTourToTopic = async (req, res) => {
   }
 };
 
+// Xóa một hoặc nhiều tour khỏi chủ đề
+exports.removeToursFromTopic = async (req, res) => {
+  try {
+    const { topicId, tourIds } = req.body;
+    const topic = await Topic.findByPk(topicId);
+    if (!topic) {
+      return res.status(500).json({ message: "Không tìm thấy chủ đề!" });
+    }
+    const tours = await Tour.findAll({
+      where: { id: tourIds },
+    });
+    if (tours.length !== tourIds.length) {
+      return res
+        .status(500)
+        .json({ message: "Không tìm thấy một hoặc nhiều tour!" });
+    }
+    await topic.removeTours(tours);
+    res.status(200).json({ message: "Xóa tour khỏi chủ đề thành công!" });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({
+      message: "Lỗi khi xóa tour khỏi chủ đề!",
+      error: error.message,
+    });
+  }
+};
