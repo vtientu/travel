@@ -16,33 +16,27 @@ router.get(
 );
 router.get(
   "/:user_id",
-  authenticateUser,
+  authenticateAdmin,
   travelGuideController.getTravelGuidesByUser
 );
 router.post(
   "/create",
-  authenticateUser,
-  authenticateAdmin,
+  // authenticateAdmin,
   travelGuideController.createTravelGuide
 );
 router.put(
   "/update/:id",
-  authenticateUser,
   authenticateAdmin,
   travelGuideController.updateTravelGuide
 );
 router.delete(
   "/delete/:id",
-  authenticateUser,
   authenticateAdmin,
   travelGuideController.deleteTravelGuide
 );
 router.get(
-  "/tour/guide/:travelGuideId",
-  // authenticateUser,
-  // authenticateStaff,
+  "/location/:locationId",
   // authenticateAdmin,
-  travelGuideController.getToursByTravelGuideLocation
+  travelGuideController.getTravelGuidesByLocation
 );
-
 module.exports = router;

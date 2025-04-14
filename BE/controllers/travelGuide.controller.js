@@ -265,3 +265,49 @@ exports.getToursByTravelGuideLocation = async (req, res) => {
     });
   }
 };
+
+// Lấy danh sách TravelGuide theo Location
+exports.getTravelGuidesByLocation = async (req, res) => {
+  try {
+    const locationId = req.params.locationId;
+
+    const location = await Location.findByPk(locationId);
+    if (!location) {
+      return res.status(404).json({ message: "Không tìm thấy địa điểm!" });
+    }
+
+    // Lấy danh sách các TravelGuide liên kết với địa điểm
+    const travelGuides = await TravelGuide.findAll({
+      include: [
+        {
+          model: TravelGuideLocation,
+          as: "TravelGuideLocations",
+          where: { location_id: locationId },
+          include: [
+            {
+              model: Location,
+              as: "location",
+              attributes: ["id", "name_location"],
+            },
+          ],
+        },
+      ],
+    });
+
+    if (travelGuides.length === 0) {
+      return res.status(404).json({
+        message: "Không tìm thấy hướng dẫn viên nào cho địa điểm này!",
+      });
+    }
+
+    res.status(200).json({
+      message: "Lấy danh sách hướng dẫn viên theo địa điểm thành công!",
+      data: travelGuides,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Lỗi khi lấy danh sách hướng dẫn viên theo địa điểm!",
+      error: error.message,
+    });
+  }
+};
