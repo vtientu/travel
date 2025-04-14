@@ -52,6 +52,14 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: false,
         defaultValue: true,
       },
+      reset_code: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      reset_code_expiry: {
+        type: Sequelize.DATE,
+        allowNull: true,
+      },
     },
     {
       tableName: "user",

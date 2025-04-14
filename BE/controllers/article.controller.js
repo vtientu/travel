@@ -1,4 +1,5 @@
 const db = require("../models");
+const slugify = require("slugify");
 const Article = db.Article;
 const User = db.User;
 const Directory = db.Directory;
@@ -134,20 +135,39 @@ exports.getArticlesByUserId = async (req, res) => {
   }
 };
 
+const removeVietnameseTones = (str) => {
+  return str
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") // Loại bỏ dấu
+    .replace(/đ/g, "d") // Thay thế "đ" thành "d"
+    .replace(/Đ/g, "D") // Thay thế "Đ" thành "D"
+    .replace(/[^a-zA-Z0-9\s-]/g, "") // Loại bỏ ký tự đặc biệt
+    .trim();
+};
+
 //Thêm một bài viết mới
 exports.createArticle = async (req, res) => {
   try {
-    const { directory_id, user_id, alias, description } = req.body;
+    const { directory_id, user_id, article_title, description } = req.body;
 
     const album_post =
       req.files && req.files.length > 0
         ? JSON.stringify(req.files.map((file) => file.path))
         : null;
 
+    const processedTitle = removeVietnameseTones(article_title);
+
+    // Tạo alias từ article_title
+    const alias = slugify(processedTitle, {
+      lower: true, // Chuyển thành chữ thường
+      strict: true, // Loại bỏ ký tự đặc biệt
+    });
+
     // Tạo bài viết mới
     const data = {
       directory_id,
       user_id,
+      article_title,
       alias,
       album_post,
       description,
@@ -174,7 +194,7 @@ exports.updateArticle = async (req, res) => {
     const {
       directory_id,
       user_id,
-      alias,
+      article_title,
       description,
       true_featured,
       true_active,
@@ -195,11 +215,22 @@ exports.updateArticle = async (req, res) => {
 
     if (directory_id !== undefined) article.directory_id = directory_id;
     if (user_id !== undefined) article.user_id = user_id;
-    if (alias !== undefined) article.alias = alias;
     if (album_post !== null) article.album_post = album_post;
     if (description !== undefined) article.description = description;
     if (true_featured !== undefined) article.true_featured = true_featured;
     if (true_active !== undefined) article.true_active = true_active;
+    if (article_title !== undefined) {
+      article.article_title = article_title;
+
+      // Xử lý tiếng Việt trước khi tạo alias
+      const processedTitle = removeVietnameseTones(article_title);
+
+      // Tạo lại alias nếu article_title thay đổi
+      article.alias = slugify(processedTitle, {
+        lower: true,
+        strict: true,
+      });
+    }
 
     await article.save();
 
