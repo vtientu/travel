@@ -22,7 +22,7 @@ const TextEditor = ({ value, onChange }) => {
   };
 
   return (
-    <div className="text-editor w-full border rounded-lg bg-white">
+    <div className="text-editor w-full border rounded-lg shadow bg-white">
       {/* Custom Toolbar */}
       <div id="custom-toolbar">
         <button className="ql-undo" onClick={handleUndo}>
@@ -52,7 +52,7 @@ const TextEditor = ({ value, onChange }) => {
       </div>
 
       {/* Quill Editor */}
-      <ReactQuill
+      <ReactQuill className="h-[500px]"
         ref={quillRef}
         value={value}
         onChange={onChange}
@@ -61,8 +61,7 @@ const TextEditor = ({ value, onChange }) => {
             container: "#custom-toolbar",
           },
         }}
-        placeholder="Nhập nội dung bài viết của bạn..."
-        theme="snow"
+        placeholder="Nhập số lượng người"
       />
     </div>
   );

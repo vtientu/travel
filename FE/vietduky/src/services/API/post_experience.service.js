@@ -13,6 +13,12 @@ export const PostExperienceService = {
             method: "GET",
         });
     },
+    getPostExperienceByUserId: (userId) => {
+        return restClient({
+            url: `post-experience/user/${userId}`,
+            method: "GET",
+        });
+    },
     createPostExperience: (data) => {
         return restClient({
             url: "post-experience/create",
@@ -22,7 +28,7 @@ export const PostExperienceService = {
     },
     updatePostExperience: (id, data) => {
         return restClient({
-            url: `post-experience/${id}`,
+            url: `post-experience/update/${id}`,
             method: "PUT",
             data,
         });

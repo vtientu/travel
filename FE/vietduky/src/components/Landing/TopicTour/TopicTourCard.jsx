@@ -12,10 +12,10 @@ const TopicTourCard = ({
   favoriteTours,
   setFavoriteTours,
 }) => {
-  const isFavorite = favoriteTours.some(favTour => favTour.tour_id === id); // Kiểm tra nếu tour là yêu thích
+  const isFavorite = favoriteTours.some(favTour => favTour.tour_id === id);
 
   const handleFavoriteToggle = async (event) => {
-    event.stopPropagation(); // Ngăn chặn sự kiện click lan ra ngoài
+    event.stopPropagation();
     const data = { user_id: userId, tour_id: id };
     
     if (isFavorite) {
@@ -24,7 +24,7 @@ const TopicTourCard = ({
       setFavoriteTours(prev => prev.filter(favTour => favTour.tour_id !== id));
     } else {
       // Thêm tour vào danh sách yêu thích
-      await FavouriteTourService.add(data); // Giả sử bạn có phương thức này để thêm tour yêu thích
+      await FavouriteTourService.add(data);
       setFavoriteTours(prev => [...prev, { tour_id: id }]);
     }
   };
@@ -32,7 +32,7 @@ const TopicTourCard = ({
   return (
     <div
       className="w-96 px-2 py-3 bg-white rounded-2xl flex flex-col gap-2 hover:bg-gray-300 cursor-pointer relative group"
-      onClick={() => navigate(`/tour/${id}`)} // Điều hướng khi click vào card
+      onClick={() => navigate(`/tour/${id}`)}
     >
       {/* Hình ảnh + Thời gian */}
       <div className="relative h-60 rounded-2xl overflow-hidden">

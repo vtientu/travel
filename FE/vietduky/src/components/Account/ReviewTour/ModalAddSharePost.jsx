@@ -1,13 +1,10 @@
 import { PostExperienceService } from "@/services/API/post_experience.service";
 import { useState } from "react";
-import ReactQuill from "react-quill";
 import { toast } from "react-toastify";
-// Import ReactQuill
 import "react-quill/dist/quill.snow.css";
+import TextEditor from "@/lib/TextEditor";
 
-// Import Quill styles
-
-export default function ModalSharePost({ isOpen, onClose }) {
+export default function ModalAddSharePost({ isOpen, onClose }) {
   const [form, setForm] = useState({
     user_id: JSON.parse(localStorage.getItem("user"))?.id || "",
     title_post: "",
@@ -63,7 +60,7 @@ export default function ModalSharePost({ isOpen, onClose }) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-30 z-50 flex items-center justify-center">
-      <div className="bg-white rounded shadow-lg max-w-6xl w-full p-6 relative">
+      <div className="bg-white rounded shadow-lg max-w-5xl w-full p-6 relative">
         <button
           className="absolute top-3 right-4 text-xl text-gray-500 hover:text-red-500"
           onClick={onClose}
@@ -71,13 +68,13 @@ export default function ModalSharePost({ isOpen, onClose }) {
           ✕
         </button>
 
-        <h2 className="text-lg font-semibold mb-4">Thêm bài viết chia sẻ</h2>
+        <h2 className="text-lg font-semibold mb-2">Thêm bài viết chia sẻ</h2>
         <p className="text-sm text-gray-500 mb-6">
-          Quản trị viên thêm bài viết mới
+          Thêm bài viết chia sẻ của bạn để giúp cộng đồng có thêm thông tin hữu ích.
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+          <div className="space-y-4 col-span-2">
             <div>
               <label className="text-sm font-medium">* Tên bài viết</label>
               <input
@@ -141,18 +138,10 @@ export default function ModalSharePost({ isOpen, onClose }) {
           </div>
 
           {/* Soạn thảo nội dung */}
-          <div className="flex flex-col h-full">
-            <label className="text-sm font-medium mb-1">Bài viết</label>
-            <div className="border rounded flex-1 flex flex-col overflow-hidden">
-              <ReactQuill
-                name="description_post"
-                value={form.description_post}
-                onChange={(value) =>
-                  setForm((prev) => ({ ...prev, description_post: value }))
-                }
-                placeholder="Nhập nội dung bài viết tại đây"
-                className="flex-1 text-sm resize-none focus:outline-none"
-              />
+          <div className="flex flex-col h-full col-span-3">
+            <label className="text-sm font-medium mb-2">Bài viết</label>
+            <div className=" rounded flex-1 flex flex-col overflow-hidden">
+              <TextEditor />
             </div>
           </div>
         </div>

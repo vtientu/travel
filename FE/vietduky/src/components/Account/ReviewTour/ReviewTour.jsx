@@ -1,4 +1,4 @@
-import ModalSharePost from "./ModalSharePost";
+import ModalAddSharePost from "./ModalAddSharePost";
 import Icons from "@/components/Icons/Icon";
 import { FeedbackService } from "@/services/API/feedback.service";
 import { PostExperienceService } from "@/services/API/post_experience.service";
@@ -7,39 +7,6 @@ import { useEffect, useState } from "react";
 import { FaThumbsUp } from "react-icons/fa";
 import { FaStar } from "react-icons/fa6";
 import { FiEdit2, FiExternalLink } from "react-icons/fi";
-
-// const sharedPosts = [
-//   {
-//     id: 1,
-//     status: "pending",
-//     title:
-//       "Chia sẻ Kinh nghiệm: Khám Phá Sơn Trà – Phố Cổ Hội An – Bà Nà – Rừng Dừa Bảy Mẫu",
-//     date: "18/03/2025",
-//     image: "https://i.imgur.com/NT2YEGz.jpg",
-//     likes: 0,
-//     author: "PHẠM ĐỨC MẠNH",
-//   },
-//   {
-//     id: 2,
-//     status: "approved",
-//     title:
-//       "Chia sẻ Kinh nghiệm: Khám Phá Sơn Trà – Phố Cổ Hội An – Bà Nà – Rừng Dừa Bảy Mẫu",
-//     date: "18/03/2025",
-//     image: "https://i.imgur.com/NT2YEGz.jpg",
-//     likes: 1,
-//     author: "PHẠM ĐỨC MẠNH",
-//   },
-//   {
-//     id: 3,
-//     status: "locked",
-//     title:
-//       "Chia sẻ Kinh nghiệm: Khám Phá Sơn Trà – Phố Cổ Hội An – Bà Nà – Rừng Dừa Bảy Mẫu",
-//     date: "18/03/2025",
-//     image: "https://i.imgur.com/NT2YEGz.jpg",
-//     likes: 1,
-//     author: "PHẠM ĐỨC MẠNH",
-//   },
-// ];
 
 const statusMap = {
   pending: { text: "Đang chờ duyệt bài", color: "text-blue-500" },
@@ -66,7 +33,7 @@ export default function ReviewTour() {
 
     const fetchPosts = async () => {
       try {
-        const response = await PostExperienceService.getAllPostExperience();
+        const response = await PostExperienceService.getPostExperienceByUserId(user?.id);
         setSharedPosts(response.data.data);
       } catch (error) {
         console.error("Error fetching posts:", error);
@@ -104,7 +71,7 @@ export default function ReviewTour() {
     1: "text-red-500",
   };
 
-  console.log("Reviews:", reviews);
+  // console.log("Reviews:", reviews);
 
   return (
     <div className=" mx-auto px-4">
@@ -120,7 +87,7 @@ export default function ReviewTour() {
         )}
       </div>
 
-      <ModalSharePost isOpen={showModal} onClose={() => setShowModal(false)} />
+      <ModalAddSharePost isOpen={showModal} onClose={() => setShowModal(false)} />
 
       {/* Tabs */}
       <div className="flex space-x-4 border-b mb-6">
@@ -246,6 +213,9 @@ export default function ReviewTour() {
       {/* Bài viết chia sẻ */}
       {activeTab === "shared" &&
         sharedPosts.map((post) => {
+          const postExAlbum = JSON.parse(post.postEx_album);
+          const firstImage = postExAlbum[0];
+
           return (
             <div
               key={post.id}
@@ -253,14 +223,16 @@ export default function ReviewTour() {
             >
               <div className="text-sm font-medium mb-3 border-b border-gray-300 pb-2">
                 Trạng thái:{" "}
-                {/* <span className={`${statusMap[post.status].color}`}>
-                {statusMap[post.status].text}
-              </span> */}
+                <span
+                  className={post.status ? "text-green-600" : "text-red-600"}
+                >
+                  {post.status ? "Đã được duyệt" : "Chưa được duyệt"}
+                </span>
               </div>
 
               <div className="flex gap-4">
                 <img
-                  src={post.image}
+                  src={firstImage}
                   alt="preview"
                   className="w-28 h-24 object-cover rounded-md"
                 />
