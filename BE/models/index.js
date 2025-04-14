@@ -260,7 +260,7 @@ TravelGuide.hasMany(TravelGuideLocation, {
 });
 TravelGuideLocation.belongsTo(TravelGuide, {
   foreignKey: "travel_guide_id",
-  as: "travelGuide",
+  as: "TravelGuideLocations",
 });
 
 //Location/TravelGuideLocation
