@@ -59,6 +59,81 @@ exports.getArticlesByDirectory = async (req, res) => {
   }
 };
 
+//Lấy bài viết theo id
+exports.getArticleById = async (req, res) => {
+  try {
+    const { article_id } = req.params;
+
+    const article = await Article.findByPk(article_id, {
+      include: [
+        {
+          model: User,
+          as: "author",
+        },
+        {
+          model: Directory,
+          as: "directory",
+        },
+      ],
+    });
+
+    if (!article) {
+      return res.status(404).json({
+        message: "Không tìm thấy bài viết!",
+      });
+    }
+
+    res.status(200).json({
+      message: "Lấy bài viết thành công!",
+      data: article,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Lỗi khi lấy bài viết!",
+      error: error.message,
+    });
+  }
+};
+
+//Lấy danh sách bài viết theo người dùng
+exports.getArticlesByUserId = async (req, res) => {
+  try {
+    const { user_id } = req.params;
+
+    const articles = await Article.findAll({
+      where: {
+        user_id,
+      },
+      include: [
+        {
+          model: User,
+          as: "author",
+        },
+        {
+          model: Directory,
+          as: "directory",
+        },
+      ],
+    });
+
+    if (!articles || articles.length === 0) {
+      return res.status(404).json({
+        message: "Không tìm thấy bài viết của người dùng này!",
+      });
+    }
+
+    res.status(200).json({
+      message: "Lấy danh sách bài viết của người dùng thành công!",
+      data: articles,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Lỗi khi lấy danh sách bài viết của người dùng!",
+      error: error.message,
+    });
+  }
+};
+
 //Thêm một bài viết mới
 exports.createArticle = async (req, res) => {
   try {
