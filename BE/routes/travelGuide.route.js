@@ -39,4 +39,16 @@ router.get(
   // authenticateAdmin,
   travelGuideController.getTravelGuidesByLocation
 );
+
+router.post(
+  "/assign",
+  // authenticateAdmin,
+  travelGuideController.assignTravelGuideToStaff
+);
+
+router.get(
+  "/staff/:staff_id",
+  // authenticateAdmin,
+  travelGuideController.getTravelGuidesByStaff
+);
 module.exports = router;

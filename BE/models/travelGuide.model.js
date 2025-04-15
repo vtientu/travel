@@ -35,6 +35,10 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.DATE,
         allowNull: true,
       },
+      staff_id: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
     },
     {
       tableName: "travel_guide",

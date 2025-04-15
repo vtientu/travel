@@ -311,3 +311,69 @@ exports.getTravelGuidesByLocation = async (req, res) => {
     });
   }
 };
+
+// Gán TravelGuide cho Staff
+exports.assignTravelGuideToStaff = async (req, res) => {
+  try {
+    const { user_id, travel_guide_ids } = req.body;
+
+    // Kiểm tra user_id có phải role Staff không
+    const user = await User.findByPk(user_id);
+    if (!user || user.role_id !== 2) {
+      return res.status(400).json({ message: "Người dùng không phải Staff!" });
+    }
+
+    // Kiểm tra các TravelGuide có tồn tại không
+    const travelGuides = await TravelGuide.findAll({
+      where: { id: travel_guide_ids },
+    });
+
+    if (travelGuides.length !== travel_guide_ids.length) {
+      return res
+        .status(400)
+        .json({ message: "Một số TravelGuide không tồn tại!" });
+    }
+
+    // Gán Staff cho các TravelGuide
+    await Promise.all(
+      travelGuides.map(
+        (guide) => guide.update({ staff_id: user_id }) // Lưu user_id vào cột staff_id
+      )
+    );
+
+    res.status(200).json({ message: "Phân chia TravelGuide thành công!" });
+  } catch (error) {
+    res.status(500).json({
+      message: "Lỗi khi phân chia TravelGuide!",
+      error: error.message,
+    });
+  }
+};
+
+// Lấy danh sách TravelGuide theo Staff
+exports.getTravelGuidesByStaff = async (req, res) => {
+  try {
+    const { staff_id } = req.params;
+
+    // Kiểm tra staff_id có phải role Staff không
+    const staff = await User.findByPk(staff_id);
+    if (!staff || staff.role_id !== 2) {
+      return res.status(400).json({ message: "Người dùng không phải Staff!" });
+    }
+
+    // Lấy danh sách TravelGuide của Staff
+    const travelGuides = await TravelGuide.findAll({
+      where: { staff_id },
+    });
+
+    res.status(200).json({
+      message: "Lấy danh sách TravelGuide thành công!",
+      data: travelGuides,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Lỗi khi lấy danh sách TravelGuide!",
+      error: error.message,
+    });
+  }
+};
