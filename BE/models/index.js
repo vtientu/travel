@@ -86,6 +86,7 @@ const TravelGuideLocation = require("./travelGuideLocation.model.js")(
 );
 const FavoriteTour = require("./favoriteTour.model.js")(sequelize, Sequelize);
 const Like = require("./like.model.js")(sequelize, Sequelize);
+
 // Mối quan hệ (Associations)
 //Payment/Booking
 Booking.hasMany(Payment, { foreignKey: "booking_id" });
@@ -217,6 +218,10 @@ GuideTour.belongsTo(TravelTour, {
 //User/TravelGuide
 User.hasOne(TravelGuide, { foreignKey: "user_id" });
 TravelGuide.belongsTo(User, { foreignKey: "user_id", as: "user" });
+
+//User(user_id)/TravelGuide(staff_id)
+User.hasMany(TravelGuide, { foreignKey: "staff_id" });
+TravelGuide.belongsTo(User, { foreignKey: "staff_id", as: "staff" });
 
 //Role/User
 Role.hasMany(User, { foreignKey: "role_id" });
