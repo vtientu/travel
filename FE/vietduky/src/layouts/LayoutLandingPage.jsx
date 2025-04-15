@@ -14,6 +14,9 @@ import { TopicService } from "@/services/API/topic.service";
 import { TourService } from "@/services/API/tour.service";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Slider from "react-slick"; // Import the slider component
+import "slick-carousel/slick/slick.css"; // Import slick CSS
+import "slick-carousel/slick/slick-theme.css"; // Import slick theme CSS
 
 export default function LayoutLandingPage() {
   const navigate = useNavigate();
@@ -31,6 +34,16 @@ export default function LayoutLandingPage() {
     fetchTopic();
   }, []);
 
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 3000,
+  };
+
   return (
     <div className="bg-white">
       {/* Header */}
@@ -38,15 +51,31 @@ export default function LayoutLandingPage() {
 
       <SearchTour />
 
-      {/* Gói quà chào mừng cho người dùng! */}
+      {/* Image Slider */}
       <div className="p-6 relative w-4/5 mx-auto">
-        <img
-          src="/Image/poster.jpeg.svg"
-          alt="Khuyến mãi"
-          width={1000}
-          height={200}
-          className="rounded-lg pointer-events-none w-full pb-8 pt-8"
-        />
+        <Slider {...settings}>
+          <div>
+            <img
+              src="/Image/poster.jpeg.svg"
+              alt="Khuyến mãi 1"
+              className="rounded-lg pointer-events-none w-full h-auto"
+            />
+          </div>
+          <div>
+            <img
+              src="/Image/poster.jpeg.svg"
+              alt="Khuyến mãi 2"
+              className="rounded-lg pointer-events-none w-full h-auto"
+            />
+          </div>
+          <div>
+            <img
+              src="/Image/poster.jpeg.svg"
+              alt="Khuyến mãi 3"
+              className="rounded-lg pointer-events-none w-full h-auto"
+            />
+          </div>
+        </Slider>
       </div>
 
       {/* Tour nổi bật */}
@@ -64,7 +93,7 @@ export default function LayoutLandingPage() {
       {/* Tour du lịch được yêu thích nhất */}
       {/* <FavouriteTour /> */}
 
-      {/*Topic Tour*/}
+      {/* Topic Tour */}
       {topics.map(
         (topic, index) =>
           topic.active && (
@@ -76,24 +105,6 @@ export default function LayoutLandingPage() {
             </div>
           )
       )}
-
-      {/* Tour du lịch hành hương */}
-      {/* <TopicTour /> */}
-
-      {/* Tour du lịch nghỉ dưỡng */}
-      {/* <TopicTour /> */}
-
-      {/* Tour du lịch khám phá */}
-      {/* <TopicTour /> */}
-
-      {/* Tour du lịch trải nghiệm */}
-      {/* <TopicTour /> */}
-
-      {/*Vacation Tour*/}
-      {/* <VacationTour /> */}
-
-      {/* Tour trong nước nổi bật */}
-      {/* <FeaturedTour /> */}
 
       {/* Khám phá địa điểm vui chơi ở Việt Nam */}
       <LocationVN />

@@ -5,7 +5,7 @@ import { deleteTour } from "../../services/API/tour.service";
 import { BsCalendar3 } from "react-icons/bs";
 import {GoMultiSelect} from "react-icons/go";
 
-export default function DropdownMenu({ tour, onDelete, onManageTravelTour, onEdit, isOpen, setOpenDropdown, onOpenAddProgram }) {
+export default function DropdownMenu({ tour, onDelete, onManageTravelTour, onEdit, isOpen, setOpenDropdown, onOpenManagementProgram  }) {
   const [isHovered, setIsHovered] = useState(false);
 
   // Đóng dropdown khi click bên ngoài
@@ -47,7 +47,7 @@ export default function DropdownMenu({ tour, onDelete, onManageTravelTour, onEdi
             <div className="absolute right-0 mt-2 w-48 bg-white shadow-md rounded-md z-10">
               <button
                   onClick={() => {
-                    onOpenAddProgram(tour);
+                    onOpenManagementProgram(tour);
                     setOpenDropdown(null);
                   }}
                   className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left"
@@ -55,6 +55,17 @@ export default function DropdownMenu({ tour, onDelete, onManageTravelTour, onEdi
                 <GoMultiSelect className="mr-2 text-gray-700" />
                 Chương trình Tour
               </button>
+
+              {/*<button*/}
+              {/*    onClick={() => {*/}
+              {/*      onOpenAddProgram(tour);*/}
+              {/*      setOpenDropdown(null);*/}
+              {/*    }}*/}
+              {/*    className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left"*/}
+              {/*>*/}
+              {/*  <GoMultiSelect className="mr-2 text-gray-700" />*/}
+              {/*  Chương trình Tour*/}
+              {/*</button>*/}
 
               <button
                   onClick={() => {

@@ -16,6 +16,10 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      alias: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       description_post: {
         type: Sequelize.STRING,
         allowNull: false,
@@ -29,9 +33,13 @@ module.exports = (sequelize, Sequelize) => {
         allowNull: true,
       },
       status: {
-        type: Sequelize.BOOLEAN,
+        type: Sequelize.INTEGER,
         allowNull: false,
-        defaultValue: false, // // 0: chưa duyệt, 1: đã duyệt
+        defaultValue: 0, // // 0: chưa duyệt, 1: đã duyệt, 2: đã từ chối
+      },
+      views: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0,
       },
     },
     {

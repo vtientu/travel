@@ -16,13 +16,13 @@ router.get(
 );
 router.post(
   "/create",
-  authenticateUser,
+  // authenticateUser,
   uploadPostExperience.array("postEx_album", 10),
   postExperienceController.createPostExperience
 );
 router.put(
   "/update/:id",
-  authenticateUser,
+  // authenticateUser,
   uploadPostExperience.array("postEx_album", 10),
   postExperienceController.updatePostExperience
 );
@@ -43,6 +43,12 @@ router.put(
   authenticateUser,
   authenticateAdmin,
   postExperienceController.rejectPostExperience
+);
+//Tăng lượt xem bài viết
+router.post(
+  "/increment-views/:id",
+  authenticateUser,
+  postExperienceController.incrementViews
 );
 
 module.exports = router;

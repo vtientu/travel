@@ -12,6 +12,7 @@ export default function SearchTour() {
   const [date, setDate] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const [destination, setDestination] = useState(""); // Thêm state cho destination
 
   // Đóng dropdown khi click ra ngoài
   const handleClickOutside = (event) => {
@@ -37,6 +38,17 @@ export default function SearchTour() {
     };
     fetchLocations();
   }, []);
+
+  const handleSearch = () => {
+    // Điều hướng đến trang listTour với các tham số
+    navigate('/listTour', {
+      state: {
+        departure: selectedStart,
+        date: date,
+        destination: destination, // Truyền destination vào
+      },
+    });
+  };
 
   return (
     <div className="relative">
@@ -74,6 +86,8 @@ export default function SearchTour() {
               type="text"
               placeholder="Nhập điểm du lịch"
               className="w-full outline-none text-lg p-2"
+              value={destination} // Gán giá trị cho ô nhập
+              onChange={(e) => setDestination(e.target.value)} // Cập nhật state destination
             />
           </div>
 
@@ -147,7 +161,10 @@ export default function SearchTour() {
             </div>
 
             <div className="flex flex-col col-span-1">
-              <button className="bg-[#A80F21] text-white h-[64px] p-4 rounded text-xl shadow-xl hover:bg-[#991b1b] transition duration-300 ease-in-out">
+              <button
+                onClick={handleSearch}
+                className="bg-[#A80F21] text-white h-[64px] p-4 rounded text-xl shadow-xl hover:bg-[#991b1b] transition duration-300 ease-in-out"
+              >
                 TÌM
               </button>
             </div>

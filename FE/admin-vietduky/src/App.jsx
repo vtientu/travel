@@ -12,7 +12,7 @@ import ModalManageTravelTour from "./components/ModalManage/ModalList/ModalManag
 import PrivateRoute from "./components/PrivateRouter.jsx";
 import Profile from "./components/Profile.jsx";
 import Calendar from "./components/Calendar/Calendar.jsx";
-import ManagementTheme from "./page/Management/ManagementTheme.jsx";
+import ManagementTheme from "./page/Management/ManagementTopic.jsx";
 import ManagementDiscount from "./page/Management/ManagementDiscount.jsx";
 import ManagementService from "./page/Management/ManagementService.jsx";
 import ManagementSaleProgram from "./page/Management/ManagementSaleProgram.jsx";

@@ -4,12 +4,13 @@ import { formatDate } from "../../utils/dateUtil";
 
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { useEffect, useState } from "react";
-import ModalAddTravelTour from "../../components/ModalManage/ModalAddTravelTour";
+import ModalAddTravelTour from "../../components/ModalManage/ModalAdd/ModalAddTravelTour.jsx";
 import { MdDelete, MdEdit } from "react-icons/md";
 import {
   deleteTravelTour,
   getTravelTour,
 } from "../../services/API/travel_tour.service";
+import {CiLock} from "react-icons/ci";
 
 export default function ManagementTravelTour() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -159,6 +160,10 @@ export default function ManagementTravelTour() {
                         <button className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left">
                           <MdEdit className="mr-2 text-gray-700" />
                           Cập nhật hành trình
+                        </button>
+                        <button className="flex items-center px-4 py-2 hover:bg-gray-100 w-full text-left">
+                          <CiLock className="mr-2 text-gray-700" />
+                          Đóng lịch khởi hành
                         </button>
                         <button
                           onClick={() => handleDelete(travelTour.id)}

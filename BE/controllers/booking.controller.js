@@ -10,16 +10,20 @@ const TravelTour = db.TravelTour;
 const User = db.User;
 const Voucher = db.Voucher;
 const Passenger = db.Passenger;
-const nodemailer = require("nodemailer");
 const Tour = db.Tour;
+const nodemailer = require("nodemailer");
+const path = require("path");
+const dotenv = require("dotenv");
+dotenv.config();
+
 const { Op } = require("sequelize");
 
 //Cấu hình nodemailer
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "titi2024hd@gmail.com",
-    pass: "mrwm vfbp dprc qwyu",
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS,
   },
 });
 
@@ -83,29 +87,128 @@ const sendConfirmationEmail = (userEmail, bookingDetails) => {
     subject: "Xác nhận đặt tour",
     html: `
       <html>
+        <head>
+          <style>
+            body {
+              font-family: Arial, sans-serif;
+              line-height: 1.6;
+              color: #333;
+              background-color: #fff;
+              margin: 0;
+              padding: 0;
+            }
+            .email-container {
+              max-width: 600px;
+              margin: 0 auto;
+              padding: 20px;
+              border: 1px solid #ddd;
+              border-radius: 8px;
+              background-color: #fef2f2;
+              position: relative;
+            }
+            .logo {
+              position: absolute;
+              top: 20px;
+              left: 20px;
+            }
+            h1 {
+              color: #d32f2f;
+              text-align: center;
+            }
+            p {
+              margin: 10px 0;
+            }
+            .info-table {
+              width: 100%;
+              border-collapse: collapse;
+              margin: 20px 0;
+              table-layout: fixed;
+            }
+            .info-table th, .info-table td {
+              border: 1px solid #ddd;
+              padding: 10px;
+              text-align: left;
+              word-wrap: break-word;
+            }
+            .info-table th {
+              background-color: #d32f2f;
+              color: #fff;
+            }
+            .info-table td {
+              background-color: #fff;
+            }
+            .footer {
+              text-align: center;
+              margin-top: 20px;
+              font-size: 0.9em;
+              color: #666;
+            }
+          </style>
+        </head>
         <body>
-          <h1>Xác nhận đặt tour</h1>
-          <p>Xin chào ${name},</p>
-          <p>Đặt tour của bạn đã được hoàn tất thành công!</p>
-          <p><strong>Thông tin tour:</strong></p>
-          <ul>
-            <li>Tour: ${name_tour}</li>
-            <li>Ngày bắt đầu: ${formattedStartDate}</li>
-            <li>Ngày kết thúc: ${formattedEndDate}</li>
-            <li>Giá tour: ${formattedPriceTour} VND</li>
-            <li>Tổng chi phí: ${formattedTotalCost} VND</li>
-          </ul>
-          <p><strong>Ngày khởi hành Tour:</strong></p>
-          <ul>
-            <li>Thời gian khởi hành: ${formattedStartTimeDepart}</li>
-            <li>Thời gian kết thúc: ${formattedEndTimeDepart}</li>
-          </ul>
-          <p><strong>Ngày kết thúc Tour:</strong></p>
-          <ul>
-            <li>Thời gian khởi hành: ${formattedStartTimeClose}</li>
-            <li>Thời gian kết thúc: ${formattedEndTimeClose}</li>
-          </ul>
-          <p>Cảm ơn bạn đã đặt tour cùng chúng tôi!</p>
+          <div class="email-container">
+            <h1>Xác nhận đặt tour</h1>
+            <p>Xin chào <strong>${name}</strong>,</p>
+            <p>Đặt tour của bạn đã được hoàn tất thành công! Dưới đây là thông tin chi tiết:</p>
+            <table class="info-table">
+              <tr>
+                <th>Thông tin tour</th>
+                <th>Chi tiết</th>
+              </tr>
+              <tr>
+                <td>Tour</td>
+                <td>${name_tour}</td>
+              </tr>
+              <tr>
+                <td>Ngày bắt đầu</td>
+                <td>${formattedStartDate}</td>
+              </tr>
+              <tr>
+                <td>Ngày kết thúc</td>
+                <td>${formattedEndDate}</td>
+              </tr>
+              <tr>
+                <td>Giá tour</td>
+                <td>${formattedPriceTour} VND</td>
+              </tr>
+              <tr>
+                <td>Tổng chi phí</td>
+                <td>${formattedTotalCost} VND</td>
+              </tr>
+            </table>
+            <table class="info-table">
+              <tr>
+                <th>Ngày khởi hành Tour</th>
+                <th>Chi tiết</th>
+              </tr>
+              <tr>
+                <td>Thời gian khởi hành</td>
+                <td>${formattedStartTimeDepart}</td>
+              </tr>
+              <tr>
+                <td>Thời gian kết thúc</td>
+                <td>${formattedEndTimeDepart}</td>
+              </tr>
+            </table>
+            <table class="info-table">
+              <tr>
+                <th>Ngày kết thúc Tour</th>
+                <th>Chi tiết</th>
+              </tr>
+              <tr>
+                <td>Thời gian khởi hành</td>
+                <td>${formattedStartTimeClose}</td>
+              </tr>
+              <tr>
+                <td>Thời gian kết thúc</td>
+                <td>${formattedEndTimeClose}</td>
+              </tr>
+            </table>
+            <p>Cảm ơn bạn đã đặt tour cùng chúng tôi! Nếu bạn có bất kỳ câu hỏi nào, vui lòng liên hệ với chúng tôi qua email hoặc số điện thoại hỗ trợ.</p>
+            <div class="footer">
+              <p>© 2025 Việt Du Ký. Tất cả các quyền được bảo lưu.</p>
+            </div>
+          </div>
         </body>
       </html>
     `,
@@ -370,21 +473,6 @@ exports.createBooking = async (req, res) => {
       number_adult + number_children + number_toddler;
     await travelTour.save();
 
-    //Gửi email xác nhận
-    sendConfirmationEmail(email, {
-      name,
-      email,
-      name_tour: tour.name_tour,
-      travelTour,
-      total_cost,
-      start_day: travelTour.start_day,
-      end_day: travelTour.end_day,
-      start_time_depart: travelTour.start_time_depart,
-      end_time_depart: travelTour.end_time_depart,
-      start_time_close: travelTour.start_time_close,
-      end_time_close: travelTour.end_time_close,
-    });
-
     // Xử lý danh sách passenger nếu có
     if (passengersArray && passengersArray.length > 0) {
       // Kiểm tra số lượng passenger có khớp với số lượng người đã đăng ký không
@@ -415,6 +503,21 @@ exports.createBooking = async (req, res) => {
       await Promise.all(passengerPromises);
     }
 
+    //Gửi email xác nhận
+    sendConfirmationEmail(email, {
+      name,
+      email,
+      name_tour: tour.name_tour,
+      travelTour,
+      total_cost,
+      start_day: travelTour.start_day,
+      end_day: travelTour.end_day,
+      start_time_depart: travelTour.start_time_depart,
+      end_time_depart: travelTour.end_time_depart,
+      start_time_close: travelTour.start_time_close,
+      end_time_close: travelTour.end_time_close,
+    });
+
     res.status(201).json({
       message: "Đặt tour thành công!",
       data: newBooking,
@@ -438,7 +541,7 @@ exports.updateBooking = async (req, res) => {
     const booking = await Booking.findByPk(bookingId);
     if (!booking) {
       return res.status(200).json({ message: "Booking not found!" });
-    } 
+    }
     if (name) booking.name = name;
     if (phone) booking.phone = phone;
     if (email) booking.email = email;
@@ -568,30 +671,32 @@ exports.getBookingByUserId = async (req, res) => {
   try {
     const userId = req.params.id;
     const bookings = await Booking.findAll({
-      where: { user_id: userId }, 
+      where: { user_id: userId },
       include: [
         { model: User, attributes: ["id", "email", "avatar"] },
-        { 
-          model: TravelTour, 
+        {
+          model: TravelTour,
           attributes: ["id", "tour_id", "start_day", "end_day", "status"],
-          include: [{
-            model: Tour,
-            as: 'Tour',
-            attributes: ['id', 'name_tour', 'album']
-          }]
+          include: [
+            {
+              model: Tour,
+              as: "Tour",
+              attributes: ["id", "name_tour", "album"],
+            },
+          ],
         },
       ],
-    }); 
+    });
 
     // Format lại dữ liệu trả về
-    const formattedBookings = bookings.map(booking => {
+    const formattedBookings = bookings.map((booking) => {
       const bookingData = booking.get({ plain: true });
       return {
         ...bookingData,
         travel_tour: {
           ...bookingData.TravelTour,
-          tour: bookingData.TravelTour.Tour || null
-        }
+          tour: bookingData.TravelTour.Tour || null,
+        },
       };
     });
 
@@ -600,7 +705,7 @@ exports.getBookingByUserId = async (req, res) => {
       data: formattedBookings,
     });
   } catch (error) {
-    res.status(500).json({  
+    res.status(500).json({
       message: "Lỗi khi lấy booking!",
       error: error.message,
     });
@@ -608,7 +713,7 @@ exports.getBookingByUserId = async (req, res) => {
 };
 exports.searchBooking = async (req, res) => {
   try {
-    const { keyword, travel_tour_id } = req.query
+    const { keyword, travel_tour_id } = req.query;
     const bookings = await Booking.findAll({
       where: {
         [Op.or]: [
@@ -617,20 +722,20 @@ exports.searchBooking = async (req, res) => {
           { phone: { [Op.like]: `%${keyword}%` } },
           { booking_code: { [Op.like]: `%${keyword}%` } },
         ],
-        travel_tour_id: travel_tour_id
+        travel_tour_id: travel_tour_id,
       },
       include: [
         { model: User, attributes: ["id", "email", "avatar"] },
         { model: TravelTour },
       ],
-    }); 
+    });
 
     res.status(200).json({
       message: "Tìm kiếm booking thành công!",
       data: bookings,
     });
   } catch (error) {
-    res.status(500).json({  
+    res.status(500).json({
       message: "Lỗi khi tìm kiếm booking!",
       error: error.message,
     });
@@ -652,4 +757,4 @@ exports.getBookingByTravelTourId = async (req, res) => {
       error: error.message,
     });
   }
-}
+};

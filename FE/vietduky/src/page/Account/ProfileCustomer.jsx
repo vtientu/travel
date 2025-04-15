@@ -1,5 +1,5 @@
 import BreadCrumbProfile from "@/components/BreadCrumb/BreadCrumbProfile";
-import ProfileDetail from "@/components/ProfileDetail/ProfileDetail";
+import ProfileDetail from "@/components/Account/Profile/ProfileDetail";
 import SidebarProfile from "@/components/Sidebar/SidebarProfile";
 import Layout from "@/layouts/LayoutAccountService";
 

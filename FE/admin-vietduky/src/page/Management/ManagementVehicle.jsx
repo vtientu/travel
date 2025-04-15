@@ -3,7 +3,7 @@ import Layout from "../../layouts/LayoutManagement";
 import { formatDate } from '../../utils/dateUtil'
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { useEffect, useState } from "react";
-import ModalAddVehicle from "../../components/ModalManage/ModalAddVehicle";
+import ModalAddVehicle from "../../components/ModalManage/ModalAdd/ModalAddVehicle.jsx";
 
 const vehicles = [
   {

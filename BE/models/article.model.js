@@ -37,6 +37,19 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      views: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0,
+      },
+      article_date: {
+        type: Sequelize.DATE,
+        allowNull: true,
+        defaultValue: Sequelize.NOW,
+      },
+      article_title: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
     },
     {
       tableName: "article",

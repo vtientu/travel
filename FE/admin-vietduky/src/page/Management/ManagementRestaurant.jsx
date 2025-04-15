@@ -3,7 +3,7 @@ import Layout from "../../layouts/LayoutManagement";
 import { formatDate } from '../../utils/dateUtil'
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
 import { useEffect, useState } from "react";
-import ModalAddRestaurant from "../../components/ModalManage/ModalAddRestaurant";
+import ModalAddRestaurant from "../../components/ModalManage/ModalAdd/ModalAddRestaurant.jsx";
 
 const restaurants = [
   {

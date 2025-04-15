@@ -3,10 +3,13 @@ import { Heart } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import TopicTourCard from "./TopicTourCard";
+import { FavouriteTourService } from "@/services/API/favourite_tour.service";
 
 export default function TopicTour({ topic }) {
   const [tours, setTours] = useState([]);
+  const [favoriteTours, setFavoriteTours] = useState([]);
   const navigate = useNavigate();
+  const userId = JSON.parse(localStorage.getItem("user"))?.id;
 
   useEffect(() => {
     const fetchTours = async () => {
@@ -18,11 +21,22 @@ export default function TopicTour({ topic }) {
       }
     };
 
+    const fetchFavoriteTours = async () => {
+      try {
+        const response = await FavouriteTourService.getFavouriteTourByUserID(userId);
+        setFavoriteTours(response.data.data);
+      } catch (error) {
+        console.error("Error fetching favorite tours:", error);
+      }
+    }
+
+    fetchFavoriteTours();
     fetchTours();
-  }, [topic.id]);
+  }, [topic.id, userId]);
 
   console.log("topic", tours);
-
+  console.log("favoriteTours", favoriteTours);
+  
   return (
     <div className="bg-transparent">
       <div className="py-10 w-4/5 mx-auto relative p-6 ">
@@ -43,7 +57,7 @@ export default function TopicTour({ topic }) {
               className="relative box-border"
               onClick={() => navigate(`/tour/${tour.id}`)}
             >
-              <TopicTourCard {...tour}/>
+              <TopicTourCard {...tour} userId={userId} favoriteTours={favoriteTours} setFavoriteTours={setFavoriteTours} />
             </div>
           ))}
         </div>

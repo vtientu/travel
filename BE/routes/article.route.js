@@ -11,6 +11,8 @@ const {
 
 router.get("/", ArticleController.getAllArticles);
 router.get("/:directory_id", ArticleController.getArticlesByDirectory);
+router.get("/detail/:article_id", ArticleController.getArticleById);
+router.get("/user/:user_id", ArticleController.getArticlesByUserId);
 router.post(
   "/create",
   checkRoles(["admin", "staff"]),
@@ -27,6 +29,11 @@ router.delete(
   "/delete/:article_id",
   authenticateAdmin,
   ArticleController.deleteArticle
+);
+router.post(
+  "/increment-views/:id",
+  authenticateUser,
+  ArticleController.incrementViews
 );
 
 module.exports = router;

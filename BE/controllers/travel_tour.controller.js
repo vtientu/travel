@@ -2,6 +2,7 @@ const db = require("../models");
 const TravelTour = db.TravelTour;
 const Tour = db.Tour;
 const Location = db.Location;
+const Booking = db.Booking;
 const { Op } = require("sequelize");
 
 //Lấy tất cả dữ liệu trong bảng travel tour
@@ -17,32 +18,34 @@ exports.getAllTravelTours = async (req, res) => {
 
     const travelTours = await TravelTour.findAll({
       where: whereCondition,
-      include: [{
-        model: Tour,
-        as: 'Tour',
-        // attributes: ['id', 'name_tour', 'price_tour', 'day_number', 'rating_tour', 'max_people', 'image']
-      }],
-      order: [['start_day', 'ASC']]
+      include: [
+        {
+          model: Tour,
+          as: "Tour",
+          // attributes: ['id', 'name_tour', 'price_tour', 'day_number', 'rating_tour', 'max_people', 'image']
+        },
+      ],
+      order: [["start_day", "ASC"]],
     });
 
     // Format lại dữ liệu trả về
-    const formattedTravelTours = travelTours.map(travelTour => {
+    const formattedTravelTours = travelTours.map((travelTour) => {
       const travelTourData = travelTour.get({ plain: true });
       return {
         ...travelTourData,
-        tour: travelTourData.Tour || null
+        tour: travelTourData.Tour || null,
       };
     });
 
     res.json({
       message: "Lấy danh sách tour thành công!",
-      data: formattedTravelTours
+      data: formattedTravelTours,
     });
   } catch (error) {
     console.error("Error:", error);
     res.status(500).json({
       message: "Lỗi khi lấy danh sách tour!",
-      error: error.message
+      error: error.message,
     });
   }
 };
@@ -52,6 +55,7 @@ exports.getTravelTourById = async (req, res) => {
   try {
     const travelTourId = req.params.id;
     const travelTour = await TravelTour.findByPk(travelTourId, {
+
       include: [{
         model: Tour,
         as: 'Tour',
@@ -79,14 +83,14 @@ exports.getTravelTourById = async (req, res) => {
       ...travelTour.get({ plain: true }),
       tour: {
         ...travelTour.Tour.get({ plain: true }),
-        start_location: travelTour.Tour.s || null,
-        end_location: travelTour.Tour.EndLocation || null
-      }
+        start_location: travelTour.Tour.StartLocation || null,
+        end_location: travelTour.Tour.EndLocation || null,
+      },
     };
 
     res.json({
       message: "Lấy thông tin tour du lịch thành công!",
-      data: formattedTravelTour
+      data: formattedTravelTour,
     });
   } catch (error) {
     res.status(500).json({
@@ -219,12 +223,26 @@ exports.createTravelTour = async (req, res) => {
 exports.deleteTravelTour = async (req, res) => {
   try {
     const travelTourId = req.params.id;
+
+    // Tìm travel tour theo ID
     const travelTour = await TravelTour.findByPk(travelTourId);
 
     if (!travelTour) {
       return res.status(404).json({ message: "Không tìm thấy tour du lịch!" });
     }
 
+    // Kiểm tra xem có booking nào liên quan đến travel tour này không
+    const bookings = await db.Booking.findAll({
+      where: { travel_tour_id: travelTourId },
+    });
+
+    if (bookings.length > 0) {
+      return res.status(400).json({
+        message: "Không thể xóa tour du lịch vì đã có booking liên quan!",
+      });
+    }
+
+    // Xóa travel tour nếu không có booking
     await travelTour.destroy();
     res.json({ message: "Xóa tour du lịch thành công!" });
   } catch (error) {
@@ -303,7 +321,8 @@ exports.updateTravelTour = async (req, res) => {
       travelTour.start_time_close = start_time_close;
     if (end_time_close !== undefined)
       travelTour.end_time_close = end_time_close;
-    if (children_price !== undefined) travelTour.children_price = children_price;
+    if (children_price !== undefined)
+      travelTour.children_price = children_price;
     if (toddler_price !== undefined) travelTour.toddler_price = toddler_price;
     await travelTour.save();
     res.json({
@@ -357,7 +376,7 @@ exports.getListTravelTourForGuide = async (req, res) => {
       start_location_id,
       end_location_id,
       name_tour,
-      start_day
+      start_day,
     } = req.query;
 
     // Tạo điều kiện where cho Tour
@@ -370,19 +389,19 @@ exports.getListTravelTourForGuide = async (req, res) => {
     }
     if (name_tour) {
       tourWhereCondition.name_tour = {
-        [Op.like]: `%${name_tour}%`
+        [Op.like]: `%${name_tour}%`,
       };
     }
 
     // Tạo điều kiện where cho TravelTour
     const travelTourWhereCondition = {
       status: 0,
-      active: 1
+      active: 1,
     };
 
     if (start_day) {
       travelTourWhereCondition.start_day = {
-        [Op.gte]: new Date(start_day)
+        [Op.gte]: new Date(start_day),
       };
     }
 
@@ -390,26 +409,28 @@ exports.getListTravelTourForGuide = async (req, res) => {
 
     const { count, rows: travelTours } = await TravelTour.findAndCountAll({
       where: travelTourWhereCondition,
-      include: [{
-        model: Tour,
-        as: 'Tour',
-        where: tourWhereCondition,
-        include: [
-          {
-            model: Location,
-            as: 'startLocation',
-            attributes: ['id', 'name_location']
-          },
-          {
-            model: Location,
-            as: 'endLocation',
-            attributes: ['id', 'name_location']
-          }
-        ]
-      }],
+      include: [
+        {
+          model: Tour,
+          as: "Tour",
+          where: tourWhereCondition,
+          include: [
+            {
+              model: Location,
+              as: "startLocation",
+              attributes: ["id", "name_location"],
+            },
+            {
+              model: Location,
+              as: "endLocation",
+              attributes: ["id", "name_location"],
+            },
+          ],
+        },
+      ],
       limit: parseInt(limit),
       offset: parseInt(offset),
-      order: [['start_day', 'ASC']]
+      order: [["start_day", "ASC"]],
     });
 
     if (!travelTours || travelTours.length === 0) {
@@ -419,21 +440,21 @@ exports.getListTravelTourForGuide = async (req, res) => {
           totalItems: 0,
           totalPages: 0,
           currentPage: parseInt(page),
-          items: []
-        }
+          items: [],
+        },
       });
     }
 
     // Format lại dữ liệu trả về
-    const formattedTravelTours = travelTours.map(travelTour => {
+    const formattedTravelTours = travelTours.map((travelTour) => {
       const travelTourData = travelTour.get({ plain: true });
       return {
         ...travelTourData,
         tour: {
           ...travelTourData.Tour,
           start_location: travelTourData.Tour.StartLocation || null,
-          end_location: travelTourData.Tour.EndLocation || null
-        }
+          end_location: travelTourData.Tour.EndLocation || null,
+        },
       };
     });
 
@@ -443,8 +464,8 @@ exports.getListTravelTourForGuide = async (req, res) => {
         totalItems: count,
         totalPages: Math.ceil(count / limit),
         currentPage: parseInt(page),
-        items: formattedTravelTours
-      }
+        items: formattedTravelTours,
+      },
     });
   } catch (error) {
     console.error("Error:", error);

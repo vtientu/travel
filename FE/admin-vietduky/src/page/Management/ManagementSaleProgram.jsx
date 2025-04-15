@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Layout from "../../layouts/LayoutManagement";
 import { LuSearch } from "react-icons/lu";
 import { FaEllipsisH } from "react-icons/fa";
-import ModalAddSaleProgram from "../../components/ModalManage/ModalAddSaleProgram.jsx";
+import ModalAddSaleProgram from "../../components/ModalManage/ModalAdd/ModalAddSaleProgram.jsx";
 
 export default function ManagementSaleProgram() {
     const [discountPrograms, setDiscountPrograms] = useState([]);
