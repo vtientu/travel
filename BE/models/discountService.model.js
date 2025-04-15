@@ -11,6 +11,10 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.INTEGER,
         allowNull: true,
       },
+      travel_tour_id: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
       program_discount_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
