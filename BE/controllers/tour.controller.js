@@ -110,10 +110,36 @@ exports.getTourById = async (req, res) => {
       });
     }
 
+    const { rows: tours } = await Tour.findAndCountAll({
+      where: {
+        [Op.or]: [
+          { end_location: tour.end_location },
+          { start_location: tour.start_location },
+        ],
+      },
+      include: [
+        { model: Location, as: "startLocation" },
+        { model: Location, as: "endLocation" },
+        {
+          model: Service,
+          as: "Services",
+          through: { attributes: [] },
+          attributes: [
+            "id",
+            "name_service",
+            "description_service",
+            "price_service",
+          ],
+        },
+      ],
+      limit: 10,
+    });
+
     // Format lại dữ liệu trả về
     const tourData = tour.get({ plain: true });
     const formattedTour = {
       ...tourData,
+      related_tours: tours || [],
       services: tourData.Services || [],
       activities: tourData.TourActivities || [],
       feedbacks: tourData.Feedbacks || [],

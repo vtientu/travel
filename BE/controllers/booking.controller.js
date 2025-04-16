@@ -17,6 +17,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const { Op } = require("sequelize");
+const { generateUniqueBookingTour } = require("../utils/booking");
 
 //Cấu hình nodemailer
 const transporter = nodemailer.createTransport({
@@ -365,9 +366,7 @@ exports.createBooking = async (req, res) => {
       note,
       voucher_id,
       passengers,
-      booking_code,
     } = req.body;
-    console.log(req.body);
 
     // Parse passengers từ chuỗi JSON thành object JavaScript
     const passengersArray = Array.isArray(passengers) ? passengers : [];
@@ -441,6 +440,30 @@ exports.createBooking = async (req, res) => {
       });
     }
 
+    const tourDetails = await Tour.findByPk(travelTour.tour_id);
+
+    const booking_code = await generateUniqueBookingTour({
+      tourCode: tourDetails.code_tour,
+    });
+
+    const total_people =
+      number_adult +
+      number_children +
+      number_toddler +
+      number_newborn +
+      travelTour.current_people;
+    if (total_people > travelTour.max_people) {
+      return res.status(200).json({
+        message: "Số lượng người đã vượt quá số lượng tối đa của chuyến!",
+      });
+    }
+
+    if (!travelTour.active) {
+      return res.status(200).json({
+        message: "Tour đã đóng!",
+      });
+    }
+
     // Kiểm tra người dùng có tồn tại không
     const user = await User.findByPk(user_id);
     if (!user) {
@@ -448,8 +471,6 @@ exports.createBooking = async (req, res) => {
         message: "Người dùng không tồn tại!",
       });
     }
-
-    const tour = await Tour.findByPk(travelTour.tour_id);
 
     // Tạo booking mới
     const newBooking = await Booking.create({
@@ -468,6 +489,7 @@ exports.createBooking = async (req, res) => {
       status: 0,
       note,
       voucher_id,
+      booking_code,
     });
     travelTour.current_people +=
       number_adult + number_children + number_toddler;
@@ -507,7 +529,7 @@ exports.createBooking = async (req, res) => {
     sendConfirmationEmail(email, {
       name,
       email,
-      name_tour: tour.name_tour,
+      name_tour: tourDetails.name_tour,
       travelTour,
       total_cost,
       start_day: travelTour.start_day,
@@ -542,6 +564,7 @@ exports.updateBooking = async (req, res) => {
     if (!booking) {
       return res.status(200).json({ message: "Booking not found!" });
     }
+
     if (name) booking.name = name;
     if (phone) booking.phone = phone;
     if (email) booking.email = email;
@@ -556,6 +579,21 @@ exports.updateBooking = async (req, res) => {
           where: { booking_id: bookingId },
         });
       }
+
+      //Kiểm tra số lượng người update có lớn hơn số lượng cũ không?
+      //Nếu tính cả case passenger cho phép danh sách rỗng => kéo phần này vào ngoài if
+      const travelTour = await TravelTour.findByPk(booking.travel_tour_id);
+      const people_update = passengers.length - existingPassengers.length;
+
+      const current_people = travelTour.current_people + people_update;
+      if (current_people > travelTour.max_people) {
+        return res.status(200).json({
+          message: "Số lượng người đã vượt quá số lượng tối đa của chuyến!",
+        });
+      }
+      travelTour.current_people = current_people;
+      await travelTour.save();
+
       for (let i = 0; i < passengers.length; i++) {
         const newPassenger = await Passenger.create({
           name: passengers[i].name,
@@ -591,6 +629,16 @@ exports.deleteBooking = async (req, res) => {
     if (!booking) {
       return res.status(200).json({ message: "Không tìm thấy booking!" });
     }
+
+    //Cập nhật lại số lượng người trong chuyến
+    const travelTour = await TravelTour.findByPk(booking.travel_tour_id);
+    const people_update =
+      booking.number_adult +
+      booking.number_children +
+      booking.number_toddler +
+      booking.number_newborn;
+    travelTour.current_people -= people_update;
+    await travelTour.save();
 
     await booking.destroy();
 
